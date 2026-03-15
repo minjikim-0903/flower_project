@@ -17,6 +17,7 @@ export default function Index() {
   if (!session) return <Redirect href="/(auth)/login" />;
   if (!profile) return <Redirect href="/(auth)/login" />;
 
-  if (profile.role === 'seller') return <Redirect href="/(seller)/store" />;
-  return <Redirect href="/(buyer)/home" />;
+  if (profile.role === 'seller') return <Redirect href="/seller/store" />;
+  if (profile.role === 'admin') return <Redirect href="/admin" />;
+  return <Redirect href="/users/home" />;
 }

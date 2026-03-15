@@ -217,7 +217,7 @@ export default function StoreDetailScreen() {
 
       {/* 장바구니 플로팅 버튼 */}
       {items.length > 0 && (
-        <TouchableOpacity style={styles.cartBanner} onPress={() => router.push('/(buyer)/cart')}>
+        <TouchableOpacity style={styles.cartBanner} onPress={() => router.push('/users/cart')}>
           <Text style={styles.cartBannerText}>
             장바구니 {items.reduce((s, i) => s + i.quantity, 0)}개 보기 →
           </Text>

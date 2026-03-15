@@ -2,7 +2,18 @@ import { supabase } from './supabase';
 import { Store } from '@/types';
 
 export const storeService = {
-  async getStores(options?: { search?: string; limit?: number; offset?: number }) {
+  async getStores(options?: { search?: string; limit?: number; offset?: number; productType?: 'fresh_flower' | 'tree' }) {
+    let storeIds: string[] | null = null;
+
+    if (options?.productType) {
+      const { data: products } = await supabase
+        .from('products')
+        .select('store_id')
+        .eq('product_type', options.productType)
+        .eq('is_available', true);
+      storeIds = products ? [...new Set(products.map((p: any) => p.store_id))] : [];
+    }
+
     let query = supabase
       .from('stores')
       .select('*, seller:profiles(id, name, phone)')
@@ -11,6 +22,9 @@ export const storeService = {
 
     if (options?.search) {
       query = query.ilike('name', `%${options.search}%`);
+    }
+    if (storeIds !== null) {
+      query = storeIds.length > 0 ? query.in('id', storeIds) : query.in('id', ['']);
     }
     if (options?.limit) query = query.limit(options.limit);
     if (options?.offset) query = query.range(options.offset, options.offset + (options.limit ?? 20) - 1);

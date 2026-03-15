@@ -24,7 +24,7 @@ export default function CartScreen() {
       return;
     }
     router.push({
-      pathname: '/(buyer)/checkout',
+      pathname: '/users/checkout',
       params: { isWholesale: isWholesale ? '1' : '0' },
     });
   };

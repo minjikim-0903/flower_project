@@ -62,7 +62,7 @@ export default function CheckoutScreen() {
       });
       clearCart();
       Alert.alert('주문 완료', '주문이 성공적으로 접수되었습니다.', [
-        { text: '확인', onPress: () => router.replace('/(buyer)/orders') },
+        { text: '확인', onPress: () => router.replace('/users/orders') },
       ]);
     } catch {
       Alert.alert('오류', '주문 처리 중 오류가 발생했습니다.');

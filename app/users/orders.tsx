@@ -63,7 +63,7 @@ export default function OrdersScreen() {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.orderCard}
-            onPress={() => router.push(`/(buyer)/order/${item.id}`)}
+            onPress={() => router.push(`/users/order/${item.id}`)}
           >
             <View style={styles.orderHeader}>
               <View

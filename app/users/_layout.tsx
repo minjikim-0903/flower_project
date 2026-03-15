@@ -1,10 +1,7 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useCartStore } from '@/store/useCartStore';
 
-export default function BuyerLayout() {
-  const itemCount = useCartStore((state) => state.getItemCount());
-
+export default function UsersLayout() {
   return (
     <Tabs
       screenOptions={{
@@ -14,9 +11,15 @@ export default function BuyerLayout() {
         tabBarStyle: { borderTopWidth: 1, borderTopColor: '#f0f0f0' },
       }}
     >
+      {/* 탭에 표시하지 않는 화면 */}
+      <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen name="checkout" options={{ href: null }} />
       <Tabs.Screen name="store/[id]" options={{ href: null }} />
       <Tabs.Screen name="order/[id]" options={{ href: null }} />
+      <Tabs.Screen name="cart" options={{ href: null }} />
+      <Tabs.Screen name="orders" options={{ href: null }} />
+
+      {/* 탭 메뉴: 홈 | 꽃사전 | 설정 */}
       <Tabs.Screen
         name="home"
         options={{
@@ -27,39 +30,20 @@ export default function BuyerLayout() {
         }}
       />
       <Tabs.Screen
-        name="stores"
+        name="dictionary"
         options={{
-          title: '가게',
+          title: '꽃사전',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="storefront-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="cart"
-        options={{
-          title: '장바구니',
-          tabBarBadge: itemCount > 0 ? itemCount : undefined,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="cart-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="orders"
-        options={{
-          title: '주문내역',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="receipt-outline" size={size} color={color} />
+            <Ionicons name="book-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: '내 정보',
+          title: '설정',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
+            <Ionicons name="settings-outline" size={size} color={color} />
           ),
         }}
       />

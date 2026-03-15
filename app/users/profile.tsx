@@ -24,7 +24,7 @@ export default function BuyerProfileScreen() {
         <InfoRow label="전화번호" value={profile?.phone || '-'} />
         <InfoRow label="주소" value={profile?.address || '-'} />
       </View>
-      <TouchableOpacity style={styles.homeButton} onPress={() => router.replace('/(buyer)/home')}>
+      <TouchableOpacity style={styles.homeButton} onPress={() => router.replace('/users/home')}>
         <Text style={styles.homeText}>홈으로</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
