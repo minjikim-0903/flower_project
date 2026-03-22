@@ -7,11 +7,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-  Modal,
-  TextInput,
-  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { useAuthStore } from '@/store/useAuthStore';
 import { storeService } from '@/services/stores';
 import { productService } from '@/services/products';
@@ -40,26 +38,12 @@ const TREE_CATEGORIES: { value: TreeCategory; label: string }[] = [
   { value: 'other_tree', label: '기타' },
 ];
 
-const DEFAULT_FORM = {
-  name: '',
-  description: '',
-  product_type: 'fresh_flower' as ProductType,
-  category: 'rose' as FreshFlowerCategory | TreeCategory,
-  retail_price: '',
-  wholesale_price: '',
-  min_wholesale_quantity: '10',
-  unit: '단',
-  stock: '',
-};
-
 export default function ProductsScreen() {
   const { profile } = useAuthStore();
-  const [storeId, setStoreId] = useState<string | null>(null);
+  const [, setStoreId] = useState<string | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
   const [filterType, setFilterType] = useState<ProductType | 'all'>('all');
-  const [form, setForm] = useState(DEFAULT_FORM);
 
   useEffect(() => {
     if (!profile) return;
@@ -73,40 +57,6 @@ export default function ProductsScreen() {
       setLoading(false);
     })();
   }, [profile]);
-
-  const currentCategories = form.product_type === 'fresh_flower' ? FRESH_CATEGORIES : TREE_CATEGORIES;
-
-  const handleTypeChange = (type: ProductType) => {
-    const defaultCat = type === 'fresh_flower' ? 'rose' : 'fruit_tree';
-    setForm({ ...form, product_type: type, category: defaultCat });
-  };
-
-  const handleAdd = async () => {
-    if (!storeId || !form.name || !form.retail_price || !form.wholesale_price) {
-      Alert.alert('알림', '상품명, 소매가, 도매가는 필수입니다.');
-      return;
-    }
-    try {
-      const newProduct = await productService.createProduct({
-        store_id: storeId,
-        name: form.name,
-        description: form.description,
-        product_type: form.product_type,
-        category: form.category,
-        retail_price: parseInt(form.retail_price),
-        wholesale_price: parseInt(form.wholesale_price),
-        min_wholesale_quantity: parseInt(form.min_wholesale_quantity) || 10,
-        unit: form.unit,
-        stock: parseInt(form.stock) || 0,
-        is_available: true,
-      });
-      setProducts([newProduct, ...products]);
-      setShowModal(false);
-      setForm(DEFAULT_FORM);
-    } catch {
-      Alert.alert('오류', '상품 등록에 실패했습니다.');
-    }
-  };
 
   const handleToggle = async (product: Product) => {
     try {
@@ -132,12 +82,14 @@ export default function ProductsScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>상품 관리</Text>
-        <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => router.push('/seller/product-form')}
+        >
           <Text style={styles.addButtonText}>+ 추가</Text>
         </TouchableOpacity>
       </View>
 
-      {/* 생화 / 나무 필터 탭 */}
       <View style={styles.filterRow}>
         {([['all', '전체'], ['fresh_flower', '🌸 생화'], ['tree', '🌳 나무']] as const).map(([val, label]) => (
           <TouchableOpacity
@@ -165,10 +117,12 @@ export default function ProductsScreen() {
               <Text style={styles.productName}>{item.name}</Text>
               <Text style={styles.productMeta}>
                 {item.product_type === 'fresh_flower' ? '생화' : '나무'} · {getCategoryLabel(item)}
+                {item.variety ? ` · ${item.variety}` : ''}
               </Text>
               <Text style={styles.productPrice}>
                 소매 {item.retail_price.toLocaleString()}원 / 도매 {item.wholesale_price.toLocaleString()}원
               </Text>
+              {item.origin ? <Text style={styles.productOrigin}>📍 {item.origin}</Text> : null}
             </View>
             <TouchableOpacity
               style={[styles.toggleButton, item.is_available ? styles.toggleOn : styles.toggleOff]}
@@ -185,132 +139,6 @@ export default function ProductsScreen() {
           <Text style={styles.empty}>등록된 상품이 없습니다.</Text>
         }
       />
-
-      {/* 상품 추가 모달 */}
-      <Modal visible={showModal} animationType="slide">
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-          <View style={styles.modalHeader}>
-            <TouchableOpacity onPress={() => { setShowModal(false); setForm(DEFAULT_FORM); }}>
-              <Text style={{ color: '#888', fontSize: 15 }}>취소</Text>
-            </TouchableOpacity>
-            <Text style={styles.modalTitle}>상품 추가</Text>
-            <TouchableOpacity onPress={handleAdd}>
-              <Text style={{ color: '#2ECC71', fontWeight: '700', fontSize: 15 }}>완료</Text>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView contentContainerStyle={styles.modalBody}>
-            {/* 생화 / 나무 선택 */}
-            <Text style={styles.label}>상품 종류 *</Text>
-            <View style={styles.typeRow}>
-              <TouchableOpacity
-                style={[styles.typeBtn, form.product_type === 'fresh_flower' && styles.typeBtnActivePink]}
-                onPress={() => handleTypeChange('fresh_flower')}
-              >
-                <Text style={[styles.typeBtnText, form.product_type === 'fresh_flower' && styles.typeBtnTextActive]}>
-                  🌸 생화
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.typeBtn, form.product_type === 'tree' && styles.typeBtnActiveGreen]}
-                onPress={() => handleTypeChange('tree')}
-              >
-                <Text style={[styles.typeBtnText, form.product_type === 'tree' && styles.typeBtnTextActive]}>
-                  🌳 나무
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* 카테고리 선택 */}
-            <Text style={styles.label}>카테고리</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={{ flexDirection: 'row', gap: 8, paddingVertical: 4 }}>
-                {currentCategories.map((c) => (
-                  <TouchableOpacity
-                    key={c.value}
-                    style={[styles.catChip, form.category === c.value && styles.catChipActive]}
-                    onPress={() => setForm({ ...form, category: c.value })}
-                  >
-                    <Text style={[styles.catText, form.category === c.value && styles.catTextActive]}>
-                      {c.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
-
-            <Text style={styles.label}>상품명 *</Text>
-            <TextInput
-              style={styles.input}
-              value={form.name}
-              onChangeText={(v) => setForm({ ...form, name: v })}
-              placeholder="예: 빨간 장미 10송이"
-            />
-
-            <View style={styles.row2}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>소매가 (원) *</Text>
-                <TextInput
-                  style={styles.input}
-                  value={form.retail_price}
-                  onChangeText={(v) => setForm({ ...form, retail_price: v })}
-                  keyboardType="numeric"
-                  placeholder="5000"
-                />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>도매가 (원) *</Text>
-                <TextInput
-                  style={styles.input}
-                  value={form.wholesale_price}
-                  onChangeText={(v) => setForm({ ...form, wholesale_price: v })}
-                  keyboardType="numeric"
-                  placeholder="3000"
-                />
-              </View>
-            </View>
-
-            <View style={styles.row2}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>최소 도매 수량</Text>
-                <TextInput
-                  style={styles.input}
-                  value={form.min_wholesale_quantity}
-                  onChangeText={(v) => setForm({ ...form, min_wholesale_quantity: v })}
-                  keyboardType="numeric"
-                />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>단위</Text>
-                <TextInput
-                  style={styles.input}
-                  value={form.unit}
-                  onChangeText={(v) => setForm({ ...form, unit: v })}
-                  placeholder="단, 박스, 그루"
-                />
-              </View>
-            </View>
-
-            <Text style={styles.label}>재고</Text>
-            <TextInput
-              style={styles.input}
-              value={form.stock}
-              onChangeText={(v) => setForm({ ...form, stock: v })}
-              keyboardType="numeric"
-              placeholder="100"
-            />
-
-            <Text style={styles.label}>상품 설명</Text>
-            <TextInput
-              style={[styles.input, { minHeight: 80, textAlignVertical: 'top' }]}
-              value={form.description}
-              onChangeText={(v) => setForm({ ...form, description: v })}
-              multiline
-              placeholder="상품 설명을 입력해주세요"
-            />
-          </ScrollView>
-        </SafeAreaView>
-      </Modal>
     </SafeAreaView>
   );
 }
@@ -362,52 +190,10 @@ const styles = StyleSheet.create({
   productName: { fontSize: 15, fontWeight: '600' },
   productMeta: { color: '#888', fontSize: 12, marginTop: 2 },
   productPrice: { color: '#555', fontSize: 13, marginTop: 3 },
+  productOrigin: { color: '#999', fontSize: 11, marginTop: 2 },
   toggleButton: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
   toggleOn: { backgroundColor: '#2ECC7120' },
   toggleOff: { backgroundColor: '#E7474720' },
   toggleText: { fontWeight: '600', fontSize: 13 },
   empty: { textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  modalTitle: { fontWeight: 'bold', fontSize: 17 },
-  modalBody: { padding: 16, gap: 10 },
-  label: { fontWeight: '600', color: '#555', fontSize: 14, marginTop: 4 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 15,
-    backgroundColor: '#fafafa',
-  },
-  typeRow: { flexDirection: 'row', gap: 12 },
-  typeBtn: {
-    flex: 1,
-    padding: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    alignItems: 'center',
-  },
-  typeBtnActivePink: { borderColor: '#FF6B9D', backgroundColor: '#FFF0F5' },
-  typeBtnActiveGreen: { borderColor: '#2ECC71', backgroundColor: '#F0FFF4' },
-  typeBtnText: { fontSize: 15, color: '#666' },
-  typeBtnTextActive: { fontWeight: '700' },
-  catChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  catChipActive: { borderColor: '#2ECC71', backgroundColor: '#2ECC71' },
-  catText: { color: '#555' },
-  catTextActive: { color: '#fff', fontWeight: '600' },
-  row2: { flexDirection: 'row', gap: 10 },
 });

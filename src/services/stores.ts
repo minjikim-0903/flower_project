@@ -54,6 +54,16 @@ export const storeService = {
     return data;
   },
 
+  async getMyStores(sellerId: string): Promise<Store[]> {
+    const { data, error } = await supabase
+      .from('stores')
+      .select('*')
+      .eq('seller_id', sellerId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data ?? [];
+  },
+
   async createStore(store: Omit<Store, 'id' | 'created_at' | 'seller'>) {
     const { data, error } = await supabase
       .from('stores')

@@ -12,10 +12,13 @@ export default function SellerLayout() {
       }}
     >
       <Tabs.Screen name="home" options={{ href: null }} />
+      <Tabs.Screen name="store-form" options={{ href: null }} />
+      <Tabs.Screen name="product-form" options={{ href: null }} />
+      <Tabs.Screen name="community" options={{ href: null }} />
       <Tabs.Screen
         name="store"
         options={{
-          title: '가게',
+          title: '내 가게',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="storefront-outline" size={size} color={color} />
           ),
@@ -24,7 +27,7 @@ export default function SellerLayout() {
       <Tabs.Screen
         name="products"
         options={{
-          title: '상품',
+          title: '판매상품',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="flower-outline" size={size} color={color} />
           ),
@@ -40,23 +43,15 @@ export default function SellerLayout() {
         }}
       />
       <Tabs.Screen
-        name="community"
-        options={{
-          title: '커뮤니티',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="people-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="setting"
         options={{
-          title: '설정',
+          title: '내 정보',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
+            <Ionicons name="person-outline" size={size} color={color} />
           ),
         }}
       />
+      <Tabs.Screen name="index" options={{ href: null }} />
     </Tabs>
   );
 }
