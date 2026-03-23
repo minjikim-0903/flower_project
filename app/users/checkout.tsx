@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  Platform,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,13 +14,12 @@ import { format, addDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useCartStore } from '@/store/useCartStore';
-import { orderService } from '@/services/orders';
 import { OrderType } from '@/types';
 
 export default function CheckoutScreen() {
   const { isWholesale } = useLocalSearchParams<{ isWholesale: string }>();
   const { profile } = useAuthStore();
-  const { items, storeId, getTotalPrice, clearCart } = useCartStore();
+  const { items, storeId, getTotalPrice } = useCartStore();
 
   const orderType: OrderType = isWholesale === '1' ? 'wholesale' : 'retail';
   const totalPrice = getTotalPrice(orderType === 'wholesale');
@@ -31,7 +29,6 @@ export default function CheckoutScreen() {
   const [selectedDate, setSelectedDate] = useState<string>(
     format(addDays(new Date(), 1), 'yyyy-MM-dd')
   );
-  const [loading, setLoading] = useState(false);
 
   // 다음 7일간 배송 가능 날짜
   const availableDates = Array.from({ length: 7 }, (_, i) => {
@@ -42,33 +39,23 @@ export default function CheckoutScreen() {
     };
   });
 
-  const handleOrder = async () => {
+  const handleOrder = () => {
     if (!deliveryAddress.trim()) {
       Alert.alert('알림', '배송 주소를 입력해주세요.');
       return;
     }
     if (!profile || !storeId) return;
 
-    setLoading(true);
-    try {
-      await orderService.createOrder({
-        buyerId: profile.id,
-        storeId,
-        items,
+    router.push({
+      pathname: '/users/payment',
+      params: {
+        totalPrice: String(totalPrice),
         orderType,
         deliveryDate: selectedDate,
         deliveryAddress,
         deliveryMemo,
-      });
-      clearCart();
-      Alert.alert('주문 완료', '주문이 성공적으로 접수되었습니다.', [
-        { text: '확인', onPress: () => router.replace('/users/orders') },
-      ]);
-    } catch {
-      Alert.alert('오류', '주문 처리 중 오류가 발생했습니다.');
-    } finally {
-      setLoading(false);
-    }
+      },
+    });
   };
 
   return (
@@ -153,12 +140,11 @@ export default function CheckoutScreen() {
           <Text style={styles.totalPrice}>{totalPrice.toLocaleString()}원</Text>
         </View>
         <TouchableOpacity
-          style={[styles.orderButton, loading && styles.orderButtonDisabled]}
+          style={styles.orderButton}
           onPress={handleOrder}
-          disabled={loading}
         >
           <Text style={styles.orderButtonText}>
-            {loading ? '처리 중...' : `${totalPrice.toLocaleString()}원 결제하기`}
+            {totalPrice.toLocaleString()}원 결제하기
           </Text>
         </TouchableOpacity>
       </View>
