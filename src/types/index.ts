@@ -24,6 +24,8 @@ export interface Store {
   min_order_amount: number;
   seller_grade: SellerGrade;
   origin_certification: OriginCertification;
+  subscription_started_at?: string;
+  is_subscription_active: boolean;
   created_at: string;
   seller?: Profile;
 }
@@ -150,6 +152,11 @@ export interface Order {
   order_type: OrderType;
   status: OrderStatus;
   total_price: number;
+  pg_fee_rate: number;       // PG 수수료율 (고정 3.5%)
+  pg_fee_amount: number;     // PG 수수료 금액
+  commission_rate: number;   // 플랫폼 수수료율 (고정 3.5%)
+  commission_amount: number; // 플랫폼 수수료 금액 (플랫폼 수익)
+  seller_payout: number;     // 판매자 정산액 (total_price - pg_fee - commission)
   delivery_date: string;
   delivery_address: string;
   delivery_memo?: string;

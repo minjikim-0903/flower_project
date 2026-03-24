@@ -44,17 +44,23 @@ create trigger on_auth_user_created
 -- 2. stores (판매자 가게)
 -- =============================================
 create table if not exists public.stores (
-  id                 uuid primary key default gen_random_uuid(),
-  seller_id          uuid not null references public.profiles(id) on delete cascade,
-  name               text not null,
-  description        text not null default '',
-  address            text not null default '',
-  image_url          text,
-  business_number    text not null default '',
-  is_active          boolean not null default true,
-  min_order_amount   integer not null default 0,
-  created_at         timestamptz not null default now()
+  id                       uuid primary key default gen_random_uuid(),
+  seller_id                uuid not null references public.profiles(id) on delete cascade,
+  name                     text not null,
+  description              text not null default '',
+  address                  text not null default '',
+  image_url                text,
+  business_number          text not null default '',
+  is_active                boolean not null default true,
+  min_order_amount         integer not null default 0,
+  subscription_started_at  timestamptz,                        -- 입점 승인 시각 (무료 체험 시작)
+  is_subscription_active   boolean not null default false,     -- 유료 구독 활성 여부
+  created_at               timestamptz not null default now()
 );
+
+-- 기존 테이블에 컬럼 추가 (이미 있으면 무시)
+alter table public.stores add column if not exists subscription_started_at timestamptz;
+alter table public.stores add column if not exists is_subscription_active boolean not null default false;
 
 
 -- =============================================
@@ -74,26 +80,106 @@ create table if not exists public.products (
   image_url                text,
   stock                    integer not null default 0,
   is_available             boolean not null default true,
-  created_at               timestamptz not null default now()
+  created_at               timestamptz not null default now(),
+
+  -- 기본 정보
+  product_code             text,
+  variety                  text,
+  color                    jsonb not null default '[]',
+  characteristics          text not null default '',
+  image_urls               jsonb not null default '[]',
+
+  -- 상품 특성
+  flower_size              text,
+  blooming_season          text not null default '',
+  freshness_grade          text,
+  has_thorns               boolean not null default false,
+  has_fragrance            boolean not null default false,
+
+  -- 판매 조건
+  min_order_quantity       integer not null default 1,
+  sale_start_date          date,
+  sale_end_date            date,
+  bulk_discount_conditions jsonb not null default '[]',
+
+  -- 배송 정보
+  origin                   text not null default '',
+  deliverable_regions      jsonb not null default '[]',
+  shipping_methods         jsonb not null default '[]',
+  shipping_days_required   text not null default '',
+  shipping_fee             integer not null default 0,
+  order_cutoff_time        text not null default '',
+  cold_packaging           boolean not null default false,
+
+  -- 출하 일정
+  available_shipping_days  jsonb not null default '[]',
+  expected_arrival_days    jsonb not null default '[]',
+  harvest_date             date,
+  sale_season              text not null default 'year_round',
+
+  -- 추천 및 유의사항
+  recommended_buyer_types  jsonb not null default '[]',
+  notes                    text not null default ''
 );
+
+-- 기존 테이블에 컬럼 추가 (이미 있으면 무시)
+alter table public.products add column if not exists product_code text;
+alter table public.products add column if not exists variety text;
+alter table public.products add column if not exists color jsonb not null default '[]';
+alter table public.products add column if not exists characteristics text not null default '';
+alter table public.products add column if not exists image_urls jsonb not null default '[]';
+alter table public.products add column if not exists flower_size text;
+alter table public.products add column if not exists blooming_season text not null default '';
+alter table public.products add column if not exists freshness_grade text;
+alter table public.products add column if not exists has_thorns boolean not null default false;
+alter table public.products add column if not exists has_fragrance boolean not null default false;
+alter table public.products add column if not exists min_order_quantity integer not null default 1;
+alter table public.products add column if not exists sale_start_date date;
+alter table public.products add column if not exists sale_end_date date;
+alter table public.products add column if not exists bulk_discount_conditions jsonb not null default '[]';
+alter table public.products add column if not exists origin text not null default '';
+alter table public.products add column if not exists deliverable_regions jsonb not null default '[]';
+alter table public.products add column if not exists shipping_methods jsonb not null default '[]';
+alter table public.products add column if not exists shipping_days_required text not null default '';
+alter table public.products add column if not exists shipping_fee integer not null default 0;
+alter table public.products add column if not exists order_cutoff_time text not null default '';
+alter table public.products add column if not exists cold_packaging boolean not null default false;
+alter table public.products add column if not exists available_shipping_days jsonb not null default '[]';
+alter table public.products add column if not exists expected_arrival_days jsonb not null default '[]';
+alter table public.products add column if not exists harvest_date date;
+alter table public.products add column if not exists sale_season text not null default 'year_round';
+alter table public.products add column if not exists recommended_buyer_types jsonb not null default '[]';
+alter table public.products add column if not exists notes text not null default '';
 
 
 -- =============================================
 -- 4. orders (주문)
 -- =============================================
 create table if not exists public.orders (
-  id               uuid primary key default gen_random_uuid(),
-  buyer_id         uuid not null references public.profiles(id) on delete cascade,
-  store_id         uuid not null references public.stores(id) on delete cascade,
-  order_type       text not null check (order_type in ('retail', 'wholesale')),
-  status           text not null default 'pending'
-                     check (status in ('pending', 'confirmed', 'preparing', 'shipped', 'delivered', 'cancelled')),
-  total_price      integer not null default 0,
-  delivery_date    date not null,
-  delivery_address text not null,
-  delivery_memo    text,
-  created_at       timestamptz not null default now()
+  id                uuid primary key default gen_random_uuid(),
+  buyer_id          uuid not null references public.profiles(id) on delete cascade,
+  store_id          uuid not null references public.stores(id) on delete cascade,
+  order_type        text not null check (order_type in ('retail', 'wholesale')),
+  status            text not null default 'pending'
+                      check (status in ('pending', 'confirmed', 'preparing', 'shipped', 'delivered', 'cancelled')),
+  total_price       integer not null default 0,
+  pg_fee_rate       numeric(5,4) not null default 0.035,   -- PG 수수료율 (3.5%)
+  pg_fee_amount     integer not null default 0,            -- PG 수수료 금액
+  commission_rate   numeric(5,4) not null default 0.035,   -- 플랫폼 수수료율 (3.5%)
+  commission_amount integer not null default 0,            -- 플랫폼 수수료 금액 (플랫폼 수익)
+  seller_payout     integer not null default 0,            -- 판매자 정산액
+  delivery_date     date not null,
+  delivery_address  text not null,
+  delivery_memo     text,
+  created_at        timestamptz not null default now()
 );
+
+-- 기존 테이블에 컬럼 추가 (이미 있으면 무시)
+alter table public.orders add column if not exists pg_fee_rate numeric(5,4) not null default 0.035;
+alter table public.orders add column if not exists pg_fee_amount integer not null default 0;
+alter table public.orders add column if not exists commission_rate numeric(5,4) not null default 0.035;
+alter table public.orders add column if not exists commission_amount integer not null default 0;
+alter table public.orders add column if not exists seller_payout integer not null default 0;
 
 
 -- =============================================

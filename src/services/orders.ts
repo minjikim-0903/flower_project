@@ -1,6 +1,9 @@
 import { supabase } from './supabase';
 import { CartItem, Order, OrderStatus, OrderType } from '@/types';
 
+const PG_FEE_RATE = 0.035;
+const PLATFORM_FEE_RATE = 0.035;
+
 export const orderService = {
   async createOrder(params: {
     buyerId: string;
@@ -19,6 +22,10 @@ export const orderService = {
       return sum + price * item.quantity;
     }, 0);
 
+    const pgFeeAmount = Math.round(totalPrice * PG_FEE_RATE);
+    const commissionAmount = Math.round(totalPrice * PLATFORM_FEE_RATE);
+    const sellerPayout = totalPrice - pgFeeAmount - commissionAmount;
+
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
@@ -27,6 +34,11 @@ export const orderService = {
         order_type: params.orderType,
         status: 'pending',
         total_price: totalPrice,
+        pg_fee_rate: PG_FEE_RATE,
+        pg_fee_amount: pgFeeAmount,
+        commission_rate: PLATFORM_FEE_RATE,
+        commission_amount: commissionAmount,
+        seller_payout: sellerPayout,
         delivery_date: params.deliveryDate,
         delivery_address: params.deliveryAddress,
         delivery_memo: params.deliveryMemo,

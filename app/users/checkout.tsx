@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Platform,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -39,12 +40,24 @@ export default function CheckoutScreen() {
     };
   });
 
+  const notify = (msg: string) => {
+    if (Platform.OS === 'web') window.alert(msg);
+    else Alert.alert('알림', msg);
+  };
+
   const handleOrder = () => {
     if (!deliveryAddress.trim()) {
-      Alert.alert('알림', '배송 주소를 입력해주세요.');
+      notify('배송 주소를 입력해주세요.');
       return;
     }
-    if (!profile || !storeId) return;
+    if (!profile) {
+      notify('로그인이 필요합니다.');
+      return;
+    }
+    if (!storeId || items.length === 0) {
+      notify('장바구니가 비어있습니다.');
+      return;
+    }
 
     router.push({
       pathname: '/users/payment',
@@ -135,6 +148,16 @@ export default function CheckoutScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
+        <View style={styles.feeBreakdown}>
+          <View style={styles.feeRow}>
+            <Text style={styles.feeLabel}>상품 합계</Text>
+            <Text style={styles.feeValue}>{totalPrice.toLocaleString()}원</Text>
+          </View>
+          <View style={styles.feeRow}>
+            <Text style={styles.feeLabel}>PG·플랫폼 수수료</Text>
+            <Text style={styles.feeNote}>판매자 부담</Text>
+          </View>
+        </View>
         <View style={styles.totalRow}>
           <Text style={styles.totalLabel}>총 결제금액</Text>
           <Text style={styles.totalPrice}>{totalPrice.toLocaleString()}원</Text>
@@ -187,6 +210,11 @@ const styles = StyleSheet.create({
   totalRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 14 },
   totalLabel: { fontSize: 16, color: '#666' },
   totalPrice: { fontSize: 20, fontWeight: 'bold', color: '#FF6B9D' },
+  feeBreakdown: { marginBottom: 10, gap: 4 },
+  feeRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  feeLabel: { fontSize: 13, color: '#888' },
+  feeValue: { fontSize: 13, color: '#555' },
+  feeNote: { fontSize: 13, color: '#aaa' },
   orderButton: { backgroundColor: '#FF6B9D', borderRadius: 12, padding: 16, alignItems: 'center' },
   orderButtonDisabled: { opacity: 0.6 },
   orderButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },

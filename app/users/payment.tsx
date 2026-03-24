@@ -89,7 +89,7 @@ export default function PaymentScreen() {
     }
   };
 
-  // 웹: PortOne 스크립트 동적 로드 후 결제 호출
+  // 웹: PortOne 스크립트 동적 로드 (자동 결제 호출 X — 버튼 클릭 시 호출)
   useEffect(() => {
     if (Platform.OS !== 'web') return;
 
@@ -99,19 +99,17 @@ export default function PaymentScreen() {
     document.head.appendChild(script);
 
     return () => {
-      document.head.removeChild(script);
+      if (document.head.contains(script)) document.head.removeChild(script);
     };
   }, []);
 
-  useEffect(() => {
-    if (Platform.OS !== 'web' || !webScriptReady) return;
-
+  // 웹: 버튼 클릭 시 직접 호출 (팝업 차단 방지)
+  const handleWebPay = () => {
     const IMP = (window as any).IMP;
     IMP.init(IMP_KEY);
-
     IMP.request_pay(
       {
-        pg: 'html5_inicis.INIpayTest',
+        pg: 'kakaopay.TC0ONETIME',
         pay_method: 'card',
         merchant_uid: merchantUidRef.current,
         name: '꽃시장 주문',
@@ -128,7 +126,7 @@ export default function PaymentScreen() {
         }
       }
     );
-  }, [webScriptReady]);
+  };
 
   // 네이티브용 WebView HTML
   const paymentParams = JSON.stringify({
@@ -177,7 +175,7 @@ export default function PaymentScreen() {
         setTimeout(function () {
           IMP.request_pay(
             {
-              pg: 'html5_inicis.INIpayTest',
+              pg: 'kakaopay.TC0ONETIME',
               pay_method: 'card',
               merchant_uid: '${merchantUidRef.current}',
               name: '꽃시장 주문',
@@ -220,10 +218,22 @@ export default function PaymentScreen() {
           <Text style={styles.processingText}>주문을 저장하는 중...</Text>
         </View>
       ) : Platform.OS === 'web' ? (
-        // 웹: PortOne이 팝업으로 뜨므로 배경 화면만 표시
+        // 웹: 스크립트 로드 완료 후 버튼 표시 (팝업 차단 방지 — 직접 클릭 필요)
         <View style={styles.processing}>
-          <ActivityIndicator size="large" color="#FF6B9D" />
-          <Text style={styles.processingText}>결제 창을 불러오는 중...</Text>
+          {!webScriptReady ? (
+            <>
+              <ActivityIndicator size="large" color="#FF6B9D" />
+              <Text style={styles.processingText}>결제 준비 중...</Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.processingText}>결제 준비 완료</Text>
+              <TouchableOpacity style={styles.payButton} onPress={handleWebPay}>
+                <Text style={styles.payButtonText}>{amount.toLocaleString()}원 결제하기</Text>
+              </TouchableOpacity>
+              <Text style={styles.processingHint}>버튼을 눌러 결제창을 열어주세요</Text>
+            </>
+          )}
         </View>
       ) : (
         // 네이티브: WebView
@@ -260,4 +270,7 @@ const styles = StyleSheet.create({
   webview: { flex: 1 },
   processing: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 16 },
   processingText: { fontSize: 15, color: '#555' },
+  processingHint: { fontSize: 13, color: '#aaa', textAlign: 'center', marginTop: 8, lineHeight: 20 },
+  payButton: { backgroundColor: '#FF6B9D', borderRadius: 12, paddingHorizontal: 32, paddingVertical: 16, marginTop: 16 },
+  payButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -58,15 +59,72 @@ export default function ProductsScreen() {
     })();
   }, [profile]);
 
+  const confirm = (message: string): boolean => {
+    if (Platform.OS === 'web') return window.confirm(message);
+    return true;
+  };
+
   const handleToggle = async (product: Product) => {
-    try {
-      const updated = await productService.updateProduct(product.id, {
-        is_available: !product.is_available,
-      });
-      setProducts(products.map((p) => (p.id === product.id ? updated : p)));
-    } catch {
-      Alert.alert('오류', '상태 변경에 실패했습니다.');
+    const next = !product.is_available;
+    const message = next ? '이 상품을 다시 판매할까요?' : '이 상품을 판매 목록에서 내릴까요?';
+
+    if (Platform.OS === 'web') {
+      if (!confirm(message)) return;
+      try {
+        const updated = await productService.updateProduct(product.id, { is_available: next });
+        setProducts(products.map((p) => (p.id === product.id ? updated : p)));
+      } catch {
+        window.alert('상태 변경에 실패했습니다.');
+      }
+      return;
     }
+
+    Alert.alert(next ? '판매 재개' : '판매 중단', message, [
+      { text: '취소', style: 'cancel' },
+      {
+        text: next ? '재개' : '내리기',
+        style: next ? 'default' : 'destructive',
+        onPress: async () => {
+          try {
+            const updated = await productService.updateProduct(product.id, { is_available: next });
+            setProducts(products.map((p) => (p.id === product.id ? updated : p)));
+          } catch {
+            Alert.alert('오류', '상태 변경에 실패했습니다.');
+          }
+        },
+      },
+    ]);
+  };
+
+  const handleDelete = async (product: Product) => {
+    const message = `"${product.name}"을 완전히 삭제할까요?\n삭제 후 복구할 수 없습니다.`;
+
+    if (Platform.OS === 'web') {
+      if (!window.confirm(message)) return;
+      try {
+        await productService.deleteProduct(product.id);
+        setProducts(products.filter((p) => p.id !== product.id));
+      } catch {
+        window.alert('삭제에 실패했습니다.');
+      }
+      return;
+    }
+
+    Alert.alert('상품 삭제', message, [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '삭제',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await productService.deleteProduct(product.id);
+            setProducts(products.filter((p) => p.id !== product.id));
+          } catch {
+            Alert.alert('오류', '삭제에 실패했습니다.');
+          }
+        },
+      },
+    ]);
   };
 
   const getCategoryLabel = (product: Product) => {
@@ -124,14 +182,22 @@ export default function ProductsScreen() {
               </Text>
               {item.origin ? <Text style={styles.productOrigin}>📍 {item.origin}</Text> : null}
             </View>
-            <TouchableOpacity
-              style={[styles.toggleButton, item.is_available ? styles.toggleOn : styles.toggleOff]}
-              onPress={() => handleToggle(item)}
-            >
-              <Text style={[styles.toggleText, { color: item.is_available ? '#2ECC71' : '#E74747' }]}>
-                {item.is_available ? '판매중' : '중지'}
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.actionCol}>
+              <TouchableOpacity
+                style={[styles.toggleButton, item.is_available ? styles.toggleOn : styles.toggleOff]}
+                onPress={() => handleToggle(item)}
+              >
+                <Text style={[styles.toggleText, { color: item.is_available ? '#2ECC71' : '#E74747' }]}>
+                  {item.is_available ? '판매중' : '판매중단'}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDelete(item)}
+              >
+                <Text style={styles.deleteText}>삭제</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         contentContainerStyle={{ padding: 12, gap: 8 }}
@@ -191,9 +257,12 @@ const styles = StyleSheet.create({
   productMeta: { color: '#888', fontSize: 12, marginTop: 2 },
   productPrice: { color: '#555', fontSize: 13, marginTop: 3 },
   productOrigin: { color: '#999', fontSize: 11, marginTop: 2 },
+  actionCol: { alignItems: 'flex-end', gap: 6 },
   toggleButton: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
   toggleOn: { backgroundColor: '#2ECC7120' },
   toggleOff: { backgroundColor: '#E7474720' },
   toggleText: { fontWeight: '600', fontSize: 13 },
+  deleteButton: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: '#E7474710' },
+  deleteText: { color: '#E74747', fontWeight: '600', fontSize: 13 },
   empty: { textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 },
 });

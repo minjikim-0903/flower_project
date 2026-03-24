@@ -93,6 +93,24 @@ export default function SellerOrdersScreen() {
               </Text>
               <Text style={styles.orderPrice}>{item.total_price.toLocaleString()}원</Text>
             </View>
+            <View style={styles.payoutBox}>
+              <View style={styles.payoutRow}>
+                <Text style={styles.payoutLabel}>결제 금액</Text>
+                <Text style={styles.payoutValue}>{item.total_price.toLocaleString()}원</Text>
+              </View>
+              <View style={styles.payoutRow}>
+                <Text style={styles.payoutLabel}>PG 수수료 (3.5%)</Text>
+                <Text style={styles.payoutDeduct}>-{(item.pg_fee_amount ?? Math.round(item.total_price * 0.035)).toLocaleString()}원</Text>
+              </View>
+              <View style={styles.payoutRow}>
+                <Text style={styles.payoutLabel}>플랫폼 수수료 (3.5%)</Text>
+                <Text style={styles.payoutDeduct}>-{(item.commission_amount ?? Math.round(item.total_price * 0.035)).toLocaleString()}원</Text>
+              </View>
+              <View style={[styles.payoutRow, styles.payoutTotal]}>
+                <Text style={styles.payoutTotalLabel}>정산 예정액</Text>
+                <Text style={styles.payoutTotalValue}>{(item.seller_payout ?? item.total_price - Math.round(item.total_price * 0.07)).toLocaleString()}원</Text>
+              </View>
+            </View>
             <Text style={styles.deliveryDate}>
               배송 예정: {format(new Date(item.delivery_date), 'M월 d일')}
             </Text>
@@ -153,6 +171,25 @@ const styles = StyleSheet.create({
   orderMid: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   orderType: { color: '#555' },
   orderPrice: { fontWeight: '700', color: '#2ECC71', fontSize: 16 },
+  payoutBox: {
+    backgroundColor: '#f8f8f8',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 8,
+    gap: 4,
+  },
+  payoutRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  payoutLabel: { fontSize: 13, color: '#888' },
+  payoutValue: { fontSize: 13, color: '#555' },
+  payoutDeduct: { fontSize: 13, color: '#E74C3C' },
+  payoutTotal: {
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    marginTop: 6,
+    paddingTop: 6,
+  },
+  payoutTotalLabel: { fontSize: 14, fontWeight: '700', color: '#333' },
+  payoutTotalValue: { fontSize: 14, fontWeight: '700', color: '#2ECC71' },
   deliveryDate: { color: '#555', fontSize: 14, marginBottom: 2 },
   deliveryAddr: { color: '#888', fontSize: 13 },
   memo: { color: '#888', fontSize: 13, marginTop: 4 },

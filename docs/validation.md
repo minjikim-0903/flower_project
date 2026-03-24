@@ -103,7 +103,7 @@ if (!data) setEmailError('가입되지 않은 이메일입니다.');
 [로그인 버튼]
   └─ 빈 필드 → 인라인 에러 표시 후 API 호출 차단
   └─ API 실패 → 이메일/비밀번호 필드 모두 에러 표시
-  └─ API 성공 → 역할에 따라 화면 이동 (buyer/seller/admin)
+  └─ API 성공 → 역할에 따라 화면 이동 (user/seller/admin)
 ```
 
 ---
