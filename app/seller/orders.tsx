@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
@@ -76,65 +75,86 @@ export default function SellerOrdersScreen() {
   if (loading) return <ActivityIndicator style={{ flex: 1 }} color="#2ECC71" />;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>주문 관리</Text>
+    <SafeAreaView className="flex-1 bg-background">
+      <Text className="font-bold p-5 bg-white" style={{ fontSize: 22 }}>주문 관리</Text>
       <FlatList
         data={orders}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.orderCard}>
-            <View style={styles.orderTop}>
-              <Text style={styles.buyerName}>{item.buyer?.name}</Text>
-              <Text style={styles.buyerPhone}>{item.buyer?.phone}</Text>
+          <View
+            className="bg-white rounded-2xl p-4"
+            style={{
+              elevation: 2,
+              shadowColor: '#000',
+              shadowOpacity: 0.06,
+              shadowRadius: 8,
+              shadowOffset: { width: 0, height: 2 },
+            }}
+          >
+            <View className="flex-row justify-between mb-2">
+              <Text style={{ fontWeight: '700', fontSize: 16 }}>{item.buyer?.name}</Text>
+              <Text style={{ color: '#888' }}>{item.buyer?.phone}</Text>
             </View>
-            <View style={styles.orderMid}>
-              <Text style={styles.orderType}>
+            <View className="flex-row justify-between mb-2">
+              <Text style={{ color: '#555' }}>
                 {item.order_type === 'wholesale' ? '🏭 도매' : '🛒 소매'}
               </Text>
-              <Text style={styles.orderPrice}>{item.total_price.toLocaleString()}원</Text>
+              <Text style={{ fontWeight: '700', color: '#2ECC71', fontSize: 16 }}>{item.total_price.toLocaleString()}원</Text>
             </View>
-            <View style={styles.payoutBox}>
-              <View style={styles.payoutRow}>
-                <Text style={styles.payoutLabel}>결제 금액</Text>
-                <Text style={styles.payoutValue}>{item.total_price.toLocaleString()}원</Text>
+            <View
+              className="rounded-lg mb-2 gap-1"
+              style={{ backgroundColor: '#f8f8f8', padding: 12 }}
+            >
+              <View className="flex-row justify-between">
+                <Text style={{ fontSize: 13, color: '#888' }}>결제 금액</Text>
+                <Text style={{ fontSize: 13, color: '#555' }}>{item.total_price.toLocaleString()}원</Text>
               </View>
-              <View style={styles.payoutRow}>
-                <Text style={styles.payoutLabel}>PG 수수료 (3.5%)</Text>
-                <Text style={styles.payoutDeduct}>-{(item.pg_fee_amount ?? Math.round(item.total_price * 0.035)).toLocaleString()}원</Text>
+              <View className="flex-row justify-between">
+                <Text style={{ fontSize: 13, color: '#888' }}>PG 수수료 (3.5%)</Text>
+                <Text style={{ fontSize: 13, color: '#E74C3C' }}>-{(item.pg_fee_amount ?? Math.round(item.total_price * 0.035)).toLocaleString()}원</Text>
               </View>
-              <View style={styles.payoutRow}>
-                <Text style={styles.payoutLabel}>플랫폼 수수료 (3.5%)</Text>
-                <Text style={styles.payoutDeduct}>-{(item.commission_amount ?? Math.round(item.total_price * 0.035)).toLocaleString()}원</Text>
+              <View className="flex-row justify-between">
+                <Text style={{ fontSize: 13, color: '#888' }}>플랫폼 수수료 (3.5%)</Text>
+                <Text style={{ fontSize: 13, color: '#E74C3C' }}>-{(item.commission_amount ?? Math.round(item.total_price * 0.035)).toLocaleString()}원</Text>
               </View>
-              <View style={[styles.payoutRow, styles.payoutTotal]}>
-                <Text style={styles.payoutTotalLabel}>정산 예정액</Text>
-                <Text style={styles.payoutTotalValue}>{(item.seller_payout ?? item.total_price - Math.round(item.total_price * 0.07)).toLocaleString()}원</Text>
+              <View
+                className="flex-row justify-between border-t"
+                style={{ borderTopColor: '#e0e0e0', marginTop: 6, paddingTop: 6 }}
+              >
+                <Text style={{ fontSize: 14, fontWeight: '700', color: '#333' }}>정산 예정액</Text>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: '#2ECC71' }}>{(item.seller_payout ?? item.total_price - Math.round(item.total_price * 0.07)).toLocaleString()}원</Text>
               </View>
             </View>
-            <Text style={styles.deliveryDate}>
+            <Text className="text-sm mb-0.5" style={{ color: '#555' }}>
               배송 예정: {format(new Date(item.delivery_date), 'M월 d일')}
             </Text>
-            <Text style={styles.deliveryAddr}>{item.delivery_address}</Text>
+            <Text style={{ color: '#888', fontSize: 13 }}>{item.delivery_address}</Text>
             {item.delivery_memo ? (
-              <Text style={styles.memo}>📝 {item.delivery_memo}</Text>
+              <Text style={{ color: '#888', fontSize: 13, marginTop: 4 }}>📝 {item.delivery_memo}</Text>
             ) : null}
-            <View style={styles.statusRow}>
+            <View
+              className="flex-row justify-between items-center border-t border-border"
+              style={{ marginTop: 12, paddingTop: 12 }}
+            >
               <View
-                style={[
-                  styles.statusBadge,
-                  { backgroundColor: STATUS_COLOR[item.status] + '20' },
-                ]}
+                className="rounded-lg"
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 4,
+                  backgroundColor: STATUS_COLOR[item.status] + '20',
+                }}
               >
-                <Text style={[styles.statusText, { color: STATUS_COLOR[item.status] }]}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: STATUS_COLOR[item.status] }}>
                   {STATUS_LABEL[item.status]}
                 </Text>
               </View>
               {item.status !== 'delivered' && item.status !== 'cancelled' && (
                 <TouchableOpacity
-                  style={styles.nextButton}
+                  className="rounded-lg"
+                  style={{ backgroundColor: '#2ECC7120', paddingHorizontal: 14, paddingVertical: 7 }}
                   onPress={() => handleStatusUpdate(item)}
                 >
-                  <Text style={styles.nextButtonText}>다음 단계 →</Text>
+                  <Text style={{ color: '#2ECC71', fontWeight: '600' }}>다음 단계 →</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -142,70 +162,12 @@ export default function SellerOrdersScreen() {
         )}
         contentContainerStyle={{ padding: 16, gap: 12 }}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
+          <View className="items-center gap-3" style={{ paddingTop: 60 }}>
             <Text style={{ fontSize: 40 }}>📦</Text>
-            <Text style={styles.emptyText}>주문이 없습니다.</Text>
+            <Text style={{ color: '#aaa', fontSize: 16 }}>주문이 없습니다.</Text>
           </View>
         }
       />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8f8f8' },
-  title: { fontSize: 22, fontWeight: 'bold', padding: 20, backgroundColor: '#fff' },
-  orderCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  orderTop: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  buyerName: { fontWeight: '700', fontSize: 16 },
-  buyerPhone: { color: '#888' },
-  orderMid: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  orderType: { color: '#555' },
-  orderPrice: { fontWeight: '700', color: '#2ECC71', fontSize: 16 },
-  payoutBox: {
-    backgroundColor: '#f8f8f8',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 8,
-    gap: 4,
-  },
-  payoutRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  payoutLabel: { fontSize: 13, color: '#888' },
-  payoutValue: { fontSize: 13, color: '#555' },
-  payoutDeduct: { fontSize: 13, color: '#E74C3C' },
-  payoutTotal: {
-    borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
-    marginTop: 6,
-    paddingTop: 6,
-  },
-  payoutTotalLabel: { fontSize: 14, fontWeight: '700', color: '#333' },
-  payoutTotalValue: { fontSize: 14, fontWeight: '700', color: '#2ECC71' },
-  deliveryDate: { color: '#555', fontSize: 14, marginBottom: 2 },
-  deliveryAddr: { color: '#888', fontSize: 13 },
-  memo: { color: '#888', fontSize: 13, marginTop: 4 },
-  statusRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 12,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-  },
-  statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
-  statusText: { fontSize: 13, fontWeight: '600' },
-  nextButton: { backgroundColor: '#2ECC7120', paddingHorizontal: 14, paddingVertical: 7, borderRadius: 8 },
-  nextButtonText: { color: '#2ECC71', fontWeight: '600' },
-  emptyContainer: { alignItems: 'center', paddingTop: 60, gap: 12 },
-  emptyText: { color: '#aaa', fontSize: 16 },
-});

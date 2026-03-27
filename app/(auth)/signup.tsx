@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   ScrollView,
   Alert,
 } from 'react-native';
@@ -43,45 +42,55 @@ export default function SignupScreen() {
 
   if (completed) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
+      <View className="flex-1 justify-center items-center p-6">
         <Text style={{ fontSize: 28, marginBottom: 12 }}>🌸</Text>
         <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 8 }}>회원가입 완료!</Text>
         <Text style={{ color: '#666', marginBottom: 40 }}>로그인 후 꽃시장을 이용하세요.</Text>
         <TouchableOpacity
-          style={{ backgroundColor: '#FF6B9D', borderRadius: 12, padding: 16, width: '100%', alignItems: 'center' }}
+          className="bg-primary rounded-xl p-4 w-full items-center"
           onPress={() => router.replace('/(auth)/login')}
         >
-          <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>로그인하기</Text>
+          <Text className="text-white text-base font-semibold">로그인하기</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.inner}>
-      <Text style={styles.title}>회원가입</Text>
+    <ScrollView className="flex-1 bg-white" contentContainerStyle={{ padding: 24, paddingTop: 60 }}>
+      <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 32 }}>회원가입</Text>
 
-      <Text style={styles.label}>회원 유형</Text>
-      <View style={styles.roleContainer}>
+      <Text className="text-sm mb-1 mt-3" style={{ color: '#666' }}>회원 유형</Text>
+      <View className="flex-row gap-3">
         {(['buyer', 'seller'] as UserRole[]).map((r) => (
           <TouchableOpacity
             key={r}
-            style={[styles.roleButton, role === r && styles.roleButtonActive]}
+            className="flex-1 items-center rounded-xl border"
+            style={[
+              { padding: 14, borderColor: role === r ? '#FF6B9D' : '#ddd', backgroundColor: role === r ? '#FFF0F5' : '#fff' },
+            ]}
             onPress={() => setRole(r)}
           >
-            <Text style={[styles.roleText, role === r && styles.roleTextActive]}>
+            <Text style={[{ fontSize: 15, color: role === r ? '#FF6B9D' : '#666' }, role === r && { fontWeight: '600' }]}>
               {r === 'buyer' ? '🛒 구매자' : '🌺 판매자'}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text style={styles.label}>이름</Text>
-      <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="이름 입력" />
-
-      <Text style={styles.label}>이메일</Text>
+      <Text className="text-sm mb-1 mt-3" style={{ color: '#666' }}>이름</Text>
       <TextInput
-        style={styles.input}
+        className="border rounded-xl text-base"
+        style={{ borderColor: '#ddd', padding: 14 }}
+        value={name}
+        onChangeText={setName}
+        placeholder="이름 입력"
+      />
+
+      <Text className="text-sm mb-1 mt-3" style={{ color: '#666' }}>이메일</Text>
+      <TextInput
+        className="border rounded-xl text-base"
+        style={{ borderColor: '#ddd', padding: 14 }}
         value={email}
         onChangeText={setEmail}
         placeholder="이메일 입력"
@@ -89,18 +98,20 @@ export default function SignupScreen() {
         autoCapitalize="none"
       />
 
-      <Text style={styles.label}>비밀번호</Text>
+      <Text className="text-sm mb-1 mt-3" style={{ color: '#666' }}>비밀번호</Text>
       <TextInput
-        style={styles.input}
+        className="border rounded-xl text-base"
+        style={{ borderColor: '#ddd', padding: 14 }}
         value={password}
         onChangeText={setPassword}
         placeholder="비밀번호 입력 (6자 이상)"
         secureTextEntry
       />
 
-      <Text style={styles.label}>전화번호</Text>
+      <Text className="text-sm mb-1 mt-3" style={{ color: '#666' }}>전화번호</Text>
       <TextInput
-        style={styles.input}
+        className="border rounded-xl text-base"
+        style={{ borderColor: '#ddd', padding: 14 }}
         value={phone}
         onChangeText={setPhone}
         placeholder="010-0000-0000"
@@ -108,53 +119,17 @@ export default function SignupScreen() {
       />
 
       <TouchableOpacity
-        style={[styles.button, loading && styles.buttonDisabled]}
+        className="bg-primary rounded-xl p-4 items-center mt-8"
+        style={loading ? { opacity: 0.6 } : undefined}
         onPress={handleSignup}
         disabled={loading}
       >
-        <Text style={styles.buttonText}>{loading ? '처리 중...' : '회원가입'}</Text>
+        <Text className="text-white text-base font-semibold">{loading ? '처리 중...' : '회원가입'}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.replace('/(auth)/login')} style={styles.backButton}>
-        <Text style={styles.backText}>이미 계정이 있으신가요? 로그인</Text>
+      <TouchableOpacity onPress={() => router.replace('/(auth)/login')} className="items-center mt-4">
+        <Text className="text-primary">이미 계정이 있으신가요? 로그인</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  inner: { padding: 24, paddingTop: 60 },
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 32 },
-  label: { fontSize: 14, color: '#666', marginBottom: 6, marginTop: 12 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 16,
-  },
-  roleContainer: { flexDirection: 'row', gap: 12 },
-  roleButton: {
-    flex: 1,
-    padding: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    alignItems: 'center',
-  },
-  roleButtonActive: { borderColor: '#FF6B9D', backgroundColor: '#FFF0F5' },
-  roleText: { fontSize: 15, color: '#666' },
-  roleTextActive: { color: '#FF6B9D', fontWeight: '600' },
-  button: {
-    backgroundColor: '#FF6B9D',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 32,
-  },
-  buttonDisabled: { opacity: 0.6 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  backButton: { alignItems: 'center', marginTop: 16 },
-  backText: { color: '#FF6B9D' },
-});

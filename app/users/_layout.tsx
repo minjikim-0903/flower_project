@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { Home, BookOpen, Settings } from 'lucide-react-native';
 
 export default function UsersLayout() {
   return (
@@ -25,7 +25,7 @@ export default function UsersLayout() {
         options={{
           title: '홈',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+            <Home size={size} color={color} />
           ),
         }}
       />
@@ -34,7 +34,7 @@ export default function UsersLayout() {
         options={{
           title: '꽃사전',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="book-outline" size={size} color={color} />
+            <BookOpen size={size} color={color} />
           ),
         }}
       />
@@ -43,7 +43,7 @@ export default function UsersLayout() {
         options={{
           title: '설정',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
+            <Settings size={size} color={color} />
           ),
         }}
       />

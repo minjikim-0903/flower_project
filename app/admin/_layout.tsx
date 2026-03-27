@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { LayoutGrid, Store, Users } from 'lucide-react-native';
 
 export default function AdminLayout() {
   return (
@@ -16,7 +16,7 @@ export default function AdminLayout() {
         options={{
           title: '대시보드',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="grid-outline" size={size} color={color} />
+            <LayoutGrid size={size} color={color} />
           ),
         }}
       />
@@ -25,7 +25,7 @@ export default function AdminLayout() {
         options={{
           title: '판매자',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="storefront-outline" size={size} color={color} />
+            <Store size={size} color={color} />
           ),
         }}
       />
@@ -34,7 +34,7 @@ export default function AdminLayout() {
         options={{
           title: '구매자',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="people-outline" size={size} color={color} />
+            <Users size={size} color={color} />
           ),
         }}
       />

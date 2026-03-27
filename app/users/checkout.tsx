@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
   ScrollView,
@@ -72,36 +71,54 @@ export default function CheckoutScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView className="flex-1 bg-background">
+      <View className="flex-row justify-between items-center p-4 bg-white">
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.back}>← 뒤로</Text>
+          <Text className="text-primary text-base">← 뒤로</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>주문서 작성</Text>
+        <Text className="text-lg font-bold">주문서 작성</Text>
         <View />
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>주문 유형</Text>
-          <View style={[styles.badge, { backgroundColor: orderType === 'wholesale' ? '#FF6B9D20' : '#6B9DFF20' }]}>
+        <View className="bg-white rounded-2xl p-4">
+          <Text className="font-semibold text-base mb-3">주문 유형</Text>
+          <View
+            className="rounded-lg self-start"
+            style={{
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              backgroundColor: orderType === 'wholesale' ? '#FF6B9D20' : '#6B9DFF20',
+            }}
+          >
             <Text style={{ color: orderType === 'wholesale' ? '#FF6B9D' : '#6B9DFF', fontWeight: '600' }}>
               {orderType === 'wholesale' ? '🏭 도매 주문' : '🛒 소매 주문'}
             </Text>
           </View>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>배송 날짜 선택</Text>
+        <View className="bg-white rounded-2xl p-4">
+          <Text className="font-semibold text-base mb-3">배송 날짜 선택</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.dateRow}>
+            <View className="flex-row gap-2">
               {availableDates.map((d) => (
                 <TouchableOpacity
                   key={d.value}
-                  style={[styles.dateChip, selectedDate === d.value && styles.dateChipActive]}
+                  className="border"
+                  style={[
+                    { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20 },
+                    selectedDate === d.value
+                      ? { borderColor: '#FF6B9D', backgroundColor: '#FF6B9D' }
+                      : { borderColor: '#ddd', backgroundColor: '#fff' },
+                  ]}
                   onPress={() => setSelectedDate(d.value)}
                 >
-                  <Text style={[styles.dateText, selectedDate === d.value && styles.dateTextActive]}>
+                  <Text
+                    style={{
+                      color: selectedDate === d.value ? '#fff' : '#555',
+                      fontWeight: selectedDate === d.value ? '600' : undefined,
+                    }}
+                  >
                     {d.label}
                   </Text>
                 </TouchableOpacity>
@@ -110,10 +127,11 @@ export default function CheckoutScreen() {
           </ScrollView>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>배송 주소</Text>
+        <View className="bg-white rounded-2xl p-4">
+          <Text className="font-semibold text-base mb-3">배송 주소</Text>
           <TextInput
-            style={styles.input}
+            className="border rounded-lg"
+            style={{ borderColor: '#ddd', padding: 12, fontSize: 15, minHeight: 44 }}
             value={deliveryAddress}
             onChangeText={setDeliveryAddress}
             placeholder="배송받을 주소를 입력해주세요"
@@ -121,24 +139,25 @@ export default function CheckoutScreen() {
           />
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>배송 메모 (선택)</Text>
+        <View className="bg-white rounded-2xl p-4">
+          <Text className="font-semibold text-base mb-3">배송 메모 (선택)</Text>
           <TextInput
-            style={styles.input}
+            className="border rounded-lg"
+            style={{ borderColor: '#ddd', padding: 12, fontSize: 15, minHeight: 44 }}
             value={deliveryMemo}
             onChangeText={setDeliveryMemo}
             placeholder="예: 경비실에 맡겨주세요"
           />
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>주문 상품 ({items.length}개)</Text>
+        <View className="bg-white rounded-2xl p-4">
+          <Text className="font-semibold text-base mb-3">주문 상품 ({items.length}개)</Text>
           {items.map((item) => {
             const price = orderType === 'wholesale' ? item.product.wholesale_price : item.product.retail_price;
             return (
-              <View key={item.product.id} style={styles.orderItem}>
-                <Text style={styles.orderItemName}>{item.product.name}</Text>
-                <Text style={styles.orderItemPrice}>
+              <View key={item.product.id} className="flex-row justify-between" style={{ paddingVertical: 6 }}>
+                <Text style={{ fontSize: 15 }}>{item.product.name}</Text>
+                <Text style={{ color: '#666' }}>
                   {item.quantity}{item.product.unit} × {price.toLocaleString()}원
                 </Text>
               </View>
@@ -147,26 +166,26 @@ export default function CheckoutScreen() {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
-        <View style={styles.feeBreakdown}>
-          <View style={styles.feeRow}>
-            <Text style={styles.feeLabel}>상품 합계</Text>
-            <Text style={styles.feeValue}>{totalPrice.toLocaleString()}원</Text>
+      <View className="bg-white p-5 border-t border-border">
+        <View style={{ marginBottom: 10, gap: 4 }}>
+          <View className="flex-row justify-between">
+            <Text style={{ fontSize: 13, color: '#888' }}>상품 합계</Text>
+            <Text style={{ fontSize: 13, color: '#555' }}>{totalPrice.toLocaleString()}원</Text>
           </View>
-          <View style={styles.feeRow}>
-            <Text style={styles.feeLabel}>PG·플랫폼 수수료</Text>
-            <Text style={styles.feeNote}>판매자 부담</Text>
+          <View className="flex-row justify-between">
+            <Text style={{ fontSize: 13, color: '#888' }}>PG·플랫폼 수수료</Text>
+            <Text style={{ fontSize: 13, color: '#aaa' }}>판매자 부담</Text>
           </View>
         </View>
-        <View style={styles.totalRow}>
-          <Text style={styles.totalLabel}>총 결제금액</Text>
-          <Text style={styles.totalPrice}>{totalPrice.toLocaleString()}원</Text>
+        <View className="flex-row justify-between mb-3">
+          <Text className="text-base" style={{ color: '#666' }}>총 결제금액</Text>
+          <Text className="text-primary font-bold" style={{ fontSize: 20 }}>{totalPrice.toLocaleString()}원</Text>
         </View>
         <TouchableOpacity
-          style={styles.orderButton}
+          className="bg-primary rounded-xl p-4 items-center"
           onPress={handleOrder}
         >
-          <Text style={styles.orderButtonText}>
+          <Text className="text-white text-base font-bold">
             {totalPrice.toLocaleString()}원 결제하기
           </Text>
         </TouchableOpacity>
@@ -174,48 +193,3 @@ export default function CheckoutScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8f8f8' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, backgroundColor: '#fff' },
-  back: { color: '#FF6B9D', fontSize: 16 },
-  title: { fontSize: 18, fontWeight: 'bold' },
-  section: { backgroundColor: '#fff', borderRadius: 16, padding: 16 },
-  sectionTitle: { fontWeight: '600', fontSize: 16, marginBottom: 12 },
-  badge: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, alignSelf: 'flex-start' },
-  dateRow: { flexDirection: 'row', gap: 8 },
-  dateChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#fff',
-  },
-  dateChipActive: { borderColor: '#FF6B9D', backgroundColor: '#FF6B9D' },
-  dateText: { color: '#555' },
-  dateTextActive: { color: '#fff', fontWeight: '600' },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 15,
-    minHeight: 44,
-  },
-  orderItem: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6 },
-  orderItemName: { fontSize: 15 },
-  orderItemPrice: { color: '#666' },
-  footer: { backgroundColor: '#fff', padding: 20, borderTopWidth: 1, borderTopColor: '#f0f0f0' },
-  totalRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 14 },
-  totalLabel: { fontSize: 16, color: '#666' },
-  totalPrice: { fontSize: 20, fontWeight: 'bold', color: '#FF6B9D' },
-  feeBreakdown: { marginBottom: 10, gap: 4 },
-  feeRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  feeLabel: { fontSize: 13, color: '#888' },
-  feeValue: { fontSize: 13, color: '#555' },
-  feeNote: { fontSize: 13, color: '#aaa' },
-  orderButton: { backgroundColor: '#FF6B9D', borderRadius: 12, padding: 16, alignItems: 'center' },
-  orderButtonDisabled: { opacity: 0.6 },
-  orderButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
-});

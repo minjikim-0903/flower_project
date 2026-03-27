@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { Store, Flower2, List, User } from 'lucide-react-native';
 
 export default function SellerLayout() {
   return (
@@ -20,7 +20,7 @@ export default function SellerLayout() {
         options={{
           title: '내 가게',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="storefront-outline" size={size} color={color} />
+            <Store size={size} color={color} />
           ),
         }}
       />
@@ -29,7 +29,7 @@ export default function SellerLayout() {
         options={{
           title: '판매상품',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="flower-outline" size={size} color={color} />
+            <Flower2 size={size} color={color} />
           ),
         }}
       />
@@ -38,7 +38,7 @@ export default function SellerLayout() {
         options={{
           title: '주문',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list-outline" size={size} color={color} />
+            <List size={size} color={color} />
           ),
         }}
       />
@@ -47,7 +47,7 @@ export default function SellerLayout() {
         options={{
           title: '내 정보',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
+            <User size={size} color={color} />
           ),
         }}
       />

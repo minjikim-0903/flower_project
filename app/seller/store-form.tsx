@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
   ScrollView,
@@ -105,56 +104,77 @@ export default function StoreFormScreen() {
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} color="#2ECC71" />;
 
+  const inputStyle = {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 15,
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView className="flex-1 bg-background">
+      <View
+        className="flex-row justify-between items-center p-4 bg-white border-b border-border"
+      >
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.headerCancel}>취소</Text>
+          <Text style={{ color: '#888', fontSize: 15 }}>취소</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{store ? '가게 수정' : '가게 등록'}</Text>
+        <Text className="font-bold" style={{ fontSize: 17 }}>{store ? '가게 수정' : '가게 등록'}</Text>
         <TouchableOpacity onPress={handleSave} disabled={saving}>
-          <Text style={[styles.headerAction, saving && { opacity: 0.5 }]}>
+          <Text style={[{ color: '#2ECC71', fontWeight: '700', fontSize: 15 }, saving && { opacity: 0.5 }]}>
             {saving ? '저장 중...' : '완료'}
           </Text>
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={styles.body}>
-        <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
+      <ScrollView contentContainerStyle={{ padding: 16, gap: 14 }}>
+        <TouchableOpacity className="rounded-2xl overflow-hidden" onPress={pickImage}>
           {imageUri ? (
-            <Image source={{ uri: imageUri }} style={styles.storeImage} />
+            <Image source={{ uri: imageUri }} style={{ width: '100%', height: 200 }} />
           ) : (
-            <View style={styles.imagePlaceholder}>
+            <View
+              className="w-full justify-center items-center border-2"
+              style={{
+                height: 160,
+                backgroundColor: '#f5f5f5',
+                borderRadius: 16,
+                borderColor: '#ddd',
+                borderStyle: 'dashed',
+                gap: 8,
+              }}
+            >
               <Text style={{ fontSize: 32 }}>📸</Text>
-              <Text style={styles.imagePlaceholderText}>가게 사진 등록</Text>
+              <Text style={{ color: '#aaa', fontSize: 14 }}>가게 사진 등록</Text>
             </View>
           )}
         </TouchableOpacity>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>가게명 *</Text>
+        <View className="gap-1">
+          <Text className="font-semibold text-sm" style={{ color: '#555' }}>가게명 *</Text>
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.name}
             onChangeText={(v) => setForm({ ...form, name: v })}
             placeholder="예: 서울꽃도매"
           />
         </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>주소 *</Text>
+        <View className="gap-1">
+          <Text className="font-semibold text-sm" style={{ color: '#555' }}>주소 *</Text>
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.address}
             onChangeText={(v) => setForm({ ...form, address: v })}
             placeholder="예: 서울시 강남구 양재동 화훼공판장"
           />
         </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>사업자등록번호</Text>
+        <View className="gap-1">
+          <Text className="font-semibold text-sm" style={{ color: '#555' }}>사업자등록번호</Text>
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.business_number}
             onChangeText={(v) => setForm({ ...form, business_number: v })}
             placeholder="예: 123-45-67890"
@@ -162,10 +182,10 @@ export default function StoreFormScreen() {
           />
         </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>최소 주문금액 (원)</Text>
+        <View className="gap-1">
+          <Text className="font-semibold text-sm" style={{ color: '#555' }}>최소 주문금액 (원)</Text>
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.min_order_amount}
             onChangeText={(v) => setForm({ ...form, min_order_amount: v })}
             placeholder="예: 50000"
@@ -173,10 +193,10 @@ export default function StoreFormScreen() {
           />
         </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>가게 소개</Text>
+        <View className="gap-1">
+          <Text className="font-semibold text-sm" style={{ color: '#555' }}>가게 소개</Text>
           <TextInput
-            style={[styles.input, styles.textarea]}
+            style={[inputStyle, { minHeight: 100, textAlignVertical: 'top' }]}
             value={form.description}
             onChangeText={(v) => setForm({ ...form, description: v })}
             placeholder="가게 소개글을 입력해주세요"
@@ -187,46 +207,3 @@ export default function StoreFormScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8f8f8' },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  headerCancel: { color: '#888', fontSize: 15 },
-  headerTitle: { fontWeight: 'bold', fontSize: 17 },
-  headerAction: { color: '#2ECC71', fontWeight: '700', fontSize: 15 },
-  body: { padding: 16, gap: 14 },
-  imagePicker: { borderRadius: 16, overflow: 'hidden' },
-  storeImage: { width: '100%', height: 200 },
-  imagePlaceholder: {
-    width: '100%',
-    height: 160,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#ddd',
-    borderStyle: 'dashed',
-    gap: 8,
-  },
-  imagePlaceholderText: { color: '#aaa', fontSize: 14 },
-  field: { gap: 6 },
-  label: { fontWeight: '600', color: '#555', fontSize: 14 },
-  input: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 15,
-  },
-  textarea: { minHeight: 100, textAlignVertical: 'top' },
-});

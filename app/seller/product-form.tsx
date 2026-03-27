@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TextInput,
   TouchableOpacity,
@@ -131,7 +130,7 @@ const STEPS = ['기본 정보', '판매 조건', '배송 정보', '일정 & 추�
 
 function SectionLabel({ text, required }: { text: string; required?: boolean }) {
   return (
-    <Text style={styles.label}>
+    <Text className="font-semibold text-sm" style={{ color: '#555', marginTop: 6 }}>
       {text}
       {required && <Text style={{ color: '#E74747' }}> *</Text>}
     </Text>
@@ -153,7 +152,7 @@ function ChipSelect({
     typeof o === 'string' ? { value: o, label: o } : o,
   );
   return (
-    <View style={styles.chipRow}>
+    <View className="flex-row flex-wrap gap-2">
       {normalized.map((o) => {
         const active = multi
           ? (selected as string[]).includes(o.value)
@@ -161,10 +160,18 @@ function ChipSelect({
         return (
           <TouchableOpacity
             key={o.value}
-            style={[styles.chip, active && styles.chipActive]}
+            className="border"
+            style={[
+              { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20 },
+              active
+                ? { borderColor: '#2ECC71', backgroundColor: '#2ECC71' }
+                : { borderColor: '#ddd', backgroundColor: '#fff' },
+            ]}
             onPress={() => onToggle(o.value)}
           >
-            <Text style={[styles.chipText, active && styles.chipTextActive]}>{o.label}</Text>
+            <Text style={[{ color: active ? '#fff' : '#555', fontSize: 13 }, active && { fontWeight: '600' }]}>
+              {o.label}
+            </Text>
           </TouchableOpacity>
         );
       })}
@@ -173,7 +180,7 @@ function ChipSelect({
 }
 
 function Row({ children }: { children: React.ReactNode }) {
-  return <View style={styles.row2}>{children}</View>;
+  return <View className="flex-row gap-2 items-end">{children}</View>;
 }
 
 // ─── 메인 컴포넌트 ────────────────────────────────────────────────────────────
@@ -289,23 +296,54 @@ export default function ProductFormScreen() {
 
   // ─── 각 스텝 렌더 ──────────────────────────────────────────────────────────
 
+  const inputStyle = {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    padding: 12,
+    fontSize: 15,
+    backgroundColor: '#fafafa',
+  };
+
   const renderStep1 = () => (
     <>
       <SectionLabel text="상품 종류" required />
-      <View style={styles.typeRow}>
+      <View className="flex-row gap-3">
         <TouchableOpacity
-          style={[styles.typeBtn, form.product_type === 'fresh_flower' && styles.typeBtnPink]}
+          className="flex-1 items-center border rounded-xl"
+          style={[
+            { padding: 14 },
+            form.product_type === 'fresh_flower'
+              ? { borderColor: '#FF6B9D', backgroundColor: '#FFF0F5' }
+              : { borderColor: '#ddd' },
+          ]}
           onPress={() => handleTypeChange('fresh_flower')}
         >
-          <Text style={[styles.typeBtnText, form.product_type === 'fresh_flower' && styles.typeBtnTextActive]}>
+          <Text
+            style={[
+              { fontSize: 15, color: '#666' },
+              form.product_type === 'fresh_flower' && { fontWeight: '700' },
+            ]}
+          >
             🌸 생화
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.typeBtn, form.product_type === 'tree' && styles.typeBtnGreen]}
+          className="flex-1 items-center border rounded-xl"
+          style={[
+            { padding: 14 },
+            form.product_type === 'tree'
+              ? { borderColor: '#2ECC71', backgroundColor: '#F0FFF4' }
+              : { borderColor: '#ddd' },
+          ]}
           onPress={() => handleTypeChange('tree')}
         >
-          <Text style={[styles.typeBtnText, form.product_type === 'tree' && styles.typeBtnTextActive]}>
+          <Text
+            style={[
+              { fontSize: 15, color: '#666' },
+              form.product_type === 'tree' && { fontWeight: '700' },
+            ]}
+          >
             🌳 나무
           </Text>
         </TouchableOpacity>
@@ -317,10 +355,21 @@ export default function ProductFormScreen() {
           {currentCategories.map((c) => (
             <TouchableOpacity
               key={c.value}
-              style={[styles.chip, form.category === c.value && styles.chipActive]}
+              className="border"
+              style={[
+                { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20 },
+                form.category === c.value
+                  ? { borderColor: '#2ECC71', backgroundColor: '#2ECC71' }
+                  : { borderColor: '#ddd', backgroundColor: '#fff' },
+              ]}
               onPress={() => set('category', c.value)}
             >
-              <Text style={[styles.chipText, form.category === c.value && styles.chipTextActive]}>
+              <Text
+                style={[
+                  { color: form.category === c.value ? '#fff' : '#555', fontSize: 13 },
+                  form.category === c.value && { fontWeight: '600' },
+                ]}
+              >
                 {c.label}
               </Text>
             </TouchableOpacity>
@@ -330,7 +379,7 @@ export default function ProductFormScreen() {
 
       <SectionLabel text="품명" required />
       <TextInput
-        style={styles.input}
+        style={inputStyle}
         value={form.name}
         onChangeText={(v) => set('name', v)}
         placeholder="예: 레드 장미 20송이"
@@ -345,7 +394,7 @@ export default function ProductFormScreen() {
         />
       )}
       <TextInput
-        style={[styles.input, { marginTop: 6 }]}
+        style={[inputStyle, { marginTop: 6 }]}
         value={form.variety}
         onChangeText={(v) => set('variety', v)}
         placeholder="직접 입력 (예: 오하라, 엘레강스)"
@@ -368,7 +417,7 @@ export default function ProductFormScreen() {
 
       <SectionLabel text="개화 시기" />
       <TextInput
-        style={styles.input}
+        style={inputStyle}
         value={form.blooming_season}
         onChangeText={(v) => set('blooming_season', v)}
         placeholder="예: 3월~5월, 연중"
@@ -383,15 +432,18 @@ export default function ProductFormScreen() {
 
       <SectionLabel text="특징" />
       <TextInput
-        style={[styles.input, styles.multiline]}
+        style={[inputStyle, { minHeight: 80, textAlignVertical: 'top' }]}
         value={form.characteristics}
         onChangeText={(v) => set('characteristics', v)}
         multiline
         placeholder="예: 꽃잎이 풍성하고 향기가 좋음"
       />
 
-      <View style={styles.switchRow}>
-        <Text style={styles.switchLabel}>가시 있음</Text>
+      <View
+        className="flex-row justify-between items-center border rounded-lg"
+        style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 12, borderColor: '#ddd', marginTop: 6 }}
+      >
+        <Text style={{ fontSize: 15, color: '#333' }}>가시 있음</Text>
         <Switch
           value={form.has_thorns}
           onValueChange={(v) => set('has_thorns', v)}
@@ -399,8 +451,11 @@ export default function ProductFormScreen() {
         />
       </View>
 
-      <View style={styles.switchRow}>
-        <Text style={styles.switchLabel}>향기 있음</Text>
+      <View
+        className="flex-row justify-between items-center border rounded-lg"
+        style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 12, borderColor: '#ddd', marginTop: 6 }}
+      >
+        <Text style={{ fontSize: 15, color: '#333' }}>향기 있음</Text>
         <Switch
           value={form.has_fragrance}
           onValueChange={(v) => set('has_fragrance', v)}
@@ -416,7 +471,7 @@ export default function ProductFormScreen() {
         <View style={{ flex: 1 }}>
           <SectionLabel text="소매가 (원)" required />
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.retail_price}
             onChangeText={(v) => set('retail_price', v)}
             keyboardType="numeric"
@@ -426,7 +481,7 @@ export default function ProductFormScreen() {
         <View style={{ flex: 1 }}>
           <SectionLabel text="도매가 (원)" required />
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.wholesale_price}
             onChangeText={(v) => set('wholesale_price', v)}
             keyboardType="numeric"
@@ -439,7 +494,7 @@ export default function ProductFormScreen() {
         <View style={{ flex: 1 }}>
           <SectionLabel text="최소주문수량" />
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.min_order_quantity}
             onChangeText={(v) => set('min_order_quantity', v)}
             keyboardType="numeric"
@@ -448,7 +503,7 @@ export default function ProductFormScreen() {
         <View style={{ flex: 1 }}>
           <SectionLabel text="최소도매수량" />
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.min_wholesale_quantity}
             onChangeText={(v) => set('min_wholesale_quantity', v)}
             keyboardType="numeric"
@@ -460,7 +515,7 @@ export default function ProductFormScreen() {
         <View style={{ flex: 1 }}>
           <SectionLabel text="단위" />
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.unit}
             onChangeText={(v) => set('unit', v)}
             placeholder="단, 박스, 그루"
@@ -469,7 +524,7 @@ export default function ProductFormScreen() {
         <View style={{ flex: 1 }}>
           <SectionLabel text="재고수량" />
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.stock}
             onChangeText={(v) => set('stock', v)}
             keyboardType="numeric"
@@ -482,7 +537,7 @@ export default function ProductFormScreen() {
       <Row>
         <View style={{ flex: 1 }}>
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.sale_start_date}
             onChangeText={(v) => set('sale_start_date', v)}
             placeholder="시작 YYYY-MM-DD"
@@ -490,7 +545,7 @@ export default function ProductFormScreen() {
         </View>
         <View style={{ flex: 1 }}>
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.sale_end_date}
             onChangeText={(v) => set('sale_end_date', v)}
             placeholder="종료 YYYY-MM-DD"
@@ -500,8 +555,12 @@ export default function ProductFormScreen() {
 
       <SectionLabel text="대량할인 조건" />
       {form.bulk_discount_conditions.map((d, i) => (
-        <View key={i} style={styles.bulkRow}>
-          <Text style={styles.bulkText}>
+        <View
+          key={i}
+          className="flex-row justify-between items-center rounded-lg"
+          style={{ backgroundColor: '#F0FFF4', padding: 10, marginBottom: 4 }}
+        >
+          <Text style={{ color: '#2ECC71', fontWeight: '600' }}>
             {d.min_quantity}개 이상 → {d.discount_rate}% 할인
           </Text>
           <TouchableOpacity onPress={() => removeBulkDiscount(i)}>
@@ -512,7 +571,7 @@ export default function ProductFormScreen() {
       <Row>
         <View style={{ flex: 1 }}>
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={bulkInput.min_quantity}
             onChangeText={(v) => setBulkInput((b) => ({ ...b, min_quantity: v }))}
             keyboardType="numeric"
@@ -521,15 +580,19 @@ export default function ProductFormScreen() {
         </View>
         <View style={{ flex: 1 }}>
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={bulkInput.discount_rate}
             onChangeText={(v) => setBulkInput((b) => ({ ...b, discount_rate: v }))}
             keyboardType="numeric"
             placeholder="할인율 (%)"
           />
         </View>
-        <TouchableOpacity style={styles.addRowBtn} onPress={addBulkDiscount}>
-          <Text style={{ color: '#fff', fontWeight: '700' }}>추가</Text>
+        <TouchableOpacity
+          className="bg-seller rounded-lg items-center justify-center"
+          style={{ padding: 12 }}
+          onPress={addBulkDiscount}
+        >
+          <Text className="text-white font-bold">추가</Text>
         </TouchableOpacity>
       </Row>
     </>
@@ -539,7 +602,7 @@ export default function ProductFormScreen() {
     <>
       <SectionLabel text="출하지 (산지)" />
       <TextInput
-        style={styles.input}
+        style={inputStyle}
         value={form.origin}
         onChangeText={(v) => set('origin', v)}
         placeholder="예: 경남 진주, 전북 익산"
@@ -565,7 +628,7 @@ export default function ProductFormScreen() {
         <View style={{ flex: 1 }}>
           <SectionLabel text="배송 소요일" />
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.shipping_days_required}
             onChangeText={(v) => set('shipping_days_required', v)}
             placeholder="예: 주문 후 익일"
@@ -574,7 +637,7 @@ export default function ProductFormScreen() {
         <View style={{ flex: 1 }}>
           <SectionLabel text="배송비 (원)" />
           <TextInput
-            style={styles.input}
+            style={inputStyle}
             value={form.shipping_fee}
             onChangeText={(v) => set('shipping_fee', v)}
             keyboardType="numeric"
@@ -585,14 +648,17 @@ export default function ProductFormScreen() {
 
       <SectionLabel text="주문 마감 시간" />
       <TextInput
-        style={styles.input}
+        style={inputStyle}
         value={form.order_cutoff_time}
         onChangeText={(v) => set('order_cutoff_time', v)}
         placeholder="예: 오후 2시"
       />
 
-      <View style={styles.switchRow}>
-        <Text style={styles.switchLabel}>보냉 포장</Text>
+      <View
+        className="flex-row justify-between items-center border rounded-lg"
+        style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 12, borderColor: '#ddd', marginTop: 6 }}
+      >
+        <Text style={{ fontSize: 15, color: '#333' }}>보냉 포장</Text>
         <Switch
           value={form.cold_packaging}
           onValueChange={(v) => set('cold_packaging', v)}
@@ -626,7 +692,7 @@ export default function ProductFormScreen() {
 
       <SectionLabel text="수확일" />
       <TextInput
-        style={styles.input}
+        style={inputStyle}
         value={form.harvest_date}
         onChangeText={(v) => set('harvest_date', v)}
         placeholder="YYYY-MM-DD"
@@ -651,7 +717,7 @@ export default function ProductFormScreen() {
 
       <SectionLabel text="유의사항" />
       <TextInput
-        style={[styles.input, styles.multiline]}
+        style={[inputStyle, { minHeight: 80, textAlignVertical: 'top' }]}
         value={form.notes}
         onChangeText={(v) => set('notes', v)}
         multiline
@@ -665,16 +731,18 @@ export default function ProductFormScreen() {
   // ─── 렌더 ──────────────────────────────────────────────────────────────────
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-background">
       {/* 헤더 */}
-      <View style={styles.header}>
+      <View
+        className="flex-row justify-between items-center p-4 bg-white border-b border-border"
+      >
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.headerCancel}>취소</Text>
+          <Text style={{ color: '#888', fontSize: 15 }}>취소</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>상품 등록</Text>
+        <Text className="font-bold" style={{ fontSize: 17 }}>상품 등록</Text>
         {step === STEPS.length - 1 ? (
           <TouchableOpacity onPress={handleSubmit} disabled={submitting}>
-            <Text style={[styles.headerAction, submitting && { opacity: 0.5 }]}>
+            <Text style={[{ color: '#2ECC71', fontWeight: '700', fontSize: 15 }, submitting && { opacity: 0.5 }]}>
               {submitting ? '저장 중...' : '완료'}
             </Text>
           </TouchableOpacity>
@@ -684,15 +752,30 @@ export default function ProductFormScreen() {
       </View>
 
       {/* 스텝 인디케이터 */}
-      <View style={styles.stepBar}>
+      <View
+        className="flex-row bg-white border-b border-border"
+        style={{ paddingHorizontal: 12, paddingVertical: 12 }}
+      >
         {STEPS.map((s, i) => (
-          <View key={i} style={styles.stepItem}>
-            <View style={[styles.stepDot, i <= step && styles.stepDotActive]}>
-              <Text style={[styles.stepNum, i <= step && styles.stepNumActive]}>
+          <View key={i} className="flex-1 items-center gap-1">
+            <View
+              className="items-center justify-center"
+              style={[
+                { width: 24, height: 24, borderRadius: 12 },
+                i <= step ? { backgroundColor: '#2ECC71' } : { backgroundColor: '#e0e0e0' },
+              ]}
+            >
+              <Text style={[{ fontSize: 11, fontWeight: '700' }, i <= step ? { color: '#fff' } : { color: '#aaa' }]}>
                 {i + 1}
               </Text>
             </View>
-            <Text style={[styles.stepLabel, i === step && styles.stepLabelActive]} numberOfLines={1}>
+            <Text
+              style={[
+                { fontSize: 10, textAlign: 'center' },
+                i === step ? { color: '#2ECC71', fontWeight: '700' } : { color: '#aaa' },
+              ]}
+              numberOfLines={1}
+            >
               {s}
             </Text>
           </View>
@@ -700,179 +783,44 @@ export default function ProductFormScreen() {
       </View>
 
       {/* 폼 내용 */}
-      <ScrollView contentContainerStyle={styles.body}>
-        <Text style={styles.sectionTitle}>{STEPS[step]}</Text>
+      <ScrollView contentContainerStyle={{ padding: 16, gap: 10, paddingBottom: 32 }}>
+        <Text className="text-lg font-bold" style={{ color: '#222', marginBottom: 4 }}>{STEPS[step]}</Text>
         {stepRenderers[step]()}
       </ScrollView>
 
       {/* 이전 / 다음 버튼 */}
-      <View style={styles.footer}>
+      <View
+        className="flex-row gap-2 p-4 bg-white border-t border-border"
+      >
         {step > 0 && (
-          <TouchableOpacity style={styles.prevBtn} onPress={() => setStep((s) => s - 1)}>
-            <Text style={styles.prevBtnText}>이전</Text>
+          <TouchableOpacity
+            className="flex-1 items-center border rounded-xl"
+            style={{ padding: 14, borderColor: '#ddd' }}
+            onPress={() => setStep((s) => s - 1)}
+          >
+            <Text style={{ color: '#666', fontWeight: '600', fontSize: 15 }}>이전</Text>
           </TouchableOpacity>
         )}
         {step < STEPS.length - 1 && (
           <TouchableOpacity
-            style={[styles.nextBtn, step === 0 && { flex: 1 }]}
+            className="items-center rounded-xl"
+            style={[{ padding: 14, backgroundColor: '#333' }, step === 0 && { flex: 1 }, step > 0 && { flex: 2 }]}
             onPress={() => setStep((s) => s + 1)}
           >
-            <Text style={styles.nextBtnText}>다음</Text>
+            <Text className="text-white font-bold" style={{ fontSize: 15 }}>다음</Text>
           </TouchableOpacity>
         )}
         {step === STEPS.length - 1 && (
           <TouchableOpacity
-            style={[styles.nextBtn, { flex: 1, backgroundColor: '#2ECC71' }]}
+            className="flex-1 bg-seller items-center rounded-xl"
+            style={{ padding: 14 }}
             onPress={handleSubmit}
             disabled={submitting}
           >
-            <Text style={styles.nextBtnText}>{submitting ? '저장 중...' : '상품 등록 완료'}</Text>
+            <Text className="text-white font-bold" style={{ fontSize: 15 }}>{submitting ? '저장 중...' : '상품 등록 완료'}</Text>
           </TouchableOpacity>
         )}
       </View>
     </SafeAreaView>
   );
 }
-
-// ─── 스타일 ───────────────────────────────────────────────────────────────────
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8f8f8' },
-
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  headerCancel: { color: '#888', fontSize: 15 },
-  headerTitle: { fontWeight: 'bold', fontSize: 17 },
-  headerAction: { color: '#2ECC71', fontWeight: '700', fontSize: 15 },
-
-  stepBar: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  stepItem: { flex: 1, alignItems: 'center', gap: 4 },
-  stepDot: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#e0e0e0',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepDotActive: { backgroundColor: '#2ECC71' },
-  stepNum: { fontSize: 11, fontWeight: '700', color: '#aaa' },
-  stepNumActive: { color: '#fff' },
-  stepLabel: { fontSize: 10, color: '#aaa', textAlign: 'center' },
-  stepLabelActive: { color: '#2ECC71', fontWeight: '700' },
-
-  body: { padding: 16, gap: 10, paddingBottom: 32 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#222', marginBottom: 4 },
-
-  label: { fontWeight: '600', color: '#555', fontSize: 14, marginTop: 6 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 15,
-    backgroundColor: '#fafafa',
-  },
-  multiline: { minHeight: 80, textAlignVertical: 'top' },
-
-  typeRow: { flexDirection: 'row', gap: 12 },
-  typeBtn: {
-    flex: 1,
-    padding: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    alignItems: 'center',
-  },
-  typeBtnPink: { borderColor: '#FF6B9D', backgroundColor: '#FFF0F5' },
-  typeBtnGreen: { borderColor: '#2ECC71', backgroundColor: '#F0FFF4' },
-  typeBtnText: { fontSize: 15, color: '#666' },
-  typeBtnTextActive: { fontWeight: '700' },
-
-  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: {
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#fff',
-  },
-  chipActive: { borderColor: '#2ECC71', backgroundColor: '#2ECC71' },
-  chipText: { color: '#555', fontSize: 13 },
-  chipTextActive: { color: '#fff', fontWeight: '600' },
-
-  switchRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginTop: 6,
-  },
-  switchLabel: { fontSize: 15, color: '#333' },
-
-  row2: { flexDirection: 'row', gap: 10, alignItems: 'flex-end' },
-
-  bulkRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#F0FFF4',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 4,
-  },
-  bulkText: { color: '#2ECC71', fontWeight: '600' },
-  addRowBtn: {
-    backgroundColor: '#2ECC71',
-    borderRadius: 10,
-    padding: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  footer: {
-    flexDirection: 'row',
-    gap: 10,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-  },
-  prevBtn: {
-    flex: 1,
-    padding: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    alignItems: 'center',
-  },
-  prevBtnText: { color: '#666', fontWeight: '600', fontSize: 15 },
-  nextBtn: {
-    flex: 2,
-    padding: 14,
-    borderRadius: 12,
-    backgroundColor: '#333',
-    alignItems: 'center',
-  },
-  nextBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
-});

@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
@@ -66,16 +65,17 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      className="flex-1 bg-white"
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={styles.inner}>
-        <Text style={styles.logo}>🌸 꽃시장</Text>
-        <Text style={styles.subtitle}>꽃 도소매 플랫폼</Text>
+      <View className="flex-1 justify-center px-6">
+        <Text style={{ fontSize: 40, textAlign: 'center', marginBottom: 8 }}>🌸 꽃시장</Text>
+        <Text className="text-base text-center mb-10" style={{ color: '#666' }}>꽃 도소매 플랫폼</Text>
 
-        <View style={styles.fieldWrapper}>
+        <View className="mb-3">
           <TextInput
-            style={[styles.input, emailError ? styles.inputError : null]}
+            className={`border rounded-xl text-base${emailError ? ' border-error' : ''}`}
+            style={{ borderColor: emailError ? '#FF3B30' : '#ddd', padding: 14 }}
             placeholder="이메일"
             value={email}
             onChangeText={(v) => {
@@ -86,12 +86,13 @@ export default function LoginScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+          {emailError ? <Text className="text-error text-xs mt-1 ml-1">{emailError}</Text> : null}
         </View>
 
-        <View style={styles.fieldWrapper}>
+        <View className="mb-3">
           <TextInput
-            style={[styles.input, passwordError ? styles.inputError : null]}
+            className={`border rounded-xl text-base${passwordError ? ' border-error' : ''}`}
+            style={{ borderColor: passwordError ? '#FF3B30' : '#ddd', padding: 14 }}
             placeholder="비밀번호"
             value={password}
             onChangeText={(v) => {
@@ -101,22 +102,23 @@ export default function LoginScreen() {
             onBlur={() => validatePassword(password)}
             secureTextEntry
           />
-          {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+          {passwordError ? <Text className="text-error text-xs mt-1 ml-1">{passwordError}</Text> : null}
         </View>
 
         <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
+          className="bg-primary rounded-xl p-4 items-center mt-2"
+          style={loading ? { opacity: 0.6 } : undefined}
           onPress={handleLogin}
           disabled={loading}
         >
-          <Text style={styles.buttonText}>{loading ? '로그인 중...' : '로그인'}</Text>
+          <Text className="text-white text-base font-semibold">{loading ? '로그인 중...' : '로그인'}</Text>
         </TouchableOpacity>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>아직 계정이 없으신가요? </Text>
+        <View className="flex-row justify-center mt-6">
+          <Text style={{ color: '#666' }}>아직 계정이 없으신가요? </Text>
           <Link href="/(auth)/signup" asChild>
             <TouchableOpacity>
-              <Text style={styles.link}>회원가입</Text>
+              <Text className="text-primary font-semibold">회원가입</Text>
             </TouchableOpacity>
           </Link>
         </View>
@@ -124,32 +126,3 @@ export default function LoginScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  inner: { flex: 1, justifyContent: 'center', paddingHorizontal: 24 },
-  logo: { fontSize: 40, textAlign: 'center', marginBottom: 8 },
-  subtitle: { fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 40 },
-  fieldWrapper: { marginBottom: 12 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 16,
-  },
-  inputError: { borderColor: '#FF3B30' },
-  errorText: { color: '#FF3B30', fontSize: 12, marginTop: 4, marginLeft: 4 },
-  button: {
-    backgroundColor: '#FF6B9D',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  buttonDisabled: { opacity: 0.6 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 24 },
-  footerText: { color: '#666' },
-  link: { color: '#FF6B9D', fontWeight: '600' },
-});

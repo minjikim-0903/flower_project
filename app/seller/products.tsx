@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
@@ -137,25 +136,41 @@ export default function ProductsScreen() {
   if (loading) return <ActivityIndicator style={{ flex: 1 }} color="#2ECC71" />;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>상품 관리</Text>
+    <SafeAreaView className="flex-1 bg-background">
+      <View className="flex-row justify-between items-center p-5 bg-white">
+        <Text className="font-bold" style={{ fontSize: 22 }}>상품 관리</Text>
         <TouchableOpacity
-          style={styles.addButton}
+          className="bg-seller rounded-lg"
+          style={{ paddingHorizontal: 14, paddingVertical: 8 }}
           onPress={() => router.push('/seller/product-form')}
         >
-          <Text style={styles.addButtonText}>+ 추가</Text>
+          <Text className="text-white font-semibold">+ 추가</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.filterRow}>
+      <View
+        className="flex-row bg-white border-b border-border gap-2"
+        style={{ paddingHorizontal: 12, paddingVertical: 10 }}
+      >
         {([['all', '전체'], ['fresh_flower', '🌸 생화'], ['tree', '🌳 나무']] as const).map(([val, label]) => (
           <TouchableOpacity
             key={val}
-            style={[styles.filterTab, filterType === val && styles.filterTabActive]}
+            className="flex-1 items-center border"
+            style={[
+              { paddingVertical: 7, borderRadius: 20 },
+              filterType === val
+                ? { borderColor: '#2ECC71', backgroundColor: '#2ECC71' }
+                : { borderColor: '#ddd' },
+            ]}
             onPress={() => setFilterType(val)}
           >
-            <Text style={[styles.filterTabText, filterType === val && styles.filterTabTextActive]}>
+            <Text
+              style={{
+                color: filterType === val ? '#fff' : '#666',
+                fontSize: 13,
+                fontWeight: filterType === val ? '700' : undefined,
+              }}
+            >
               {label}
             </Text>
           </TouchableOpacity>
@@ -166,103 +181,63 @@ export default function ProductsScreen() {
         data={filtered}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.productCard}>
-            <View style={[
-              styles.typeDot,
-              item.product_type === 'fresh_flower' ? styles.typeDotPink : styles.typeDotGreen,
-            ]} />
-            <View style={styles.productInfo}>
-              <Text style={styles.productName}>{item.name}</Text>
-              <Text style={styles.productMeta}>
+          <View
+            className="bg-white rounded-xl flex-row items-center gap-2"
+            style={{ padding: 14 }}
+          >
+            <View
+              style={[
+                { width: 10, height: 10, borderRadius: 5 },
+                item.product_type === 'fresh_flower'
+                  ? { backgroundColor: '#FF6B9D' }
+                  : { backgroundColor: '#2ECC71' },
+              ]}
+            />
+            <View className="flex-1">
+              <Text className="text-sm font-semibold">{item.name}</Text>
+              <Text style={{ color: '#888', fontSize: 12, marginTop: 2 }}>
                 {item.product_type === 'fresh_flower' ? '생화' : '나무'} · {getCategoryLabel(item)}
                 {item.variety ? ` · ${item.variety}` : ''}
               </Text>
-              <Text style={styles.productPrice}>
+              <Text style={{ color: '#555', fontSize: 13, marginTop: 3 }}>
                 소매 {item.retail_price.toLocaleString()}원 / 도매 {item.wholesale_price.toLocaleString()}원
               </Text>
-              {item.origin ? <Text style={styles.productOrigin}>📍 {item.origin}</Text> : null}
+              {item.origin ? <Text style={{ color: '#999', fontSize: 11, marginTop: 2 }}>📍 {item.origin}</Text> : null}
             </View>
-            <View style={styles.actionCol}>
+            <View className="items-end gap-1">
               <TouchableOpacity
-                style={[styles.toggleButton, item.is_available ? styles.toggleOn : styles.toggleOff]}
+                className="rounded-lg"
+                style={[
+                  { paddingHorizontal: 12, paddingVertical: 6 },
+                  item.is_available ? { backgroundColor: '#2ECC7120' } : { backgroundColor: '#E7474720' },
+                ]}
                 onPress={() => handleToggle(item)}
               >
-                <Text style={[styles.toggleText, { color: item.is_available ? '#2ECC71' : '#E74747' }]}>
+                <Text
+                  style={{
+                    fontWeight: '600',
+                    fontSize: 13,
+                    color: item.is_available ? '#2ECC71' : '#E74747',
+                  }}
+                >
                   {item.is_available ? '판매중' : '판매중단'}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.deleteButton}
+                className="rounded-lg"
+                style={{ paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#E7474710' }}
                 onPress={() => handleDelete(item)}
               >
-                <Text style={styles.deleteText}>삭제</Text>
+                <Text style={{ color: '#E74747', fontWeight: '600', fontSize: 13 }}>삭제</Text>
               </TouchableOpacity>
             </View>
           </View>
         )}
         contentContainerStyle={{ padding: 12, gap: 8 }}
         ListEmptyComponent={
-          <Text style={styles.empty}>등록된 상품이 없습니다.</Text>
+          <Text style={{ textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 }}>등록된 상품이 없습니다.</Text>
         }
       />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8f8f8' },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: { fontSize: 22, fontWeight: 'bold' },
-  addButton: { backgroundColor: '#2ECC71', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 8 },
-  addButtonText: { color: '#fff', fontWeight: '600' },
-  filterRow: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    gap: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  filterTab: {
-    flex: 1,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    alignItems: 'center',
-  },
-  filterTabActive: { borderColor: '#2ECC71', backgroundColor: '#2ECC71' },
-  filterTabText: { color: '#666', fontSize: 13 },
-  filterTabTextActive: { color: '#fff', fontWeight: '700' },
-  productCard: {
-    backgroundColor: '#fff',
-    borderRadius: 14,
-    padding: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  typeDot: { width: 10, height: 10, borderRadius: 5 },
-  typeDotPink: { backgroundColor: '#FF6B9D' },
-  typeDotGreen: { backgroundColor: '#2ECC71' },
-  productInfo: { flex: 1 },
-  productName: { fontSize: 15, fontWeight: '600' },
-  productMeta: { color: '#888', fontSize: 12, marginTop: 2 },
-  productPrice: { color: '#555', fontSize: 13, marginTop: 3 },
-  productOrigin: { color: '#999', fontSize: 11, marginTop: 2 },
-  actionCol: { alignItems: 'flex-end', gap: 6 },
-  toggleButton: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
-  toggleOn: { backgroundColor: '#2ECC7120' },
-  toggleOff: { backgroundColor: '#E7474720' },
-  toggleText: { fontWeight: '600', fontSize: 13 },
-  deleteButton: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: '#E7474710' },
-  deleteText: { color: '#E74747', fontWeight: '600', fontSize: 13 },
-  empty: { textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 },
-});

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   TouchableOpacity,
   Image,
@@ -71,22 +70,23 @@ export default function BuyerHomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-background">
       <FlatList
         data={stores}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={
           <>
             {/* 헤더 */}
-            <View style={styles.header}>
-              <Text style={styles.greeting}>안녕하세요, {profile?.name}님 👋</Text>
-              <Text style={styles.subtitle}>오늘도 좋은 꽃을 만나보세요</Text>
+            <View style={{ paddingVertical: 20 }}>
+              <Text style={{ fontSize: 22, fontWeight: 'bold' }}>안녕하세요, {profile?.name}님 👋</Text>
+              <Text style={{ color: '#888', marginTop: 4 }}>오늘도 좋은 꽃을 만나보세요</Text>
             </View>
 
             {/* 검색 */}
-            <View style={styles.searchContainer}>
+            <View className="mb-3">
               <TextInput
-                style={styles.searchInput}
+                className="bg-white rounded-xl border"
+                style={{ padding: 12, fontSize: 15, borderColor: '#eee' }}
                 placeholder="가게 이름으로 검색"
                 value={search}
                 onChangeText={setSearch}
@@ -96,20 +96,59 @@ export default function BuyerHomeScreen() {
             </View>
 
             {/* 카테고리 탭 전환 */}
-            <View style={styles.tabRow}>
+            <View
+              className="flex-row mb-3 rounded-xl"
+              style={{ backgroundColor: '#efefef', padding: 3 }}
+            >
               <TouchableOpacity
-                style={[styles.tab, categoryTab === 'classification' && styles.tabActive]}
+                className="flex-1 items-center rounded-lg"
+                style={[
+                  { paddingVertical: 9 },
+                  categoryTab === 'classification'
+                    ? {
+                        backgroundColor: '#fff',
+                        shadowColor: '#000',
+                        shadowOpacity: 0.07,
+                        shadowRadius: 4,
+                        elevation: 2,
+                      }
+                    : undefined,
+                ]}
                 onPress={() => { setCategoryTab('classification'); setSelectedCategory(null); }}
               >
-                <Text style={[styles.tabText, categoryTab === 'classification' && styles.tabTextActive]}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: categoryTab === 'classification' ? '700' : '500',
+                    color: categoryTab === 'classification' ? '#FF6B9D' : '#999',
+                  }}
+                >
                   분류별
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.tab, categoryTab === 'use' && styles.tabActive]}
+                className="flex-1 items-center rounded-lg"
+                style={[
+                  { paddingVertical: 9 },
+                  categoryTab === 'use'
+                    ? {
+                        backgroundColor: '#fff',
+                        shadowColor: '#000',
+                        shadowOpacity: 0.07,
+                        shadowRadius: 4,
+                        elevation: 2,
+                      }
+                    : undefined,
+                ]}
                 onPress={() => { setCategoryTab('use'); setSelectedCategory(null); }}
               >
-                <Text style={[styles.tabText, categoryTab === 'use' && styles.tabTextActive]}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: categoryTab === 'use' ? '700' : '500',
+                    color: categoryTab === 'use' ? '#FF6B9D' : '#999',
+                  }}
+                >
                   용도별
                 </Text>
               </TouchableOpacity>
@@ -117,19 +156,34 @@ export default function BuyerHomeScreen() {
 
             {/* 분류별 — 3열 */}
             {categoryTab === 'classification' && (
-              <View style={styles.gridWrap}>
+              <View className="flex-row flex-wrap mb-5" style={{ gap: COL_GAP }}>
                 {CLASSIFICATION_CATEGORIES.map((item) => (
                   <TouchableOpacity
                     key={item.label}
                     style={[
-                      styles.gridBox,
-                      { width: col3Width, height: col3Width * 0.85 },
-                      selectedCategory === item.label && styles.gridBoxActive,
+                      {
+                        width: col3Width,
+                        height: col3Width * 0.85,
+                        backgroundColor: selectedCategory === item.label ? '#FFF0F5' : '#fff',
+                        borderRadius: 14,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 7,
+                        borderWidth: 1.5,
+                        borderColor: selectedCategory === item.label ? '#FF6B9D' : 'transparent',
+                      },
                     ]}
                     onPress={() => handleCategorySelect(item.label)}
                   >
-                    <Text style={styles.gridEmoji}>{item.emoji}</Text>
-                    <Text style={[styles.gridLabel, selectedCategory === item.label && styles.gridLabelActive]}>
+                    <Text style={{ fontSize: 24 }}>{item.emoji}</Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: selectedCategory === item.label ? '#FF6B9D' : '#555',
+                        fontWeight: selectedCategory === item.label ? '700' : '500',
+                        textAlign: 'center',
+                      }}
+                    >
                       {item.label}
                     </Text>
                   </TouchableOpacity>
@@ -139,19 +193,34 @@ export default function BuyerHomeScreen() {
 
             {/* 용도별 — 2열 */}
             {categoryTab === 'use' && (
-              <View style={styles.gridWrap}>
+              <View className="flex-row flex-wrap mb-5" style={{ gap: COL_GAP }}>
                 {USE_CATEGORIES.map((item) => (
                   <TouchableOpacity
                     key={item.label}
                     style={[
-                      styles.gridBox,
-                      { width: col2Width, height: col2Width * 0.6 },
-                      selectedCategory === item.label && styles.gridBoxActive,
+                      {
+                        width: col2Width,
+                        height: col2Width * 0.6,
+                        backgroundColor: selectedCategory === item.label ? '#FFF0F5' : '#fff',
+                        borderRadius: 14,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 7,
+                        borderWidth: 1.5,
+                        borderColor: selectedCategory === item.label ? '#FF6B9D' : 'transparent',
+                      },
                     ]}
                     onPress={() => handleCategorySelect(item.label)}
                   >
-                    <Text style={styles.gridEmojiLarge}>{item.emoji}</Text>
-                    <Text style={[styles.gridLabel, selectedCategory === item.label && styles.gridLabelActive]}>
+                    <Text style={{ fontSize: 30 }}>{item.emoji}</Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: selectedCategory === item.label ? '#FF6B9D' : '#555',
+                        fontWeight: selectedCategory === item.label ? '700' : '500',
+                        textAlign: 'center',
+                      }}
+                    >
                       {item.label}
                     </Text>
                   </TouchableOpacity>
@@ -160,8 +229,8 @@ export default function BuyerHomeScreen() {
             )}
 
             {/* 가게 목록 타이틀 */}
-            <View style={styles.listHeader}>
-              <Text style={styles.listTitle}>
+            <View className="mb-2">
+              <Text style={{ fontSize: 15, fontWeight: '700', color: '#333' }}>
                 {selectedCategory ? `${selectedCategory} 가게` : '전체 가게'}
               </Text>
             </View>
@@ -171,115 +240,38 @@ export default function BuyerHomeScreen() {
         }
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.storeCard}
+            className="bg-white rounded-2xl overflow-hidden"
+            style={{
+              elevation: 2,
+              shadowColor: '#000',
+              shadowOpacity: 0.06,
+              shadowRadius: 8,
+              shadowOffset: { width: 0, height: 2 },
+            }}
             onPress={() => router.push(`/users/store/${item.id}`)}
           >
             {item.image_url ? (
-              <Image source={{ uri: item.image_url }} style={styles.storeImage} />
+              <Image source={{ uri: item.image_url }} style={{ width: '100%', height: 160 }} />
             ) : (
-              <View style={[styles.storeImage, styles.storeImagePlaceholder]}>
+              <View
+                className="w-full justify-center items-center"
+                style={{ height: 160, backgroundColor: '#FFF0F5' }}
+              >
                 <Text style={{ fontSize: 32 }}>🌸</Text>
               </View>
             )}
-            <View style={styles.storeInfo}>
-              <Text style={styles.storeName}>{item.name}</Text>
-              <Text style={styles.storeAddress} numberOfLines={1}>{item.address}</Text>
-              <Text style={styles.storeDesc} numberOfLines={2}>{item.description}</Text>
+            <View style={{ padding: 14 }}>
+              <Text className="text-lg font-bold">{item.name}</Text>
+              <Text style={{ color: '#888', fontSize: 13, marginTop: 4 }} numberOfLines={1}>{item.address}</Text>
+              <Text style={{ color: '#555', fontSize: 14, marginTop: 6 }} numberOfLines={2}>{item.description}</Text>
             </View>
           </TouchableOpacity>
         )}
         contentContainerStyle={{ paddingHorizontal: H_PAD, paddingBottom: 24, gap: 12 }}
         ListEmptyComponent={
-          !loading ? <Text style={styles.emptyText}>등록된 가게가 없습니다.</Text> : null
+          !loading ? <Text style={{ textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 }}>등록된 가게가 없습니다.</Text> : null
         }
       />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8f8f8' },
-
-  header: { paddingVertical: 20 },
-  greeting: { fontSize: 22, fontWeight: 'bold' },
-  subtitle: { color: '#888', marginTop: 4 },
-
-  searchContainer: { marginBottom: 14 },
-  searchInput: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 15,
-    borderWidth: 1,
-    borderColor: '#eee',
-  },
-
-  tabRow: {
-    flexDirection: 'row',
-    marginBottom: 12,
-    backgroundColor: '#efefef',
-    borderRadius: 10,
-    padding: 3,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 9,
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  tabActive: {
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOpacity: 0.07,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  tabText: { fontSize: 14, color: '#999', fontWeight: '500' },
-  tabTextActive: { color: '#FF6B9D', fontWeight: '700' },
-
-  gridWrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: COL_GAP,
-    marginBottom: 20,
-  },
-  gridBox: {
-    backgroundColor: '#fff',
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 7,
-    borderWidth: 1.5,
-    borderColor: 'transparent',
-  },
-  gridBoxActive: { backgroundColor: '#FFF0F5', borderColor: '#FF6B9D' },
-  gridEmoji: { fontSize: 24 },
-  gridEmojiLarge: { fontSize: 30 },
-  gridLabel: { fontSize: 12, color: '#555', fontWeight: '500', textAlign: 'center' },
-  gridLabelActive: { color: '#FF6B9D', fontWeight: '700' },
-
-  listHeader: { marginBottom: 10 },
-  listTitle: { fontSize: 15, fontWeight: '700', color: '#333' },
-
-  storeCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  storeImage: { width: '100%', height: 160 },
-  storeImagePlaceholder: {
-    backgroundColor: '#FFF0F5',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  storeInfo: { padding: 14 },
-  storeName: { fontSize: 18, fontWeight: 'bold' },
-  storeAddress: { color: '#888', fontSize: 13, marginTop: 4 },
-  storeDesc: { color: '#555', fontSize: 14, marginTop: 6 },
-  emptyText: { textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 },
-});

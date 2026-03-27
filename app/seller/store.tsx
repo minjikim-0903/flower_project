@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
@@ -49,14 +48,15 @@ export default function SellerStoreScreen() {
   if (loading) return <ActivityIndicator style={{ flex: 1 }} color="#2ECC71" />;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>내 가게</Text>
+    <SafeAreaView className="flex-1 bg-background">
+      <View className="flex-row justify-between items-center p-5 bg-white border-b border-border">
+        <Text className="font-bold" style={{ fontSize: 22 }}>내 가게</Text>
         <TouchableOpacity
-          style={styles.addButton}
+          className="bg-seller rounded-lg"
+          style={{ paddingHorizontal: 14, paddingVertical: 8 }}
           onPress={() => router.push('/seller/store-form')}
         >
-          <Text style={styles.addButtonText}>+ 가게 등록</Text>
+          <Text className="text-white font-semibold text-sm">+ 가게 등록</Text>
         </TouchableOpacity>
       </View>
 
@@ -66,39 +66,62 @@ export default function SellerStoreScreen() {
         contentContainerStyle={{ padding: 16, gap: 12 }}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.card}
+            className="bg-white rounded-2xl overflow-hidden"
+            style={{
+              shadowColor: '#000',
+              shadowOpacity: 0.05,
+              shadowRadius: 4,
+              elevation: 2,
+            }}
             onPress={() => router.push({ pathname: '/seller/store-form', params: { storeId: item.id } })}
             activeOpacity={0.8}
           >
             {item.image_url ? (
-              <Image source={{ uri: item.image_url }} style={styles.cardImage} />
+              <Image source={{ uri: item.image_url }} style={{ width: '100%', height: 140 }} />
             ) : (
-              <View style={styles.cardImagePlaceholder}>
+              <View
+                className="w-full justify-center items-center"
+                style={{ height: 100, backgroundColor: '#f5f5f5' }}
+              >
                 <Text style={{ fontSize: 28 }}>🏪</Text>
               </View>
             )}
-            <View style={styles.cardBody}>
-              <View style={styles.cardTitleRow}>
-                <Text style={styles.cardName}>{item.name}</Text>
-                <View style={[styles.badge, item.is_active ? styles.badgeOpen : styles.badgeClose]}>
-                  <Text style={[styles.badgeText, { color: item.is_active ? '#2ECC71' : '#E74747' }]}>
+            <View style={{ padding: 14, gap: 6 }}>
+              <View className="flex-row items-center justify-between">
+                <Text style={{ fontSize: 17, fontWeight: '700' }}>{item.name}</Text>
+                <View
+                  className="rounded-xl"
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 3,
+                    backgroundColor: item.is_active ? '#2ECC7120' : '#E7474720',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: '600',
+                      color: item.is_active ? '#2ECC71' : '#E74747',
+                    }}
+                  >
                     {item.is_active ? '영업중' : '휴업중'}
                   </Text>
                 </View>
               </View>
-              <Text style={styles.cardAddress} numberOfLines={1}>{item.address}</Text>
+              <Text style={{ color: '#888', fontSize: 13 }} numberOfLines={1}>{item.address}</Text>
               {item.description ? (
-                <Text style={styles.cardDesc} numberOfLines={2}>{item.description}</Text>
+                <Text style={{ color: '#666', fontSize: 13, lineHeight: 18 }} numberOfLines={2}>{item.description}</Text>
               ) : null}
-              <View style={styles.cardFooter}>
-                <Text style={styles.cardMeta}>
+              <View className="flex-row justify-between items-center" style={{ marginTop: 4 }}>
+                <Text style={{ color: '#aaa', fontSize: 12 }}>
                   최소주문 {item.min_order_amount.toLocaleString()}원
                 </Text>
                 <TouchableOpacity
-                  style={styles.toggleBtn}
+                  className="border rounded-lg"
+                  style={{ paddingHorizontal: 12, paddingVertical: 5, borderColor: '#ddd' }}
                   onPress={() => handleToggleActive(item)}
                 >
-                  <Text style={styles.toggleBtnText}>
+                  <Text style={{ fontSize: 12, color: '#555' }}>
                     {item.is_active ? '휴업 처리' : '영업 재개'}
                   </Text>
                 </TouchableOpacity>
@@ -107,15 +130,16 @@ export default function SellerStoreScreen() {
           </TouchableOpacity>
         )}
         ListEmptyComponent={
-          <View style={styles.empty}>
-            <Text style={styles.emptyIcon}>🏪</Text>
-            <Text style={styles.emptyTitle}>등록된 가게가 없습니다</Text>
-            <Text style={styles.emptyDesc}>가게를 등록하고 판매를 시작해보세요</Text>
+          <View className="items-center gap-2" style={{ marginTop: 80 }}>
+            <Text style={{ fontSize: 48 }}>🏪</Text>
+            <Text className="text-lg font-bold text-text-primary">등록된 가게가 없습니다</Text>
+            <Text className="text-sm" style={{ color: '#aaa' }}>가게를 등록하고 판매를 시작해보세요</Text>
             <TouchableOpacity
-              style={styles.emptyButton}
+              className="bg-seller rounded-xl"
+              style={{ marginTop: 8, paddingHorizontal: 24, paddingVertical: 12 }}
               onPress={() => router.push('/seller/store-form')}
             >
-              <Text style={styles.emptyButtonText}>첫 가게 등록하기</Text>
+              <Text className="text-white font-bold" style={{ fontSize: 15 }}>첫 가게 등록하기</Text>
             </TouchableOpacity>
           </View>
         }
@@ -123,74 +147,3 @@ export default function SellerStoreScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8f8f8' },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  title: { fontSize: 22, fontWeight: 'bold' },
-  addButton: {
-    backgroundColor: '#2ECC71',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-  },
-  addButtonText: { color: '#fff', fontWeight: '600', fontSize: 14 },
-
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  cardImage: { width: '100%', height: 140 },
-  cardImagePlaceholder: {
-    width: '100%',
-    height: 100,
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cardBody: { padding: 14, gap: 6 },
-  cardTitleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  cardName: { fontSize: 17, fontWeight: '700' },
-  badge: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12 },
-  badgeOpen: { backgroundColor: '#2ECC7120' },
-  badgeClose: { backgroundColor: '#E7474720' },
-  badgeText: { fontSize: 12, fontWeight: '600' },
-  cardAddress: { color: '#888', fontSize: 13 },
-  cardDesc: { color: '#666', fontSize: 13, lineHeight: 18 },
-  cardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 },
-  cardMeta: { color: '#aaa', fontSize: 12 },
-  toggleBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  toggleBtnText: { fontSize: 12, color: '#555' },
-
-  empty: { alignItems: 'center', marginTop: 80, gap: 10 },
-  emptyIcon: { fontSize: 48 },
-  emptyTitle: { fontSize: 18, fontWeight: '700', color: '#333' },
-  emptyDesc: { color: '#aaa', fontSize: 14 },
-  emptyButton: {
-    marginTop: 8,
-    backgroundColor: '#2ECC71',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 12,
-  },
-  emptyButtonText: { color: '#fff', fontWeight: '700', fontSize: 15 },
-});

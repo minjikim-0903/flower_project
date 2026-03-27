@@ -2,13 +2,11 @@ import { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   TouchableOpacity,
   Image,
   Alert,
   ActivityIndicator,
-  ScrollView,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -101,124 +99,211 @@ export default function StoreDetailScreen() {
   if (!store) return null;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-background">
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={
           <>
             {/* 뒤로가기 */}
-            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-              <Text style={styles.backText}>← 뒤로</Text>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: 12,
+                left: 12,
+                zIndex: 10,
+                backgroundColor: '#fff',
+                borderRadius: 20,
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+              }}
+              onPress={() => router.back()}
+            >
+              <Text className="text-primary font-semibold">← 뒤로</Text>
             </TouchableOpacity>
 
             {/* 가게 헤더 이미지 */}
             {store.image_url ? (
-              <Image source={{ uri: store.image_url }} style={styles.storeImage} />
+              <Image source={{ uri: store.image_url }} style={{ width: '100%', height: 220 }} />
             ) : (
-              <View style={[styles.storeImage, styles.storeImagePlaceholder]}>
+              <View
+                className="w-full justify-center items-center"
+                style={{ height: 220, backgroundColor: '#FFF0F5' }}
+              >
                 <Text style={{ fontSize: 48 }}>🌸</Text>
               </View>
             )}
 
             {/* 가게 정보 */}
-            <View style={styles.storeInfo}>
-              <Text style={styles.storeName}>{store.name}</Text>
-              <Text style={styles.storeAddress}>📍 {store.address}</Text>
+            <View className="p-4 bg-white">
+              <Text className="text-2xl font-bold">{store.name}</Text>
+              <Text style={{ color: '#888', marginTop: 4, fontSize: 14 }}>📍 {store.address}</Text>
               {store.description ? (
-                <Text style={styles.storeDesc}>{store.description}</Text>
+                <Text style={{ color: '#555', marginTop: 8, lineHeight: 20 }}>{store.description}</Text>
               ) : null}
               {store.min_order_amount > 0 && (
-                <Text style={styles.minOrder}>
+                <Text className="text-primary font-semibold" style={{ marginTop: 6, fontSize: 13 }}>
                   최소 주문금액: {store.min_order_amount.toLocaleString()}원
                 </Text>
               )}
             </View>
 
             {/* 생화 / 나무 탭 */}
-            <View style={styles.typeTabRow}>
+            <View
+              className="flex-row bg-white border-b border-border gap-2"
+              style={{ paddingHorizontal: 12, paddingVertical: 10 }}
+            >
               <TouchableOpacity
-                style={[styles.typeTab, selectedType === 'all' && styles.typeTabActive]}
+                className="flex-1 items-center border"
+                style={[
+                  { paddingVertical: 8, borderRadius: 20 },
+                  selectedType === 'all'
+                    ? { borderColor: '#555', backgroundColor: '#555' }
+                    : { borderColor: '#ddd' },
+                ]}
                 onPress={() => setSelectedType('all')}
               >
-                <Text style={[styles.typeTabText, selectedType === 'all' && styles.typeTabTextActive]}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: selectedType === 'all' ? '700' : '500',
+                    color: selectedType === 'all' ? '#fff' : '#555',
+                  }}
+                >
                   전체 ({products.length})
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.typeTab, selectedType === 'fresh_flower' && styles.typeTabActivePink]}
+                className="flex-1 items-center border"
+                style={[
+                  { paddingVertical: 8, borderRadius: 20 },
+                  selectedType === 'fresh_flower'
+                    ? { borderColor: '#FF6B9D', backgroundColor: '#FF6B9D' }
+                    : { borderColor: '#ddd' },
+                ]}
                 onPress={() => setSelectedType('fresh_flower')}
               >
-                <Text style={[styles.typeTabText, selectedType === 'fresh_flower' && styles.typeTabTextActive]}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: selectedType === 'fresh_flower' ? '700' : '500',
+                    color: selectedType === 'fresh_flower' ? '#fff' : '#555',
+                  }}
+                >
                   🌸 생화 ({freshCount})
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.typeTab, selectedType === 'tree' && styles.typeTabActiveGreen]}
+                className="flex-1 items-center border"
+                style={[
+                  { paddingVertical: 8, borderRadius: 20 },
+                  selectedType === 'tree'
+                    ? { borderColor: '#2ECC71', backgroundColor: '#2ECC71' }
+                    : { borderColor: '#ddd' },
+                ]}
                 onPress={() => setSelectedType('tree')}
               >
-                <Text style={[styles.typeTabText, selectedType === 'tree' && styles.typeTabTextActive]}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: selectedType === 'tree' ? '700' : '500',
+                    color: selectedType === 'tree' ? '#fff' : '#555',
+                  }}
+                >
                   🌳 나무 ({treeCount})
                 </Text>
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.sectionTitle}>상품 목록 ({filtered.length})</Text>
+            <Text className="font-semibold" style={{ fontSize: 15, padding: 16, paddingBottom: 8 }}>
+              상품 목록 ({filtered.length})
+            </Text>
           </>
         }
         renderItem={({ item }) => (
-          <View style={styles.productCard}>
+          <View
+            className="bg-white flex-row overflow-hidden mx-3 mb-2"
+            style={{ borderRadius: 14 }}
+          >
             {item.image_url ? (
-              <Image source={{ uri: item.image_url }} style={styles.productImage} />
+              <Image source={{ uri: item.image_url }} style={{ width: 100, height: 110 }} />
             ) : (
-              <View style={[styles.productImage, styles.productImagePlaceholder]}>
+              <View
+                className="justify-center items-center"
+                style={{ width: 100, height: 110, backgroundColor: '#f5f5f5' }}
+              >
                 <Text style={{ fontSize: 28 }}>
                   {item.product_type === 'fresh_flower' ? '🌸' : '🌳'}
                 </Text>
               </View>
             )}
-            <View style={styles.productInfo}>
-              <View style={styles.productNameRow}>
-                <Text style={styles.productName}>{item.name}</Text>
-                <View style={[
-                  styles.typeBadge,
-                  item.product_type === 'fresh_flower' ? styles.typeBadgePink : styles.typeBadgeGreen,
-                ]}>
-                  <Text style={styles.typeBadgeText}>
+            <View className="flex-1 p-3">
+              <View className="flex-row items-center gap-1">
+                <Text className="font-semibold flex-1" style={{ fontSize: 15 }}>{item.name}</Text>
+                <View
+                  className="rounded"
+                  style={[
+                    { paddingHorizontal: 7, paddingVertical: 2 },
+                    item.product_type === 'fresh_flower'
+                      ? { backgroundColor: '#FFF0F5' }
+                      : { backgroundColor: '#F0FFF4' },
+                  ]}
+                >
+                  <Text style={{ fontSize: 11 }}>
                     {PRODUCT_TYPE_LABELS[item.product_type]}
                   </Text>
                 </View>
               </View>
-              <Text style={styles.productCategory}>{getCategoryLabel(item)}</Text>
-              <View style={styles.priceBlock}>
+              <Text style={{ color: '#888', fontSize: 12, marginTop: 2 }}>{getCategoryLabel(item)}</Text>
+              <View className="flex-row justify-between items-end" style={{ marginTop: 6 }}>
                 <View>
-                  <Text style={styles.retailPrice}>
+                  <Text className="text-sm font-semibold">
                     소매 {item.retail_price.toLocaleString()}원/{item.unit}
                   </Text>
-                  <Text style={styles.wholesalePrice}>
+                  <Text className="text-primary" style={{ fontSize: 12, marginTop: 2 }}>
                     도매 {item.wholesale_price.toLocaleString()}원 (최소 {item.min_wholesale_quantity}{item.unit})
                   </Text>
                 </View>
-                <TouchableOpacity style={styles.addButton} onPress={() => handleAddToCart(item)}>
-                  <Text style={styles.addButtonText}>담기</Text>
+                <TouchableOpacity
+                  className="bg-primary rounded-lg"
+                  style={{ paddingHorizontal: 14, paddingVertical: 7 }}
+                  onPress={() => handleAddToCart(item)}
+                >
+                  <Text className="text-white font-bold" style={{ fontSize: 13 }}>담기</Text>
                 </TouchableOpacity>
               </View>
               {item.description ? (
-                <Text style={styles.productDesc} numberOfLines={2}>{item.description}</Text>
+                <Text className="text-text-secondary text-xs" style={{ marginTop: 4 }} numberOfLines={2}>{item.description}</Text>
               ) : null}
             </View>
           </View>
         )}
         contentContainerStyle={{ paddingBottom: 100 }}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>등록된 상품이 없습니다.</Text>
+          <Text style={{ textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 }}>등록된 상품이 없습니다.</Text>
         }
       />
 
       {/* 장바구니 플로팅 버튼 */}
       {items.length > 0 && (
-        <TouchableOpacity style={styles.cartBanner} onPress={() => router.push('/users/cart')}>
-          <Text style={styles.cartBannerText}>
+        <TouchableOpacity
+          className="bg-primary items-center"
+          style={{
+            position: 'absolute',
+            bottom: 20,
+            left: 20,
+            right: 20,
+            borderRadius: 14,
+            padding: 16,
+            elevation: 6,
+            shadowColor: '#FF6B9D',
+            shadowOpacity: 0.4,
+            shadowRadius: 10,
+            shadowOffset: { width: 0, height: 4 },
+          }}
+          onPress={() => router.push('/users/cart')}
+        >
+          <Text className="text-white font-bold text-base">
             장바구니 {items.reduce((s, i) => s + i.quantity, 0)}개 보기 →
           </Text>
         </TouchableOpacity>
@@ -226,107 +311,3 @@ export default function StoreDetailScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8f8f8' },
-  backButton: {
-    position: 'absolute',
-    top: 12,
-    left: 12,
-    zIndex: 10,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  backText: { color: '#FF6B9D', fontWeight: '600' },
-  storeImage: { width: '100%', height: 220 },
-  storeImagePlaceholder: {
-    backgroundColor: '#FFF0F5',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  storeInfo: { padding: 16, backgroundColor: '#fff' },
-  storeName: { fontSize: 24, fontWeight: 'bold' },
-  storeAddress: { color: '#888', marginTop: 4, fontSize: 14 },
-  storeDesc: { color: '#555', marginTop: 8, lineHeight: 20 },
-  minOrder: { color: '#FF6B9D', marginTop: 6, fontSize: 13, fontWeight: '600' },
-  typeTabRow: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    gap: 8,
-  },
-  typeTab: {
-    flex: 1,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    alignItems: 'center',
-  },
-  typeTabActive: { borderColor: '#555', backgroundColor: '#555' },
-  typeTabActivePink: { borderColor: '#FF6B9D', backgroundColor: '#FF6B9D' },
-  typeTabActiveGreen: { borderColor: '#2ECC71', backgroundColor: '#2ECC71' },
-  typeTabText: { fontSize: 13, color: '#555', fontWeight: '500' },
-  typeTabTextActive: { color: '#fff', fontWeight: '700' },
-  sectionTitle: { fontWeight: '600', fontSize: 15, padding: 16, paddingBottom: 8 },
-  productCard: {
-    backgroundColor: '#fff',
-    marginHorizontal: 12,
-    marginBottom: 10,
-    borderRadius: 14,
-    overflow: 'hidden',
-    flexDirection: 'row',
-  },
-  productImage: { width: 100, height: 110 },
-  productImagePlaceholder: {
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  productInfo: { flex: 1, padding: 12 },
-  productNameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  productName: { fontWeight: '600', fontSize: 15, flex: 1 },
-  typeBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6 },
-  typeBadgePink: { backgroundColor: '#FFF0F5' },
-  typeBadgeGreen: { backgroundColor: '#F0FFF4' },
-  typeBadgeText: { fontSize: 11 },
-  productCategory: { color: '#888', fontSize: 12, marginTop: 2 },
-  priceBlock: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    marginTop: 6,
-  },
-  retailPrice: { fontSize: 14, fontWeight: '600' },
-  wholesalePrice: { color: '#FF6B9D', fontSize: 12, marginTop: 2 },
-  productDesc: { color: '#999', fontSize: 12, marginTop: 4 },
-  addButton: {
-    backgroundColor: '#FF6B9D',
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-  },
-  addButtonText: { color: '#fff', fontWeight: '700', fontSize: 13 },
-  emptyText: { textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 },
-  cartBanner: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    backgroundColor: '#FF6B9D',
-    borderRadius: 14,
-    padding: 16,
-    alignItems: 'center',
-    elevation: 6,
-    shadowColor: '#FF6B9D',
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-  },
-  cartBannerText: { color: '#fff', fontWeight: '700', fontSize: 16 },
-});

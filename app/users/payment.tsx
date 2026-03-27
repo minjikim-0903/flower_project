@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
-  StyleSheet,
   View,
   Text,
   TouchableOpacity,
@@ -203,35 +202,41 @@ export default function PaymentScreen() {
   `;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView className="flex-1 bg-white">
+      <View
+        className="flex-row justify-between items-center p-4 border-b border-border"
+      >
         <TouchableOpacity onPress={() => router.back()} disabled={processingOrder}>
-          <Text style={styles.back}>← 뒤로</Text>
+          <Text className="text-primary text-base">← 뒤로</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>결제</Text>
+        <Text className="text-lg font-bold">결제</Text>
         <View style={{ width: 44 }} />
       </View>
 
       {processingOrder ? (
-        <View style={styles.processing}>
+        <View className="flex-1 justify-center items-center gap-4">
           <ActivityIndicator size="large" color="#FF6B9D" />
-          <Text style={styles.processingText}>주문을 저장하는 중...</Text>
+          <Text style={{ fontSize: 15, color: '#555' }}>주문을 저장하는 중...</Text>
         </View>
       ) : Platform.OS === 'web' ? (
         // 웹: 스크립트 로드 완료 후 버튼 표시 (팝업 차단 방지 — 직접 클릭 필요)
-        <View style={styles.processing}>
+        <View className="flex-1 justify-center items-center gap-4">
           {!webScriptReady ? (
             <>
               <ActivityIndicator size="large" color="#FF6B9D" />
-              <Text style={styles.processingText}>결제 준비 중...</Text>
+              <Text style={{ fontSize: 15, color: '#555' }}>결제 준비 중...</Text>
             </>
           ) : (
             <>
-              <Text style={styles.processingText}>결제 준비 완료</Text>
-              <TouchableOpacity style={styles.payButton} onPress={handleWebPay}>
-                <Text style={styles.payButtonText}>{amount.toLocaleString()}원 결제하기</Text>
+              <Text style={{ fontSize: 15, color: '#555' }}>결제 준비 완료</Text>
+              <TouchableOpacity
+                className="bg-primary rounded-xl items-center"
+                style={{ paddingHorizontal: 32, paddingVertical: 16, marginTop: 16 }}
+                onPress={handleWebPay}
+              >
+                <Text className="text-white text-base font-bold">{amount.toLocaleString()}원 결제하기</Text>
               </TouchableOpacity>
-              <Text style={styles.processingHint}>버튼을 눌러 결제창을 열어주세요</Text>
+              <Text style={{ fontSize: 13, color: '#aaa', textAlign: 'center', marginTop: 8, lineHeight: 20 }}>버튼을 눌러 결제창을 열어주세요</Text>
             </>
           )}
         </View>
@@ -247,30 +252,10 @@ export default function PaymentScreen() {
             originWhitelist={['*']}
             javaScriptEnabled
             domStorageEnabled
-            style={styles.webview}
+            className="flex-1"
           />
         )
       )}
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  back: { color: '#FF6B9D', fontSize: 16 },
-  title: { fontSize: 18, fontWeight: 'bold' },
-  webview: { flex: 1 },
-  processing: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 16 },
-  processingText: { fontSize: 15, color: '#555' },
-  processingHint: { fontSize: 13, color: '#aaa', textAlign: 'center', marginTop: 8, lineHeight: 20 },
-  payButton: { backgroundColor: '#FF6B9D', borderRadius: 12, paddingHorizontal: 32, paddingVertical: 16, marginTop: 16 },
-  payButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
-});
