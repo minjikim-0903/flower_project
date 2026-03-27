@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GluestackUIProvider } from '@gluestack-ui/themed';
+import { gluestackUIConfig } from '@gluestack-ui/config';
 import { supabase } from '@/services/supabase';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -17,16 +19,18 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="users" />
-          <Stack.Screen name="seller" />
-          <Stack.Screen name="admin" />
-        </Stack>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <GluestackUIProvider config={gluestackUIConfig}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="users" />
+            <Stack.Screen name="seller" />
+            <Stack.Screen name="admin" />
+          </Stack>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </GluestackUIProvider>
   );
 }
