@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Store, Flower2, List, User } from 'lucide-react-native';
+import { Store, Flower2, List, User, Users } from 'lucide-react-native';
 
 export default function SellerLayout() {
   return (
@@ -14,7 +14,15 @@ export default function SellerLayout() {
       <Tabs.Screen name="home" options={{ href: null }} />
       <Tabs.Screen name="store-form" options={{ href: null }} />
       <Tabs.Screen name="product-form" options={{ href: null }} />
-      <Tabs.Screen name="community" options={{ href: null }} />
+      <Tabs.Screen
+        name="community"
+        options={{
+          title: '커뮤니티',
+          tabBarIcon: ({ color, size }) => (
+            <Users size={size} color={color} />
+          ),
+        }}
+      />
       <Tabs.Screen
         name="store"
         options={{

@@ -285,6 +285,165 @@ create policy "order_items: 구매자 생성" on public.order_items
 
 
 -- =============================================
+-- 6. posts (커뮤니티 게시글)
+-- =============================================
+create table if not exists public.posts (
+  id           uuid primary key default gen_random_uuid(),
+  author_id    uuid not null references public.profiles(id) on delete cascade,
+  content      text not null,
+  image_urls   jsonb not null default '[]',       -- 이미지 여러 장 (Storage URL 배열)
+  product_id   uuid references public.products(id) on delete set null,  -- 상품 태그 (판매자만, 선택)
+  likes_count  integer not null default 0,
+  comments_count integer not null default 0,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+
+-- updated_at 자동 갱신 트리거
+create or replace function public.handle_post_updated_at()
+returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists on_post_updated on public.posts;
+create trigger on_post_updated
+  before update on public.posts
+  for each row execute function public.handle_post_updated_at();
+
+
+-- =============================================
+-- 7. comments (커뮤니티 댓글)
+-- =============================================
+create table if not exists public.comments (
+  id         uuid primary key default gen_random_uuid(),
+  post_id    uuid not null references public.posts(id) on delete cascade,
+  author_id  uuid not null references public.profiles(id) on delete cascade,
+  content    text not null,
+  created_at timestamptz not null default now()
+);
+
+
+-- =============================================
+-- 8. post_likes (게시글 좋아요)
+-- =============================================
+create table if not exists public.post_likes (
+  id         uuid primary key default gen_random_uuid(),
+  post_id    uuid not null references public.posts(id) on delete cascade,
+  user_id    uuid not null references public.profiles(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique (post_id, user_id)   -- 한 사람이 같은 글에 좋아요 중복 불가
+);
+
+-- 좋아요 추가 시 posts.likes_count 자동 증가
+create or replace function public.handle_like_insert()
+returns trigger as $$
+begin
+  update public.posts set likes_count = likes_count + 1 where id = new.post_id;
+  return new;
+end;
+$$ language plpgsql;
+
+-- 좋아요 취소 시 posts.likes_count 자동 감소
+create or replace function public.handle_like_delete()
+returns trigger as $$
+begin
+  update public.posts set likes_count = likes_count - 1 where id = old.post_id;
+  return old;
+end;
+$$ language plpgsql;
+
+drop trigger if exists on_like_inserted on public.post_likes;
+create trigger on_like_inserted
+  after insert on public.post_likes
+  for each row execute function public.handle_like_insert();
+
+drop trigger if exists on_like_deleted on public.post_likes;
+create trigger on_like_deleted
+  after delete on public.post_likes
+  for each row execute function public.handle_like_delete();
+
+-- 댓글 추가 시 posts.comments_count 자동 증가
+create or replace function public.handle_comment_insert()
+returns trigger as $$
+begin
+  update public.posts set comments_count = comments_count + 1 where id = new.post_id;
+  return new;
+end;
+$$ language plpgsql;
+
+-- 댓글 삭제 시 posts.comments_count 자동 감소
+create or replace function public.handle_comment_delete()
+returns trigger as $$
+begin
+  update public.posts set comments_count = comments_count - 1 where id = old.post_id;
+  return old;
+end;
+$$ language plpgsql;
+
+drop trigger if exists on_comment_inserted on public.comments;
+create trigger on_comment_inserted
+  after insert on public.comments
+  for each row execute function public.handle_comment_insert();
+
+drop trigger if exists on_comment_deleted on public.comments;
+create trigger on_comment_deleted
+  after delete on public.comments
+  for each row execute function public.handle_comment_delete();
+
+
+-- =============================================
+-- RLS 활성화 (커뮤니티)
+-- =============================================
+alter table public.posts       enable row level security;
+alter table public.comments    enable row level security;
+alter table public.post_likes  enable row level security;
+
+
+-- =============================================
+-- RLS 정책 (커뮤니티)
+-- =============================================
+
+-- posts
+drop policy if exists "posts: 전체 조회" on public.posts;
+drop policy if exists "posts: 로그인 사용자 작성" on public.posts;
+drop policy if exists "posts: 본인만 수정" on public.posts;
+drop policy if exists "posts: 본인만 삭제" on public.posts;
+create policy "posts: 전체 조회" on public.posts
+  for select using (true);
+create policy "posts: 로그인 사용자 작성" on public.posts
+  for insert with check (auth.uid() = author_id);
+create policy "posts: 본인만 수정" on public.posts
+  for update using (auth.uid() = author_id);
+create policy "posts: 본인만 삭제" on public.posts
+  for delete using (auth.uid() = author_id);
+
+-- comments
+drop policy if exists "comments: 전체 조회" on public.comments;
+drop policy if exists "comments: 로그인 사용자 작성" on public.comments;
+drop policy if exists "comments: 본인만 삭제" on public.comments;
+create policy "comments: 전체 조회" on public.comments
+  for select using (true);
+create policy "comments: 로그인 사용자 작성" on public.comments
+  for insert with check (auth.uid() = author_id);
+create policy "comments: 본인만 삭제" on public.comments
+  for delete using (auth.uid() = author_id);
+
+-- post_likes
+drop policy if exists "post_likes: 전체 조회" on public.post_likes;
+drop policy if exists "post_likes: 본인 좋아요" on public.post_likes;
+drop policy if exists "post_likes: 본인 취소" on public.post_likes;
+create policy "post_likes: 전체 조회" on public.post_likes
+  for select using (true);
+create policy "post_likes: 본인 좋아요" on public.post_likes
+  for insert with check (auth.uid() = user_id);
+create policy "post_likes: 본인 취소" on public.post_likes
+  for delete using (auth.uid() = user_id);
+
+
+-- =============================================
 -- Storage 버킷 (대시보드에서 수동 생성 필요)
 -- Storage > New Bucket > 이름: images, Public: ON
 -- =============================================
