@@ -2,12 +2,13 @@ import { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   Alert,
   Platform,
 } from 'react-native';
+import { Input, InputField } from '@gluestack-ui/themed';
+import { Button, ButtonText } from '@gluestack-ui/themed';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { format, addDays } from 'date-fns';
@@ -109,13 +110,13 @@ export default function CheckoutScreen() {
                     { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20 },
                     selectedDate === d.value
                       ? { borderColor: '#FF6B9D', backgroundColor: '#FF6B9D' }
-                      : { borderColor: '#ddd', backgroundColor: '#fff' },
+                      : { borderColor: '#f0f0f0', backgroundColor: '#fff' },
                   ]}
                   onPress={() => setSelectedDate(d.value)}
                 >
                   <Text
                     style={{
-                      color: selectedDate === d.value ? '#fff' : '#555',
+                      color: selectedDate === d.value ? '#fff' : '#6a6a6a',
                       fontWeight: selectedDate === d.value ? '600' : undefined,
                     }}
                   >
@@ -129,25 +130,33 @@ export default function CheckoutScreen() {
 
         <View className="bg-white rounded-2xl p-4">
           <Text className="font-semibold text-base mb-3">배송 주소</Text>
-          <TextInput
-            className="border rounded-lg"
-            style={{ borderColor: '#ddd', padding: 12, fontSize: 15, minHeight: 44 }}
-            value={deliveryAddress}
-            onChangeText={setDeliveryAddress}
-            placeholder="배송받을 주소를 입력해주세요"
-            multiline
-          />
+          <Input
+            variant="outline"
+            style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
+          >
+            <InputField
+              value={deliveryAddress}
+              onChangeText={setDeliveryAddress}
+              placeholder="배송받을 주소를 입력해주세요"
+              multiline
+              style={{ padding: 12, fontSize: 15, minHeight: 44 }}
+            />
+          </Input>
         </View>
 
         <View className="bg-white rounded-2xl p-4">
           <Text className="font-semibold text-base mb-3">배송 메모 (선택)</Text>
-          <TextInput
-            className="border rounded-lg"
-            style={{ borderColor: '#ddd', padding: 12, fontSize: 15, minHeight: 44 }}
-            value={deliveryMemo}
-            onChangeText={setDeliveryMemo}
-            placeholder="예: 경비실에 맡겨주세요"
-          />
+          <Input
+            variant="outline"
+            style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
+          >
+            <InputField
+              value={deliveryMemo}
+              onChangeText={setDeliveryMemo}
+              placeholder="예: 경비실에 맡겨주세요"
+              style={{ padding: 12, fontSize: 15, minHeight: 44 }}
+            />
+          </Input>
         </View>
 
         <View className="bg-white rounded-2xl p-4">
@@ -157,7 +166,7 @@ export default function CheckoutScreen() {
             return (
               <View key={item.product.id} className="flex-row justify-between" style={{ paddingVertical: 6 }}>
                 <Text style={{ fontSize: 15 }}>{item.product.name}</Text>
-                <Text style={{ color: '#666' }}>
+                <Text style={{ color: '#6a6a6a' }}>
                   {item.quantity}{item.product.unit} × {price.toLocaleString()}원
                 </Text>
               </View>
@@ -169,26 +178,26 @@ export default function CheckoutScreen() {
       <View className="bg-white p-5 border-t border-border">
         <View style={{ marginBottom: 10, gap: 4 }}>
           <View className="flex-row justify-between">
-            <Text style={{ fontSize: 13, color: '#888' }}>상품 합계</Text>
-            <Text style={{ fontSize: 13, color: '#555' }}>{totalPrice.toLocaleString()}원</Text>
+            <Text style={{ fontSize: 13, color: '#6a6a6a' }}>상품 합계</Text>
+            <Text style={{ fontSize: 13, color: '#6a6a6a' }}>{totalPrice.toLocaleString()}원</Text>
           </View>
           <View className="flex-row justify-between">
-            <Text style={{ fontSize: 13, color: '#888' }}>PG·플랫폼 수수료</Text>
-            <Text style={{ fontSize: 13, color: '#aaa' }}>판매자 부담</Text>
+            <Text style={{ fontSize: 13, color: '#6a6a6a' }}>PG·플랫폼 수수료</Text>
+            <Text style={{ fontSize: 13, color: '#6a6a6a' }}>판매자 부담</Text>
           </View>
         </View>
         <View className="flex-row justify-between mb-3">
-          <Text className="text-base" style={{ color: '#666' }}>총 결제금액</Text>
+          <Text className="text-base" style={{ color: '#6a6a6a' }}>총 결제금액</Text>
           <Text className="text-primary font-bold" style={{ fontSize: 20 }}>{totalPrice.toLocaleString()}원</Text>
         </View>
-        <TouchableOpacity
-          className="bg-primary rounded-xl p-4 items-center"
+        <Button
           onPress={handleOrder}
+          style={{ backgroundColor: '#FF6B9D', borderRadius: 12, height: 52 }}
         >
-          <Text className="text-white text-base font-bold">
+          <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>
             {totalPrice.toLocaleString()}원 결제하기
-          </Text>
-        </TouchableOpacity>
+          </ButtonText>
+        </Button>
       </View>
     </SafeAreaView>
   );

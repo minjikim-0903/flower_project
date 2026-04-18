@@ -8,6 +8,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { Button, ButtonText } from '@gluestack-ui/themed';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { storeService } from '@/services/stores';
@@ -137,9 +138,9 @@ export default function StoreDetailScreen() {
             {/* 가게 정보 */}
             <View className="p-4 bg-white">
               <Text className="text-2xl font-bold">{store.name}</Text>
-              <Text style={{ color: '#888', marginTop: 4, fontSize: 14 }}>📍 {store.address}</Text>
+              <Text style={{ color: '#6a6a6a', marginTop: 4, fontSize: 14 }}>📍 {store.address}</Text>
               {store.description ? (
-                <Text style={{ color: '#555', marginTop: 8, lineHeight: 20 }}>{store.description}</Text>
+                <Text style={{ color: '#6a6a6a', marginTop: 8, lineHeight: 20 }}>{store.description}</Text>
               ) : null}
               {store.min_order_amount > 0 && (
                 <Text className="text-primary font-semibold" style={{ marginTop: 6, fontSize: 13 }}>
@@ -158,8 +159,8 @@ export default function StoreDetailScreen() {
                 style={[
                   { paddingVertical: 8, borderRadius: 20 },
                   selectedType === 'all'
-                    ? { borderColor: '#555', backgroundColor: '#555' }
-                    : { borderColor: '#ddd' },
+                    ? { borderColor: '#6a6a6a', backgroundColor: '#6a6a6a' }
+                    : { borderColor: '#f0f0f0' },
                 ]}
                 onPress={() => setSelectedType('all')}
               >
@@ -167,7 +168,7 @@ export default function StoreDetailScreen() {
                   style={{
                     fontSize: 13,
                     fontWeight: selectedType === 'all' ? '700' : '500',
-                    color: selectedType === 'all' ? '#fff' : '#555',
+                    color: selectedType === 'all' ? '#fff' : '#6a6a6a',
                   }}
                 >
                   전체 ({products.length})
@@ -179,7 +180,7 @@ export default function StoreDetailScreen() {
                   { paddingVertical: 8, borderRadius: 20 },
                   selectedType === 'fresh_flower'
                     ? { borderColor: '#FF6B9D', backgroundColor: '#FF6B9D' }
-                    : { borderColor: '#ddd' },
+                    : { borderColor: '#f0f0f0' },
                 ]}
                 onPress={() => setSelectedType('fresh_flower')}
               >
@@ -187,7 +188,7 @@ export default function StoreDetailScreen() {
                   style={{
                     fontSize: 13,
                     fontWeight: selectedType === 'fresh_flower' ? '700' : '500',
-                    color: selectedType === 'fresh_flower' ? '#fff' : '#555',
+                    color: selectedType === 'fresh_flower' ? '#fff' : '#6a6a6a',
                   }}
                 >
                   🌸 생화 ({freshCount})
@@ -199,7 +200,7 @@ export default function StoreDetailScreen() {
                   { paddingVertical: 8, borderRadius: 20 },
                   selectedType === 'tree'
                     ? { borderColor: '#2ECC71', backgroundColor: '#2ECC71' }
-                    : { borderColor: '#ddd' },
+                    : { borderColor: '#f0f0f0' },
                 ]}
                 onPress={() => setSelectedType('tree')}
               >
@@ -207,7 +208,7 @@ export default function StoreDetailScreen() {
                   style={{
                     fontSize: 13,
                     fontWeight: selectedType === 'tree' ? '700' : '500',
-                    color: selectedType === 'tree' ? '#fff' : '#555',
+                    color: selectedType === 'tree' ? '#fff' : '#6a6a6a',
                   }}
                 >
                   🌳 나무 ({treeCount})
@@ -223,7 +224,7 @@ export default function StoreDetailScreen() {
         renderItem={({ item }) => (
           <View
             className="bg-white flex-row overflow-hidden mx-3 mb-2"
-            style={{ borderRadius: 14 }}
+            style={{ borderRadius: 16 }}
           >
             {item.image_url ? (
               <Image source={{ uri: item.image_url }} style={{ width: 100, height: 110 }} />
@@ -254,7 +255,7 @@ export default function StoreDetailScreen() {
                   </Text>
                 </View>
               </View>
-              <Text style={{ color: '#888', fontSize: 12, marginTop: 2 }}>{getCategoryLabel(item)}</Text>
+              <Text style={{ color: '#6a6a6a', fontSize: 12, marginTop: 2 }}>{getCategoryLabel(item)}</Text>
               <View className="flex-row justify-between items-end" style={{ marginTop: 6 }}>
                 <View>
                   <Text className="text-sm font-semibold">
@@ -280,33 +281,33 @@ export default function StoreDetailScreen() {
         )}
         contentContainerStyle={{ paddingBottom: 100 }}
         ListEmptyComponent={
-          <Text style={{ textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 }}>등록된 상품이 없습니다.</Text>
+          <Text style={{ textAlign: 'center', color: '#6a6a6a', marginTop: 40, fontSize: 15 }}>등록된 상품이 없습니다.</Text>
         }
       />
 
       {/* 장바구니 플로팅 버튼 */}
       {items.length > 0 && (
-        <TouchableOpacity
-          className="bg-primary items-center"
+        <Button
+          onPress={() => router.push('/users/cart')}
           style={{
             position: 'absolute',
             bottom: 20,
             left: 20,
             right: 20,
+            backgroundColor: '#FF6B9D',
             borderRadius: 14,
-            padding: 16,
+            minHeight: 52,
             elevation: 6,
             shadowColor: '#FF6B9D',
             shadowOpacity: 0.4,
             shadowRadius: 10,
             shadowOffset: { width: 0, height: 4 },
           }}
-          onPress={() => router.push('/users/cart')}
         >
-          <Text className="text-white font-bold text-base">
+          <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>
             장바구니 {items.reduce((s, i) => s + i.quantity, 0)}개 보기 →
-          </Text>
-        </TouchableOpacity>
+          </ButtonText>
+        </Button>
       )}
     </SafeAreaView>
   );

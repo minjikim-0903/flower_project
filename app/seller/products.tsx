@@ -160,13 +160,13 @@ export default function ProductsScreen() {
               { paddingVertical: 7, borderRadius: 20 },
               filterType === val
                 ? { borderColor: '#2ECC71', backgroundColor: '#2ECC71' }
-                : { borderColor: '#ddd' },
+                : { borderColor: '#f0f0f0' },
             ]}
             onPress={() => setFilterType(val)}
           >
             <Text
               style={{
-                color: filterType === val ? '#fff' : '#666',
+                color: filterType === val ? '#fff' : '#6a6a6a',
                 fontSize: 13,
                 fontWeight: filterType === val ? '700' : undefined,
               }}
@@ -195,14 +195,14 @@ export default function ProductsScreen() {
             />
             <View className="flex-1">
               <Text className="text-sm font-semibold">{item.name}</Text>
-              <Text style={{ color: '#888', fontSize: 12, marginTop: 2 }}>
+              <Text style={{ color: '#6a6a6a', fontSize: 12, marginTop: 2 }}>
                 {item.product_type === 'fresh_flower' ? '생화' : '나무'} · {getCategoryLabel(item)}
                 {item.variety ? ` · ${item.variety}` : ''}
               </Text>
-              <Text style={{ color: '#555', fontSize: 13, marginTop: 3 }}>
+              <Text style={{ color: '#6a6a6a', fontSize: 13, marginTop: 3 }}>
                 소매 {item.retail_price.toLocaleString()}원 / 도매 {item.wholesale_price.toLocaleString()}원
               </Text>
-              {item.origin ? <Text style={{ color: '#999', fontSize: 11, marginTop: 2 }}>📍 {item.origin}</Text> : null}
+              {item.origin ? <Text style={{ color: '#6a6a6a', fontSize: 11, marginTop: 2 }}>📍 {item.origin}</Text> : null}
             </View>
             <View className="items-end gap-1">
               <TouchableOpacity
@@ -235,7 +235,7 @@ export default function ProductsScreen() {
         )}
         contentContainerStyle={{ padding: 12, gap: 8 }}
         ListEmptyComponent={
-          <Text style={{ textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 }}>등록된 상품이 없습니다.</Text>
+          <Text style={{ textAlign: 'center', color: '#6a6a6a', marginTop: 40, fontSize: 15 }}>등록된 상품이 없습니다.</Text>
         }
       />
     </SafeAreaView>

@@ -132,7 +132,7 @@ export default function OrderDetailScreen() {
                       { fontSize: 10, textAlign: 'center' },
                       idx === currentStepIdx
                         ? { color: '#FF6B9D', fontWeight: '700' }
-                        : { color: '#aaa' },
+                        : { color: '#6a6a6a' },
                     ]}
                     numberOfLines={2}
                   >
@@ -179,7 +179,7 @@ export default function OrderDetailScreen() {
                 {item.product?.name ?? '상품'}
               </Text>
               <View className="flex-row gap-3 items-center">
-                <Text style={{ color: '#888', fontSize: 13 }}>{item.quantity}개</Text>
+                <Text style={{ color: '#6a6a6a', fontSize: 13 }}>{item.quantity}개</Text>
                 <Text className="font-semibold text-sm">
                   {(item.unit_price * item.quantity).toLocaleString()}원
                 </Text>
@@ -213,7 +213,7 @@ function Row({ label, value }: { label: string; value: string }) {
       className="flex-row justify-between border-b"
       style={{ paddingVertical: 8, borderBottomColor: '#f5f5f5' }}
     >
-      <Text className="text-sm" style={{ color: '#888' }}>{label}</Text>
+      <Text className="text-sm" style={{ color: '#6a6a6a' }}>{label}</Text>
       <Text className="text-sm font-medium flex-1 text-right">{value}</Text>
     </View>
   );

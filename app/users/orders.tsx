@@ -63,11 +63,11 @@ export default function OrdersScreen() {
           <TouchableOpacity
             className="bg-white rounded-2xl p-4"
             style={{
-              elevation: 2,
               shadowColor: '#000',
-              shadowOpacity: 0.06,
+              shadowOpacity: 0.1,
               shadowRadius: 8,
-              shadowOffset: { width: 0, height: 2 },
+              shadowOffset: { width: 0, height: 4 },
+              elevation: 3,
             }}
             onPress={() => router.push(`/users/order/${item.id}`)}
           >
@@ -84,18 +84,18 @@ export default function OrdersScreen() {
                   {STATUS_LABEL[item.status]}
                 </Text>
               </View>
-              <Text style={{ color: '#888', fontSize: 13 }}>
+              <Text style={{ color: '#6a6a6a', fontSize: 13 }}>
                 {item.order_type === 'wholesale' ? '도매' : '소매'}
               </Text>
             </View>
             <Text style={{ fontSize: 17, fontWeight: '600', marginBottom: 8 }}>{item.store?.name}</Text>
             <View className="flex-row justify-between items-center">
-              <Text style={{ color: '#666', fontSize: 14 }}>
+              <Text style={{ color: '#6a6a6a', fontSize: 14 }}>
                 배송 예정일: {format(new Date(item.delivery_date), 'M월 d일')}
               </Text>
               <Text className="text-primary font-bold" style={{ fontSize: 16 }}>{item.total_price.toLocaleString()}원</Text>
             </View>
-            <Text style={{ color: '#aaa', fontSize: 12, marginTop: 8 }}>
+            <Text style={{ color: '#6a6a6a', fontSize: 12, marginTop: 8 }}>
               주문일: {format(new Date(item.created_at), 'yyyy.MM.dd')}
             </Text>
           </TouchableOpacity>
@@ -104,7 +104,7 @@ export default function OrdersScreen() {
         ListEmptyComponent={
           <View className="flex-1 items-center gap-3" style={{ paddingTop: 60 }}>
             <Text style={{ fontSize: 40 }}>📋</Text>
-            <Text style={{ color: '#aaa', fontSize: 16 }}>주문 내역이 없습니다.</Text>
+            <Text style={{ color: '#6a6a6a', fontSize: 16 }}>주문 내역이 없습니다.</Text>
           </View>
         }
       />

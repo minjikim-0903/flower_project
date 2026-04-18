@@ -7,6 +7,7 @@ import {
   Alert,
   Switch,
 } from 'react-native';
+import { Button, ButtonText } from '@gluestack-ui/themed';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCartStore } from '@/store/useCartStore';
@@ -34,7 +35,7 @@ export default function CartScreen() {
         <Text className="text-2xl font-bold" style={{ padding: 20, backgroundColor: '#fff' }}>장바구니</Text>
         <View className="flex-1 justify-center items-center gap-3">
           <Text style={{ fontSize: 50 }}>🛒</Text>
-          <Text className="text-base" style={{ color: '#aaa' }}>장바구니가 비어있어요</Text>
+          <Text className="text-base" style={{ color: '#6a6a6a' }}>장바구니가 비어있어요</Text>
         </View>
       </SafeAreaView>
     );
@@ -62,7 +63,7 @@ export default function CartScreen() {
           onValueChange={setIsWholesale}
           trackColor={{ true: '#FF6B9D' }}
         />
-        <Text style={{ color: '#888', fontSize: 13 }}>
+        <Text style={{ color: '#6a6a6a', fontSize: 13 }}>
           {isWholesale ? '도매가 적용' : '소매가 적용'}
         </Text>
       </View>
@@ -79,14 +80,14 @@ export default function CartScreen() {
             >
               <View className="flex-1">
                 <Text className="font-semibold" style={{ fontSize: 15 }}>{item.product.name}</Text>
-                <Text style={{ color: '#888', fontSize: 13, marginTop: 2 }}>
+                <Text style={{ color: '#6a6a6a', fontSize: 13, marginTop: 2 }}>
                   {price.toLocaleString()}원 / {item.product.unit}
                 </Text>
               </View>
               <View className="flex-row items-center gap-2">
                 <TouchableOpacity
                   className="border items-center justify-center"
-                  style={{ width: 28, height: 28, borderRadius: 14, borderColor: '#ddd' }}
+                  style={{ width: 28, height: 28, borderRadius: 14, borderColor: '#f0f0f0' }}
                   onPress={() => updateQuantity(item.product.id, item.quantity - 1)}
                 >
                   <Text className="text-base font-semibold">-</Text>
@@ -94,7 +95,7 @@ export default function CartScreen() {
                 <Text className="text-base font-semibold" style={{ minWidth: 24, textAlign: 'center' }}>{item.quantity}</Text>
                 <TouchableOpacity
                   className="border items-center justify-center"
-                  style={{ width: 28, height: 28, borderRadius: 14, borderColor: '#ddd' }}
+                  style={{ width: 28, height: 28, borderRadius: 14, borderColor: '#f0f0f0' }}
                   onPress={() => updateQuantity(item.product.id, item.quantity + 1)}
                 >
                   <Text className="text-base font-semibold">+</Text>
@@ -114,12 +115,15 @@ export default function CartScreen() {
 
       <View className="bg-white p-5 border-t border-border">
         <View className="flex-row justify-between mb-3">
-          <Text className="text-base" style={{ color: '#666' }}>합계</Text>
+          <Text className="text-base" style={{ color: '#6a6a6a' }}>합계</Text>
           <Text className="text-primary font-bold" style={{ fontSize: 20 }}>{totalPrice.toLocaleString()}원</Text>
         </View>
-        <TouchableOpacity className="bg-primary rounded-xl p-4 items-center" onPress={handleCheckout}>
-          <Text className="text-white text-base font-bold">주문하기</Text>
-        </TouchableOpacity>
+        <Button
+          onPress={handleCheckout}
+          style={{ backgroundColor: '#FF6B9D', borderRadius: 12, minHeight: 52 }}
+        >
+          <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>주문하기</ButtonText>
+        </Button>
       </View>
     </SafeAreaView>
   );

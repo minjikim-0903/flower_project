@@ -69,9 +69,10 @@ export default function SellerStoreScreen() {
             className="bg-white rounded-2xl overflow-hidden"
             style={{
               shadowColor: '#000',
-              shadowOpacity: 0.05,
-              shadowRadius: 4,
-              elevation: 2,
+              shadowOpacity: 0.1,
+              shadowRadius: 8,
+              shadowOffset: { width: 0, height: 4 },
+              elevation: 3,
             }}
             onPress={() => router.push({ pathname: '/seller/store-form', params: { storeId: item.id } })}
             activeOpacity={0.8}
@@ -108,20 +109,20 @@ export default function SellerStoreScreen() {
                   </Text>
                 </View>
               </View>
-              <Text style={{ color: '#888', fontSize: 13 }} numberOfLines={1}>{item.address}</Text>
+              <Text style={{ color: '#6a6a6a', fontSize: 13 }} numberOfLines={1}>{item.address}</Text>
               {item.description ? (
-                <Text style={{ color: '#666', fontSize: 13, lineHeight: 18 }} numberOfLines={2}>{item.description}</Text>
+                <Text style={{ color: '#6a6a6a', fontSize: 13, lineHeight: 18 }} numberOfLines={2}>{item.description}</Text>
               ) : null}
               <View className="flex-row justify-between items-center" style={{ marginTop: 4 }}>
-                <Text style={{ color: '#aaa', fontSize: 12 }}>
+                <Text style={{ color: '#6a6a6a', fontSize: 12 }}>
                   최소주문 {item.min_order_amount.toLocaleString()}원
                 </Text>
                 <TouchableOpacity
                   className="border rounded-lg"
-                  style={{ paddingHorizontal: 12, paddingVertical: 5, borderColor: '#ddd' }}
+                  style={{ paddingHorizontal: 12, paddingVertical: 5, borderColor: '#f0f0f0' }}
                   onPress={() => handleToggleActive(item)}
                 >
-                  <Text style={{ fontSize: 12, color: '#555' }}>
+                  <Text style={{ fontSize: 12, color: '#6a6a6a' }}>
                     {item.is_active ? '휴업 처리' : '영업 재개'}
                   </Text>
                 </TouchableOpacity>
@@ -133,7 +134,7 @@ export default function SellerStoreScreen() {
           <View className="items-center gap-2" style={{ marginTop: 80 }}>
             <Text style={{ fontSize: 48 }}>🏪</Text>
             <Text className="text-lg font-bold text-text-primary">등록된 가게가 없습니다</Text>
-            <Text className="text-sm" style={{ color: '#aaa' }}>가게를 등록하고 판매를 시작해보세요</Text>
+            <Text className="text-sm" style={{ color: '#6a6a6a' }}>가게를 등록하고 판매를 시작해보세요</Text>
             <TouchableOpacity
               className="bg-seller rounded-xl"
               style={{ marginTop: 8, paddingHorizontal: 24, paddingVertical: 12 }}

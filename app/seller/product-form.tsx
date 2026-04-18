@@ -3,11 +3,12 @@ import {
   View,
   Text,
   ScrollView,
-  TextInput,
   TouchableOpacity,
   Alert,
   Switch,
 } from 'react-native';
+import { Input, InputField } from '@gluestack-ui/themed';
+import { Button, ButtonText, ButtonSpinner } from '@gluestack-ui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -130,7 +131,7 @@ const STEPS = ['기본 정보', '판매 조건', '배송 정보', '일정 & 추�
 
 function SectionLabel({ text, required }: { text: string; required?: boolean }) {
   return (
-    <Text className="font-semibold text-sm" style={{ color: '#555', marginTop: 6 }}>
+    <Text className="font-semibold text-sm" style={{ color: '#6a6a6a', marginTop: 6 }}>
       {text}
       {required && <Text style={{ color: '#E74747' }}> *</Text>}
     </Text>
@@ -165,11 +166,11 @@ function ChipSelect({
               { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20 },
               active
                 ? { borderColor: '#2ECC71', backgroundColor: '#2ECC71' }
-                : { borderColor: '#ddd', backgroundColor: '#fff' },
+                : { borderColor: '#f0f0f0', backgroundColor: '#fff' },
             ]}
             onPress={() => onToggle(o.value)}
           >
-            <Text style={[{ color: active ? '#fff' : '#555', fontSize: 13 }, active && { fontWeight: '600' }]}>
+            <Text style={[{ color: active ? '#fff' : '#6a6a6a', fontSize: 13 }, active && { fontWeight: '600' }]}>
               {o.label}
             </Text>
           </TouchableOpacity>
@@ -297,12 +298,14 @@ export default function ProductFormScreen() {
   // ─── 각 스텝 렌더 ──────────────────────────────────────────────────────────
 
   const inputStyle = {
-    borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 10,
+    borderColor: '#f0f0f0',
+    backgroundColor: '#fafafa',
+  };
+
+  const inputFieldStyle = {
     padding: 12,
     fontSize: 15,
-    backgroundColor: '#fafafa',
   };
 
   const renderStep1 = () => (
@@ -315,13 +318,13 @@ export default function ProductFormScreen() {
             { padding: 14 },
             form.product_type === 'fresh_flower'
               ? { borderColor: '#FF6B9D', backgroundColor: '#FFF0F5' }
-              : { borderColor: '#ddd' },
+              : { borderColor: '#f0f0f0' },
           ]}
           onPress={() => handleTypeChange('fresh_flower')}
         >
           <Text
             style={[
-              { fontSize: 15, color: '#666' },
+              { fontSize: 15, color: '#6a6a6a' },
               form.product_type === 'fresh_flower' && { fontWeight: '700' },
             ]}
           >
@@ -334,13 +337,13 @@ export default function ProductFormScreen() {
             { padding: 14 },
             form.product_type === 'tree'
               ? { borderColor: '#2ECC71', backgroundColor: '#F0FFF4' }
-              : { borderColor: '#ddd' },
+              : { borderColor: '#f0f0f0' },
           ]}
           onPress={() => handleTypeChange('tree')}
         >
           <Text
             style={[
-              { fontSize: 15, color: '#666' },
+              { fontSize: 15, color: '#6a6a6a' },
               form.product_type === 'tree' && { fontWeight: '700' },
             ]}
           >
@@ -360,13 +363,13 @@ export default function ProductFormScreen() {
                 { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20 },
                 form.category === c.value
                   ? { borderColor: '#2ECC71', backgroundColor: '#2ECC71' }
-                  : { borderColor: '#ddd', backgroundColor: '#fff' },
+                  : { borderColor: '#f0f0f0', backgroundColor: '#fff' },
               ]}
               onPress={() => set('category', c.value)}
             >
               <Text
                 style={[
-                  { color: form.category === c.value ? '#fff' : '#555', fontSize: 13 },
+                  { color: form.category === c.value ? '#fff' : '#6a6a6a', fontSize: 13 },
                   form.category === c.value && { fontWeight: '600' },
                 ]}
               >
@@ -378,12 +381,14 @@ export default function ProductFormScreen() {
       </ScrollView>
 
       <SectionLabel text="품명" required />
-      <TextInput
-        style={inputStyle}
-        value={form.name}
-        onChangeText={(v) => set('name', v)}
-        placeholder="예: 레드 장미 20송이"
-      />
+      <Input variant="outline" style={inputStyle}>
+        <InputField
+          value={form.name}
+          onChangeText={(v) => set('name', v)}
+          placeholder="예: 레드 장미 20송이"
+          style={inputFieldStyle}
+        />
+      </Input>
 
       <SectionLabel text="품종" />
       {(VARIETY_BY_CATEGORY[form.category as FreshFlowerCategory | TreeCategory] ?? []).length > 0 && (
@@ -393,12 +398,14 @@ export default function ProductFormScreen() {
           onToggle={(v) => set('variety', form.variety === v ? '' : v)}
         />
       )}
-      <TextInput
-        style={[inputStyle, { marginTop: 6 }]}
-        value={form.variety}
-        onChangeText={(v) => set('variety', v)}
-        placeholder="직접 입력 (예: 오하라, 엘레강스)"
-      />
+      <Input variant="outline" style={{ ...inputStyle, marginTop: 6 }}>
+        <InputField
+          value={form.variety}
+          onChangeText={(v) => set('variety', v)}
+          placeholder="직접 입력 (예: 오하라, 엘레강스)"
+          style={inputFieldStyle}
+        />
+      </Input>
 
       <SectionLabel text="컬러" />
       <ChipSelect
@@ -416,12 +423,14 @@ export default function ProductFormScreen() {
       />
 
       <SectionLabel text="개화 시기" />
-      <TextInput
-        style={inputStyle}
-        value={form.blooming_season}
-        onChangeText={(v) => set('blooming_season', v)}
-        placeholder="예: 3월~5월, 연중"
-      />
+      <Input variant="outline" style={inputStyle}>
+        <InputField
+          value={form.blooming_season}
+          onChangeText={(v) => set('blooming_season', v)}
+          placeholder="예: 3월~5월, 연중"
+          style={inputFieldStyle}
+        />
+      </Input>
 
       <SectionLabel text="신선도 등급" />
       <ChipSelect
@@ -431,19 +440,21 @@ export default function ProductFormScreen() {
       />
 
       <SectionLabel text="특징" />
-      <TextInput
-        style={[inputStyle, { minHeight: 80, textAlignVertical: 'top' }]}
-        value={form.characteristics}
-        onChangeText={(v) => set('characteristics', v)}
-        multiline
-        placeholder="예: 꽃잎이 풍성하고 향기가 좋음"
-      />
+      <Input variant="outline" style={inputStyle}>
+        <InputField
+          value={form.characteristics}
+          onChangeText={(v) => set('characteristics', v)}
+          multiline
+          placeholder="예: 꽃잎이 풍성하고 향기가 좋음"
+          style={{ ...inputFieldStyle, minHeight: 80, textAlignVertical: 'top' }}
+        />
+      </Input>
 
       <View
         className="flex-row justify-between items-center border rounded-lg"
-        style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 12, borderColor: '#ddd', marginTop: 6 }}
+        style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 12, borderColor: '#f0f0f0', marginTop: 6 }}
       >
-        <Text style={{ fontSize: 15, color: '#333' }}>가시 있음</Text>
+        <Text style={{ fontSize: 15, color: '#222222' }}>가시 있음</Text>
         <Switch
           value={form.has_thorns}
           onValueChange={(v) => set('has_thorns', v)}
@@ -453,9 +464,9 @@ export default function ProductFormScreen() {
 
       <View
         className="flex-row justify-between items-center border rounded-lg"
-        style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 12, borderColor: '#ddd', marginTop: 6 }}
+        style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 12, borderColor: '#f0f0f0', marginTop: 6 }}
       >
-        <Text style={{ fontSize: 15, color: '#333' }}>향기 있음</Text>
+        <Text style={{ fontSize: 15, color: '#222222' }}>향기 있음</Text>
         <Switch
           value={form.has_fragrance}
           onValueChange={(v) => set('has_fragrance', v)}
@@ -470,86 +481,102 @@ export default function ProductFormScreen() {
       <Row>
         <View style={{ flex: 1 }}>
           <SectionLabel text="소매가 (원)" required />
-          <TextInput
-            style={inputStyle}
-            value={form.retail_price}
-            onChangeText={(v) => set('retail_price', v)}
-            keyboardType="numeric"
-            placeholder="5000"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={form.retail_price}
+              onChangeText={(v) => set('retail_price', v)}
+              keyboardType="numeric"
+              placeholder="5000"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
         <View style={{ flex: 1 }}>
           <SectionLabel text="도매가 (원)" required />
-          <TextInput
-            style={inputStyle}
-            value={form.wholesale_price}
-            onChangeText={(v) => set('wholesale_price', v)}
-            keyboardType="numeric"
-            placeholder="3000"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={form.wholesale_price}
+              onChangeText={(v) => set('wholesale_price', v)}
+              keyboardType="numeric"
+              placeholder="3000"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
       </Row>
 
       <Row>
         <View style={{ flex: 1 }}>
           <SectionLabel text="최소주문수량" />
-          <TextInput
-            style={inputStyle}
-            value={form.min_order_quantity}
-            onChangeText={(v) => set('min_order_quantity', v)}
-            keyboardType="numeric"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={form.min_order_quantity}
+              onChangeText={(v) => set('min_order_quantity', v)}
+              keyboardType="numeric"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
         <View style={{ flex: 1 }}>
           <SectionLabel text="최소도매수량" />
-          <TextInput
-            style={inputStyle}
-            value={form.min_wholesale_quantity}
-            onChangeText={(v) => set('min_wholesale_quantity', v)}
-            keyboardType="numeric"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={form.min_wholesale_quantity}
+              onChangeText={(v) => set('min_wholesale_quantity', v)}
+              keyboardType="numeric"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
       </Row>
 
       <Row>
         <View style={{ flex: 1 }}>
           <SectionLabel text="단위" />
-          <TextInput
-            style={inputStyle}
-            value={form.unit}
-            onChangeText={(v) => set('unit', v)}
-            placeholder="단, 박스, 그루"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={form.unit}
+              onChangeText={(v) => set('unit', v)}
+              placeholder="단, 박스, 그루"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
         <View style={{ flex: 1 }}>
           <SectionLabel text="재고수량" />
-          <TextInput
-            style={inputStyle}
-            value={form.stock}
-            onChangeText={(v) => set('stock', v)}
-            keyboardType="numeric"
-            placeholder="100"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={form.stock}
+              onChangeText={(v) => set('stock', v)}
+              keyboardType="numeric"
+              placeholder="100"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
       </Row>
 
       <SectionLabel text="판매기간" />
       <Row>
         <View style={{ flex: 1 }}>
-          <TextInput
-            style={inputStyle}
-            value={form.sale_start_date}
-            onChangeText={(v) => set('sale_start_date', v)}
-            placeholder="시작 YYYY-MM-DD"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={form.sale_start_date}
+              onChangeText={(v) => set('sale_start_date', v)}
+              placeholder="시작 YYYY-MM-DD"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
         <View style={{ flex: 1 }}>
-          <TextInput
-            style={inputStyle}
-            value={form.sale_end_date}
-            onChangeText={(v) => set('sale_end_date', v)}
-            placeholder="종료 YYYY-MM-DD"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={form.sale_end_date}
+              onChangeText={(v) => set('sale_end_date', v)}
+              placeholder="종료 YYYY-MM-DD"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
       </Row>
 
@@ -570,22 +597,26 @@ export default function ProductFormScreen() {
       ))}
       <Row>
         <View style={{ flex: 1 }}>
-          <TextInput
-            style={inputStyle}
-            value={bulkInput.min_quantity}
-            onChangeText={(v) => setBulkInput((b) => ({ ...b, min_quantity: v }))}
-            keyboardType="numeric"
-            placeholder="최소 수량"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={bulkInput.min_quantity}
+              onChangeText={(v) => setBulkInput((b) => ({ ...b, min_quantity: v }))}
+              keyboardType="numeric"
+              placeholder="최소 수량"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
         <View style={{ flex: 1 }}>
-          <TextInput
-            style={inputStyle}
-            value={bulkInput.discount_rate}
-            onChangeText={(v) => setBulkInput((b) => ({ ...b, discount_rate: v }))}
-            keyboardType="numeric"
-            placeholder="할인율 (%)"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={bulkInput.discount_rate}
+              onChangeText={(v) => setBulkInput((b) => ({ ...b, discount_rate: v }))}
+              keyboardType="numeric"
+              placeholder="할인율 (%)"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
         <TouchableOpacity
           className="bg-seller rounded-lg items-center justify-center"
@@ -601,12 +632,14 @@ export default function ProductFormScreen() {
   const renderStep4 = () => (
     <>
       <SectionLabel text="출하지 (산지)" />
-      <TextInput
-        style={inputStyle}
-        value={form.origin}
-        onChangeText={(v) => set('origin', v)}
-        placeholder="예: 경남 진주, 전북 익산"
-      />
+      <Input variant="outline" style={inputStyle}>
+        <InputField
+          value={form.origin}
+          onChangeText={(v) => set('origin', v)}
+          placeholder="예: 경남 진주, 전북 익산"
+          style={inputFieldStyle}
+        />
+      </Input>
 
       <SectionLabel text="배송 가능 지역" />
       <ChipSelect
@@ -627,38 +660,44 @@ export default function ProductFormScreen() {
       <Row>
         <View style={{ flex: 1 }}>
           <SectionLabel text="배송 소요일" />
-          <TextInput
-            style={inputStyle}
-            value={form.shipping_days_required}
-            onChangeText={(v) => set('shipping_days_required', v)}
-            placeholder="예: 주문 후 익일"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={form.shipping_days_required}
+              onChangeText={(v) => set('shipping_days_required', v)}
+              placeholder="예: 주문 후 익일"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
         <View style={{ flex: 1 }}>
           <SectionLabel text="배송비 (원)" />
-          <TextInput
-            style={inputStyle}
-            value={form.shipping_fee}
-            onChangeText={(v) => set('shipping_fee', v)}
-            keyboardType="numeric"
-            placeholder="0 = 무료"
-          />
+          <Input variant="outline" style={inputStyle}>
+            <InputField
+              value={form.shipping_fee}
+              onChangeText={(v) => set('shipping_fee', v)}
+              keyboardType="numeric"
+              placeholder="0 = 무료"
+              style={inputFieldStyle}
+            />
+          </Input>
         </View>
       </Row>
 
       <SectionLabel text="주문 마감 시간" />
-      <TextInput
-        style={inputStyle}
-        value={form.order_cutoff_time}
-        onChangeText={(v) => set('order_cutoff_time', v)}
-        placeholder="예: 오후 2시"
-      />
+      <Input variant="outline" style={inputStyle}>
+        <InputField
+          value={form.order_cutoff_time}
+          onChangeText={(v) => set('order_cutoff_time', v)}
+          placeholder="예: 오후 2시"
+          style={inputFieldStyle}
+        />
+      </Input>
 
       <View
         className="flex-row justify-between items-center border rounded-lg"
-        style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 12, borderColor: '#ddd', marginTop: 6 }}
+        style={{ backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 12, borderColor: '#f0f0f0', marginTop: 6 }}
       >
-        <Text style={{ fontSize: 15, color: '#333' }}>보냉 포장</Text>
+        <Text style={{ fontSize: 15, color: '#222222' }}>보냉 포장</Text>
         <Switch
           value={form.cold_packaging}
           onValueChange={(v) => set('cold_packaging', v)}
@@ -691,12 +730,14 @@ export default function ProductFormScreen() {
       />
 
       <SectionLabel text="수확일" />
-      <TextInput
-        style={inputStyle}
-        value={form.harvest_date}
-        onChangeText={(v) => set('harvest_date', v)}
-        placeholder="YYYY-MM-DD"
-      />
+      <Input variant="outline" style={inputStyle}>
+        <InputField
+          value={form.harvest_date}
+          onChangeText={(v) => set('harvest_date', v)}
+          placeholder="YYYY-MM-DD"
+          style={inputFieldStyle}
+        />
+      </Input>
 
       <SectionLabel text="판매 시즌" />
       <ChipSelect
@@ -716,13 +757,15 @@ export default function ProductFormScreen() {
       />
 
       <SectionLabel text="유의사항" />
-      <TextInput
-        style={[inputStyle, { minHeight: 80, textAlignVertical: 'top' }]}
-        value={form.notes}
-        onChangeText={(v) => set('notes', v)}
-        multiline
-        placeholder="예: 계절·날씨에 따라 색상 차이 있을 수 있음"
-      />
+      <Input variant="outline" style={inputStyle}>
+        <InputField
+          value={form.notes}
+          onChangeText={(v) => set('notes', v)}
+          multiline
+          placeholder="예: 계절·날씨에 따라 색상 차이 있을 수 있음"
+          style={{ ...inputFieldStyle, minHeight: 80, textAlignVertical: 'top' }}
+        />
+      </Input>
     </>
   );
 
@@ -737,7 +780,7 @@ export default function ProductFormScreen() {
         className="flex-row justify-between items-center p-4 bg-white border-b border-border"
       >
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={{ color: '#888', fontSize: 15 }}>취소</Text>
+          <Text style={{ color: '#6a6a6a', fontSize: 15 }}>취소</Text>
         </TouchableOpacity>
         <Text className="font-bold" style={{ fontSize: 17 }}>상품 등록</Text>
         {step === STEPS.length - 1 ? (
@@ -762,17 +805,17 @@ export default function ProductFormScreen() {
               className="items-center justify-center"
               style={[
                 { width: 24, height: 24, borderRadius: 12 },
-                i <= step ? { backgroundColor: '#2ECC71' } : { backgroundColor: '#e0e0e0' },
+                i <= step ? { backgroundColor: '#2ECC71' } : { backgroundColor: '#f0f0f0' },
               ]}
             >
-              <Text style={[{ fontSize: 11, fontWeight: '700' }, i <= step ? { color: '#fff' } : { color: '#aaa' }]}>
+              <Text style={[{ fontSize: 11, fontWeight: '700' }, i <= step ? { color: '#fff' } : { color: '#6a6a6a' }]}>
                 {i + 1}
               </Text>
             </View>
             <Text
               style={[
                 { fontSize: 10, textAlign: 'center' },
-                i === step ? { color: '#2ECC71', fontWeight: '700' } : { color: '#aaa' },
+                i === step ? { color: '#2ECC71', fontWeight: '700' } : { color: '#6a6a6a' },
               ]}
               numberOfLines={1}
             >
@@ -795,30 +838,33 @@ export default function ProductFormScreen() {
         {step > 0 && (
           <TouchableOpacity
             className="flex-1 items-center border rounded-xl"
-            style={{ padding: 14, borderColor: '#ddd' }}
+            style={{ padding: 14, borderColor: '#f0f0f0', minHeight: 52 }}
             onPress={() => setStep((s) => s - 1)}
           >
-            <Text style={{ color: '#666', fontWeight: '600', fontSize: 15 }}>이전</Text>
+            <Text style={{ color: '#6a6a6a', fontWeight: '600', fontSize: 15 }}>이전</Text>
           </TouchableOpacity>
         )}
         {step < STEPS.length - 1 && (
           <TouchableOpacity
             className="items-center rounded-xl"
-            style={[{ padding: 14, backgroundColor: '#333' }, step === 0 && { flex: 1 }, step > 0 && { flex: 2 }]}
+            style={[{ padding: 14, backgroundColor: '#222222', minHeight: 52 }, step === 0 && { flex: 1 }, step > 0 && { flex: 2 }]}
             onPress={() => setStep((s) => s + 1)}
           >
             <Text className="text-white font-bold" style={{ fontSize: 15 }}>다음</Text>
           </TouchableOpacity>
         )}
         {step === STEPS.length - 1 && (
-          <TouchableOpacity
-            className="flex-1 bg-seller items-center rounded-xl"
-            style={{ padding: 14 }}
+          <Button
+            className="flex-1"
+            isDisabled={submitting}
             onPress={handleSubmit}
-            disabled={submitting}
+            style={{ backgroundColor: '#2ECC71', borderRadius: 12, height: 52, opacity: submitting ? 0.6 : 1 }}
           >
-            <Text className="text-white font-bold" style={{ fontSize: 15 }}>{submitting ? '저장 중...' : '상품 등록 완료'}</Text>
-          </TouchableOpacity>
+            {submitting && <ButtonSpinner color="white" mr="$2" />}
+            <ButtonText style={{ color: '#fff', fontSize: 15, fontWeight: '700' }}>
+              {submitting ? '저장 중...' : '상품 등록 완료'}
+            </ButtonText>
+          </Button>
         )}
       </View>
     </SafeAreaView>

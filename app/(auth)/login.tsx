@@ -2,11 +2,12 @@ import { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { Input, InputField } from '@gluestack-ui/themed';
+import { Button, ButtonText, ButtonSpinner } from '@gluestack-ui/themed';
 import { Link, router } from 'expo-router';
 import { authService } from '@/services/auth';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -70,52 +71,62 @@ export default function LoginScreen() {
     >
       <View className="flex-1 justify-center px-6">
         <Text style={{ fontSize: 40, textAlign: 'center', marginBottom: 8 }}>🌸 꽃시장</Text>
-        <Text className="text-base text-center mb-10" style={{ color: '#666' }}>꽃 도소매 플랫폼</Text>
+        <Text className="text-base text-center mb-10" style={{ color: '#6a6a6a' }}>꽃 도소매 플랫폼</Text>
 
         <View className="mb-3">
-          <TextInput
-            className={`border rounded-xl text-base${emailError ? ' border-error' : ''}`}
-            style={{ borderColor: emailError ? '#FF3B30' : '#ddd', padding: 14 }}
-            placeholder="이메일"
-            value={email}
-            onChangeText={(v) => {
-              setEmail(v);
-              if (emailError) validateEmail(v);
-            }}
-            onBlur={() => validateEmail(email)}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+          <Input
+            variant="outline"
+            style={{ borderRadius: 12, borderColor: emailError ? '#FF3B30' : '#f0f0f0', backgroundColor: '#fff' }}
+          >
+            <InputField
+              placeholder="이메일"
+              value={email}
+              onChangeText={(v) => {
+                setEmail(v);
+                if (emailError) validateEmail(v);
+              }}
+              onBlur={() => validateEmail(email)}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              style={{ padding: 14, fontSize: 15 }}
+            />
+          </Input>
           {emailError ? <Text className="text-error text-xs mt-1 ml-1">{emailError}</Text> : null}
         </View>
 
         <View className="mb-3">
-          <TextInput
-            className={`border rounded-xl text-base${passwordError ? ' border-error' : ''}`}
-            style={{ borderColor: passwordError ? '#FF3B30' : '#ddd', padding: 14 }}
-            placeholder="비밀번호"
-            value={password}
-            onChangeText={(v) => {
-              setPassword(v);
-              if (passwordError) validatePassword(v);
-            }}
-            onBlur={() => validatePassword(password)}
-            secureTextEntry
-          />
+          <Input
+            variant="outline"
+            style={{ borderRadius: 12, borderColor: passwordError ? '#FF3B30' : '#f0f0f0', backgroundColor: '#fff' }}
+          >
+            <InputField
+              placeholder="비밀번호"
+              value={password}
+              onChangeText={(v) => {
+                setPassword(v);
+                if (passwordError) validatePassword(v);
+              }}
+              onBlur={() => validatePassword(password)}
+              secureTextEntry
+              style={{ padding: 14, fontSize: 15 }}
+            />
+          </Input>
           {passwordError ? <Text className="text-error text-xs mt-1 ml-1">{passwordError}</Text> : null}
         </View>
 
-        <TouchableOpacity
-          className="bg-primary rounded-xl p-4 items-center mt-2"
-          style={loading ? { opacity: 0.6 } : undefined}
+        <Button
           onPress={handleLogin}
-          disabled={loading}
+          isDisabled={loading}
+          style={{ backgroundColor: '#FF6B9D', borderRadius: 12, height: 52, opacity: loading ? 0.6 : 1, marginTop: 8 }}
         >
-          <Text className="text-white text-base font-semibold">{loading ? '로그인 중...' : '로그인'}</Text>
-        </TouchableOpacity>
+          {loading && <ButtonSpinner color="white" mr="$2" />}
+          <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>
+            {loading ? '로그인 중...' : '로그인'}
+          </ButtonText>
+        </Button>
 
         <View className="flex-row justify-center mt-6">
-          <Text style={{ color: '#666' }}>아직 계정이 없으신가요? </Text>
+          <Text style={{ color: '#6a6a6a' }}>아직 계정이 없으신가요? </Text>
           <Link href="/(auth)/signup" asChild>
             <TouchableOpacity>
               <Text className="text-primary font-semibold">회원가입</Text>

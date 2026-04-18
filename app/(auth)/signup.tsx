@@ -2,11 +2,12 @@ import { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   Alert,
 } from 'react-native';
+import { Input, InputField } from '@gluestack-ui/themed';
+import { Button, ButtonText, ButtonSpinner } from '@gluestack-ui/themed';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
 import { UserRole } from '@/types';
@@ -45,13 +46,15 @@ export default function SignupScreen() {
       <View className="flex-1 justify-center items-center p-6">
         <Text style={{ fontSize: 28, marginBottom: 12 }}>🌸</Text>
         <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 8 }}>회원가입 완료!</Text>
-        <Text style={{ color: '#666', marginBottom: 40 }}>로그인 후 꽃시장을 이용하세요.</Text>
-        <TouchableOpacity
-          className="bg-primary rounded-xl p-4 w-full items-center"
+        <Text style={{ color: '#6a6a6a', marginBottom: 40 }}>로그인 후 꽃시장을 이용하세요.</Text>
+        <Button
           onPress={() => router.replace('/(auth)/login')}
+          style={{ backgroundColor: '#FF6B9D', borderRadius: 12, height: 52, width: '100%' }}
         >
-          <Text className="text-white text-base font-semibold">로그인하기</Text>
-        </TouchableOpacity>
+          <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>
+            로그인하기
+          </ButtonText>
+        </Button>
       </View>
     );
   }
@@ -60,72 +63,90 @@ export default function SignupScreen() {
     <ScrollView className="flex-1 bg-white" contentContainerStyle={{ padding: 24, paddingTop: 60 }}>
       <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 32 }}>회원가입</Text>
 
-      <Text className="text-sm mb-1 mt-3" style={{ color: '#666' }}>회원 유형</Text>
+      <Text className="text-sm mb-1 mt-3" style={{ color: '#6a6a6a' }}>회원 유형</Text>
       <View className="flex-row gap-3">
         {(['buyer', 'seller'] as UserRole[]).map((r) => (
           <TouchableOpacity
             key={r}
             className="flex-1 items-center rounded-xl border"
             style={[
-              { padding: 14, borderColor: role === r ? '#FF6B9D' : '#ddd', backgroundColor: role === r ? '#FFF0F5' : '#fff' },
+              { padding: 14, borderColor: role === r ? '#FF6B9D' : '#f0f0f0', backgroundColor: role === r ? '#FFF0F5' : '#fff' },
             ]}
             onPress={() => setRole(r)}
           >
-            <Text style={[{ fontSize: 15, color: role === r ? '#FF6B9D' : '#666' }, role === r && { fontWeight: '600' }]}>
+            <Text style={[{ fontSize: 15, color: role === r ? '#FF6B9D' : '#6a6a6a' }, role === r && { fontWeight: '600' }]}>
               {r === 'buyer' ? '🛒 구매자' : '🌺 판매자'}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text className="text-sm mb-1 mt-3" style={{ color: '#666' }}>이름</Text>
-      <TextInput
-        className="border rounded-xl text-base"
-        style={{ borderColor: '#ddd', padding: 14 }}
-        value={name}
-        onChangeText={setName}
-        placeholder="이름 입력"
-      />
-
-      <Text className="text-sm mb-1 mt-3" style={{ color: '#666' }}>이메일</Text>
-      <TextInput
-        className="border rounded-xl text-base"
-        style={{ borderColor: '#ddd', padding: 14 }}
-        value={email}
-        onChangeText={setEmail}
-        placeholder="이메일 입력"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-
-      <Text className="text-sm mb-1 mt-3" style={{ color: '#666' }}>비밀번호</Text>
-      <TextInput
-        className="border rounded-xl text-base"
-        style={{ borderColor: '#ddd', padding: 14 }}
-        value={password}
-        onChangeText={setPassword}
-        placeholder="비밀번호 입력 (6자 이상)"
-        secureTextEntry
-      />
-
-      <Text className="text-sm mb-1 mt-3" style={{ color: '#666' }}>전화번호</Text>
-      <TextInput
-        className="border rounded-xl text-base"
-        style={{ borderColor: '#ddd', padding: 14 }}
-        value={phone}
-        onChangeText={setPhone}
-        placeholder="010-0000-0000"
-        keyboardType="phone-pad"
-      />
-
-      <TouchableOpacity
-        className="bg-primary rounded-xl p-4 items-center mt-8"
-        style={loading ? { opacity: 0.6 } : undefined}
-        onPress={handleSignup}
-        disabled={loading}
+      <Text className="text-sm mb-1 mt-3" style={{ color: '#6a6a6a' }}>이름</Text>
+      <Input
+        variant="outline"
+        style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
       >
-        <Text className="text-white text-base font-semibold">{loading ? '처리 중...' : '회원가입'}</Text>
-      </TouchableOpacity>
+        <InputField
+          value={name}
+          onChangeText={setName}
+          placeholder="이름 입력"
+          style={{ padding: 14, fontSize: 15 }}
+        />
+      </Input>
+
+      <Text className="text-sm mb-1 mt-3" style={{ color: '#6a6a6a' }}>이메일</Text>
+      <Input
+        variant="outline"
+        style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
+      >
+        <InputField
+          value={email}
+          onChangeText={setEmail}
+          placeholder="이메일 입력"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          style={{ padding: 14, fontSize: 15 }}
+        />
+      </Input>
+
+      <Text className="text-sm mb-1 mt-3" style={{ color: '#6a6a6a' }}>비밀번호</Text>
+      <Input
+        variant="outline"
+        style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
+      >
+        <InputField
+          value={password}
+          onChangeText={setPassword}
+          placeholder="비밀번호 입력 (6자 이상)"
+          secureTextEntry
+          style={{ padding: 14, fontSize: 15 }}
+        />
+      </Input>
+
+      <Text className="text-sm mb-1 mt-3" style={{ color: '#6a6a6a' }}>전화번호</Text>
+      <Input
+        variant="outline"
+        style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
+      >
+        <InputField
+          value={phone}
+          onChangeText={setPhone}
+          placeholder="010-0000-0000"
+          keyboardType="phone-pad"
+          style={{ padding: 14, fontSize: 15 }}
+        />
+      </Input>
+
+      <Button
+        onPress={handleSignup}
+        isDisabled={loading}
+        style={{ backgroundColor: '#FF6B9D', borderRadius: 12, height: 52, opacity: loading ? 0.6 : 1, marginTop: 32 }}
+      >
+        {loading && <ButtonSpinner color="white" mr="$2" />}
+        <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>
+          {loading ? '처리 중...' : '회원가입'}
+        </ButtonText>
+      </Button>
 
       <TouchableOpacity onPress={() => router.replace('/(auth)/login')} className="items-center mt-4">
         <Text className="text-primary">이미 계정이 있으신가요? 로그인</Text>

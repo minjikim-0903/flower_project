@@ -1,6 +1,7 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/store/useAuthStore';
+import { Button, ButtonText } from '@gluestack-ui/themed';
 
 export default function SellerSettingScreen() {
   const { profile, signOut } = useAuthStore();
@@ -34,12 +35,12 @@ export default function SellerSettingScreen() {
           <Text className="font-medium">{profile?.address || '-'}</Text>
         </View>
       </View>
-      <TouchableOpacity
-        className="m-4 p-4 rounded-xl bg-white items-center border border-seller"
+      <Button
         onPress={signOut}
+        style={{ backgroundColor: '#fff', borderRadius: 12, minHeight: 52, margin: 16, borderWidth: 1, borderColor: '#2ECC71' }}
       >
-        <Text className="text-seller font-semibold text-base">로그아웃</Text>
-      </TouchableOpacity>
+        <ButtonText style={{ color: '#2ECC71', fontSize: 16, fontWeight: '600' }}>로그아웃</ButtonText>
+      </Button>
     </SafeAreaView>
   );
 }

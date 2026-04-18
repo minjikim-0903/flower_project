@@ -1,7 +1,8 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useAuthStore } from '@/store/useAuthStore';
+import { Button, ButtonText } from '@gluestack-ui/themed';
 
 export default function BuyerProfileScreen() {
   const { profile, signOut } = useAuthStore();
@@ -27,12 +28,18 @@ export default function BuyerProfileScreen() {
         <InfoRow label="전화번호" value={profile?.phone || '-'} />
         <InfoRow label="주소" value={profile?.address || '-'} />
       </View>
-      <TouchableOpacity className="mx-4 mt-4 p-4 rounded-xl bg-primary items-center" onPress={() => router.replace('/users/home')}>
-        <Text className="text-white font-semibold text-base">홈으로</Text>
-      </TouchableOpacity>
-      <TouchableOpacity className="m-4 p-4 rounded-xl bg-white items-center border border-primary" onPress={handleSignOut}>
-        <Text className="text-primary font-semibold text-base">로그아웃</Text>
-      </TouchableOpacity>
+      <Button
+        onPress={() => router.replace('/users/home')}
+        style={{ backgroundColor: '#FF6B9D', borderRadius: 12, minHeight: 52, marginHorizontal: 16, marginTop: 16 }}
+      >
+        <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>홈으로</ButtonText>
+      </Button>
+      <Button
+        onPress={handleSignOut}
+        style={{ backgroundColor: '#fff', borderRadius: 12, minHeight: 52, margin: 16, borderWidth: 1, borderColor: '#FF6B9D' }}
+      >
+        <ButtonText style={{ color: '#FF6B9D', fontSize: 16, fontWeight: '600' }}>로그아웃</ButtonText>
+      </Button>
     </SafeAreaView>
   );
 }

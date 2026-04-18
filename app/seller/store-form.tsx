@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   Alert,
   Image,
   ActivityIndicator,
 } from 'react-native';
+import { Input, InputField } from '@gluestack-ui/themed';
 import * as ImagePicker from 'expo-image-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -104,22 +104,13 @@ export default function StoreFormScreen() {
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} color="#2ECC71" />;
 
-  const inputStyle = {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 15,
-  };
-
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View
         className="flex-row justify-between items-center p-4 bg-white border-b border-border"
       >
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={{ color: '#888', fontSize: 15 }}>취소</Text>
+          <Text style={{ color: '#6a6a6a', fontSize: 15 }}>취소</Text>
         </TouchableOpacity>
         <Text className="font-bold" style={{ fontSize: 17 }}>{store ? '가게 수정' : '가게 등록'}</Text>
         <TouchableOpacity onPress={handleSave} disabled={saving}>
@@ -140,68 +131,93 @@ export default function StoreFormScreen() {
                 height: 160,
                 backgroundColor: '#f5f5f5',
                 borderRadius: 16,
-                borderColor: '#ddd',
+                borderColor: '#f0f0f0',
                 borderStyle: 'dashed',
                 gap: 8,
               }}
             >
               <Text style={{ fontSize: 32 }}>📸</Text>
-              <Text style={{ color: '#aaa', fontSize: 14 }}>가게 사진 등록</Text>
+              <Text style={{ color: '#6a6a6a', fontSize: 14 }}>가게 사진 등록</Text>
             </View>
           )}
         </TouchableOpacity>
 
         <View className="gap-1">
-          <Text className="font-semibold text-sm" style={{ color: '#555' }}>가게명 *</Text>
-          <TextInput
-            style={inputStyle}
-            value={form.name}
-            onChangeText={(v) => setForm({ ...form, name: v })}
-            placeholder="예: 서울꽃도매"
-          />
+          <Text className="font-semibold text-sm" style={{ color: '#6a6a6a' }}>가게명 *</Text>
+          <Input
+            variant="outline"
+            style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
+          >
+            <InputField
+              value={form.name}
+              onChangeText={(v) => setForm({ ...form, name: v })}
+              placeholder="예: 서울꽃도매"
+              style={{ padding: 14, fontSize: 15 }}
+            />
+          </Input>
         </View>
 
         <View className="gap-1">
-          <Text className="font-semibold text-sm" style={{ color: '#555' }}>주소 *</Text>
-          <TextInput
-            style={inputStyle}
-            value={form.address}
-            onChangeText={(v) => setForm({ ...form, address: v })}
-            placeholder="예: 서울시 강남구 양재동 화훼공판장"
-          />
+          <Text className="font-semibold text-sm" style={{ color: '#6a6a6a' }}>주소 *</Text>
+          <Input
+            variant="outline"
+            style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
+          >
+            <InputField
+              value={form.address}
+              onChangeText={(v) => setForm({ ...form, address: v })}
+              placeholder="예: 서울시 강남구 양재동 화훼공판장"
+              style={{ padding: 14, fontSize: 15 }}
+            />
+          </Input>
         </View>
 
         <View className="gap-1">
-          <Text className="font-semibold text-sm" style={{ color: '#555' }}>사업자등록번호</Text>
-          <TextInput
-            style={inputStyle}
-            value={form.business_number}
-            onChangeText={(v) => setForm({ ...form, business_number: v })}
-            placeholder="예: 123-45-67890"
-            keyboardType="numeric"
-          />
+          <Text className="font-semibold text-sm" style={{ color: '#6a6a6a' }}>사업자등록번호</Text>
+          <Input
+            variant="outline"
+            style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
+          >
+            <InputField
+              value={form.business_number}
+              onChangeText={(v) => setForm({ ...form, business_number: v })}
+              placeholder="예: 123-45-67890"
+              keyboardType="numeric"
+              style={{ padding: 14, fontSize: 15 }}
+            />
+          </Input>
         </View>
 
         <View className="gap-1">
-          <Text className="font-semibold text-sm" style={{ color: '#555' }}>최소 주문금액 (원)</Text>
-          <TextInput
-            style={inputStyle}
-            value={form.min_order_amount}
-            onChangeText={(v) => setForm({ ...form, min_order_amount: v })}
-            placeholder="예: 50000"
-            keyboardType="numeric"
-          />
+          <Text className="font-semibold text-sm" style={{ color: '#6a6a6a' }}>최소 주문금액 (원)</Text>
+          <Input
+            variant="outline"
+            style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
+          >
+            <InputField
+              value={form.min_order_amount}
+              onChangeText={(v) => setForm({ ...form, min_order_amount: v })}
+              placeholder="예: 50000"
+              keyboardType="numeric"
+              style={{ padding: 14, fontSize: 15 }}
+            />
+          </Input>
         </View>
 
         <View className="gap-1">
-          <Text className="font-semibold text-sm" style={{ color: '#555' }}>가게 소개</Text>
-          <TextInput
-            style={[inputStyle, { minHeight: 100, textAlignVertical: 'top' }]}
-            value={form.description}
-            onChangeText={(v) => setForm({ ...form, description: v })}
-            placeholder="가게 소개글을 입력해주세요"
-            multiline
-          />
+          <Text className="font-semibold text-sm" style={{ color: '#6a6a6a' }}>가게 소개</Text>
+          <Input
+            variant="outline"
+            style={{ borderRadius: 12, borderColor: '#f0f0f0', backgroundColor: '#fff' }}
+          >
+            <InputField
+              value={form.description}
+              onChangeText={(v) => setForm({ ...form, description: v })}
+              placeholder="가게 소개글을 입력해주세요"
+              multiline
+              style={{ padding: 14, fontSize: 15, minHeight: 100, textAlignVertical: 'top' }}
+            />
+          </Input>
         </View>
       </ScrollView>
     </SafeAreaView>
