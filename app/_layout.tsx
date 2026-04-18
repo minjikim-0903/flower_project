@@ -1,6 +1,6 @@
 import '../global.css';
 import { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { Stack, router, useSegments } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GluestackUIProvider } from '@gluestack-ui/themed';
@@ -9,7 +9,9 @@ import { supabase } from '@/services/supabase';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export default function RootLayout() {
-  const { setSession, loadProfile } = useAuthStore();
+  const { setSession, loadProfile, session, isLoading } = useAuthStore();
+  const segments = useSegments();
+  const inAuthGroup = segments[0] === '(auth)';
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -17,6 +19,12 @@ export default function RootLayout() {
       loadProfile();
     });
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && !session && !inAuthGroup) {
+      router.replace('/(auth)/login');
+    }
+  }, [session, isLoading, inAuthGroup]);
 
   return (
     <GluestackUIProvider config={gluestackUIConfig}>

@@ -12,6 +12,7 @@ import { Input, InputField } from '@gluestack-ui/themed';
 import * as ImagePicker from 'expo-image-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
+import { Camera } from 'lucide-react-native';
 import { useAuthStore } from '@/store/useAuthStore';
 import { storeService } from '@/services/stores';
 import { Store } from '@/types';
@@ -136,7 +137,7 @@ export default function StoreFormScreen() {
                 gap: 8,
               }}
             >
-              <Text style={{ fontSize: 32 }}>📸</Text>
+              <Camera size={32} color="#6a6a6a" strokeWidth={1.8} />
               <Text style={{ color: '#6a6a6a', fontSize: 14 }}>가게 사진 등록</Text>
             </View>
           )}

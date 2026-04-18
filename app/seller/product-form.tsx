@@ -328,7 +328,7 @@ export default function ProductFormScreen() {
               form.product_type === 'fresh_flower' && { fontWeight: '700' },
             ]}
           >
-            🌸 생화
+            생화
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -347,7 +347,7 @@ export default function ProductFormScreen() {
               form.product_type === 'tree' && { fontWeight: '700' },
             ]}
           >
-            🌳 나무
+            나무
           </Text>
         </TouchableOpacity>
       </View>

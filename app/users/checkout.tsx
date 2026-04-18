@@ -93,7 +93,7 @@ export default function CheckoutScreen() {
             }}
           >
             <Text style={{ color: orderType === 'wholesale' ? '#FF6B9D' : '#6B9DFF', fontWeight: '600' }}>
-              {orderType === 'wholesale' ? '🏭 도매 주문' : '🛒 소매 주문'}
+              {orderType === 'wholesale' ? '도매 주문' : '소매 주문'}
             </Text>
           </View>
         </View>

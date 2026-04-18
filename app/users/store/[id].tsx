@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Button, ButtonText } from '@gluestack-ui/themed';
+import { Flower2 } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { storeService } from '@/services/stores';
@@ -40,8 +41,8 @@ const TREE_LABELS: Record<TreeCategory, string> = {
 };
 
 const PRODUCT_TYPE_LABELS: Record<ProductType, string> = {
-  fresh_flower: '🌸 생화',
-  tree: '🌳 나무',
+  fresh_flower: '생화',
+  tree: '나무',
 };
 
 export default function StoreDetailScreen() {
@@ -131,7 +132,7 @@ export default function StoreDetailScreen() {
                 className="w-full justify-center items-center"
                 style={{ height: 220, backgroundColor: '#FFF0F5' }}
               >
-                <Text style={{ fontSize: 48 }}>🌸</Text>
+                <Flower2 size={48} color="#FF6B9D" strokeWidth={1.5} />
               </View>
             )}
 
@@ -191,7 +192,7 @@ export default function StoreDetailScreen() {
                     color: selectedType === 'fresh_flower' ? '#fff' : '#6a6a6a',
                   }}
                 >
-                  🌸 생화 ({freshCount})
+                  생화 ({freshCount})
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -211,7 +212,7 @@ export default function StoreDetailScreen() {
                     color: selectedType === 'tree' ? '#fff' : '#6a6a6a',
                   }}
                 >
-                  🌳 나무 ({treeCount})
+                  나무 ({treeCount})
                 </Text>
               </TouchableOpacity>
             </View>
@@ -233,9 +234,11 @@ export default function StoreDetailScreen() {
                 className="justify-center items-center"
                 style={{ width: 100, height: 110, backgroundColor: '#f5f5f5' }}
               >
-                <Text style={{ fontSize: 28 }}>
-                  {item.product_type === 'fresh_flower' ? '🌸' : '🌳'}
-                </Text>
+                {item.product_type === 'fresh_flower' ? (
+                  <Flower2 size={28} color="#FF6B9D" strokeWidth={1.5} />
+                ) : (
+                  <Flower2 size={28} color="#2ECC71" strokeWidth={1.5} />
+                )}
               </View>
             )}
             <View className="flex-1 p-3">

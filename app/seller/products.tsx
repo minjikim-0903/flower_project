@@ -152,7 +152,7 @@ export default function ProductsScreen() {
         className="flex-row bg-white border-b border-border gap-2"
         style={{ paddingHorizontal: 12, paddingVertical: 10 }}
       >
-        {([['all', '전체'], ['fresh_flower', '🌸 생화'], ['tree', '🌳 나무']] as const).map(([val, label]) => (
+        {([['all', '전체'], ['fresh_flower', '생화'], ['tree', '나무']] as const).map(([val, label]) => (
           <TouchableOpacity
             key={val}
             className="flex-1 items-center border"

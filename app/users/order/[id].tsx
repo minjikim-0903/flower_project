@@ -11,6 +11,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { ClipboardList, CheckCircle, Package, Truck, XCircle, PartyPopper } from 'lucide-react-native';
 import { orderService } from '@/services/orders';
 import { Order, OrderStatus } from '@/types';
 
@@ -25,13 +26,13 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
   cancelled: '취소됨',
 };
 
-const STATUS_ICON: Record<OrderStatus, string> = {
-  pending: '📋',
-  confirmed: '✅',
-  preparing: '📦',
-  shipped: '🚚',
-  delivered: '🎉',
-  cancelled: '❌',
+const STATUS_ICONS: Record<OrderStatus, React.ComponentType<any>> = {
+  pending: ClipboardList,
+  confirmed: CheckCircle,
+  preparing: Package,
+  shipped: Truck,
+  delivered: PartyPopper,
+  cancelled: XCircle,
 };
 
 export default function OrderDetailScreen() {
@@ -89,13 +90,15 @@ export default function OrderDetailScreen() {
             className="rounded-xl p-4 items-center"
             style={{ backgroundColor: '#E7474720' }}
           >
-            <Text style={{ color: '#E74747', fontWeight: '700', fontSize: 16 }}>❌ 취소된 주문입니다</Text>
+            <Text style={{ color: '#E74747', fontWeight: '700', fontSize: 16 }}>취소된 주문입니다</Text>
           </View>
         ) : (
           <View className="bg-white rounded-2xl p-4">
             <Text style={{ fontWeight: '700', fontSize: 15, marginBottom: 14 }}>배송 현황</Text>
             <View className="flex-row justify-between items-start">
-              {STATUS_STEPS.map((step, idx) => (
+              {STATUS_STEPS.map((step, idx) => {
+                const StatusIcon = STATUS_ICONS[step] ?? ClipboardList;
+                return (
                 <View key={step} className="flex-1 items-center" style={{ position: 'relative' }}>
                   <View
                     className="justify-center items-center"
@@ -106,9 +109,11 @@ export default function OrderDetailScreen() {
                         : { backgroundColor: '#f0f0f0' },
                     ]}
                   >
-                    <Text style={{ fontSize: 16 }}>
-                      {idx <= currentStepIdx ? STATUS_ICON[step] : '○'}
-                    </Text>
+                    {idx <= currentStepIdx ? (
+                      <StatusIcon size={18} color="#FF6B9D" strokeWidth={1.8} />
+                    ) : (
+                      <Text style={{ fontSize: 16, color: '#c0c0c0' }}>○</Text>
+                    )}
                   </View>
                   {idx < STATUS_STEPS.length - 1 && (
                     <View
@@ -139,7 +144,8 @@ export default function OrderDetailScreen() {
                     {STATUS_LABEL[step]}
                   </Text>
                 </View>
-              ))}
+                );
+              })}
             </View>
           </View>
         )}
@@ -148,7 +154,7 @@ export default function OrderDetailScreen() {
         <View className="bg-white rounded-2xl p-4">
           <Text style={{ fontWeight: '700', fontSize: 15, marginBottom: 14 }}>주문 정보</Text>
           <Row label="가게" value={order.store?.name ?? '-'} />
-          <Row label="주문 유형" value={order.order_type === 'wholesale' ? '🏭 도매' : '🛒 소매'} />
+          <Row label="주문 유형" value={order.order_type === 'wholesale' ? '도매' : '소매'} />
           <Row
             label="주문일"
             value={format(new Date(order.created_at), 'yyyy.MM.dd HH:mm', { locale: ko })}

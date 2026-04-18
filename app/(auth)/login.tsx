@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { Flower2 } from 'lucide-react-native';
 import { Input, InputField } from '@gluestack-ui/themed';
 import { Button, ButtonText, ButtonSpinner } from '@gluestack-ui/themed';
 import { Link, router } from 'expo-router';
@@ -70,7 +71,10 @@ export default function LoginScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View className="flex-1 justify-center px-6">
-        <Text style={{ fontSize: 40, textAlign: 'center', marginBottom: 8 }}>🌸 꽃시장</Text>
+        <View style={{ alignItems: 'center', marginBottom: 8 }}>
+          <Flower2 size={44} color="#FF6B9D" strokeWidth={1.8} />
+          <Text style={{ fontSize: 22, fontWeight: '700', color: '#222222', marginTop: 6 }}>꽃시장</Text>
+        </View>
         <Text className="text-base text-center mb-10" style={{ color: '#6a6a6a' }}>꽃 도소매 플랫폼</Text>
 
         <View className="mb-3">

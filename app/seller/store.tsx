@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useFocusEffect } from 'expo-router';
 import { useAuthStore } from '@/store/useAuthStore';
 import { storeService } from '@/services/stores';
+import { Store as StoreIcon } from 'lucide-react-native';
 import { Store } from '@/types';
 
 export default function SellerStoreScreen() {
@@ -84,7 +85,7 @@ export default function SellerStoreScreen() {
                 className="w-full justify-center items-center"
                 style={{ height: 100, backgroundColor: '#f5f5f5' }}
               >
-                <Text style={{ fontSize: 28 }}>🏪</Text>
+                <StoreIcon size={28} color="#2ECC71" strokeWidth={1.8} />
               </View>
             )}
             <View style={{ padding: 14, gap: 6 }}>
@@ -132,7 +133,7 @@ export default function SellerStoreScreen() {
         )}
         ListEmptyComponent={
           <View className="items-center gap-2" style={{ marginTop: 80 }}>
-            <Text style={{ fontSize: 48 }}>🏪</Text>
+            <StoreIcon size={48} color="#6a6a6a" strokeWidth={1.5} />
             <Text className="text-lg font-bold text-text-primary">등록된 가게가 없습니다</Text>
             <Text className="text-sm" style={{ color: '#6a6a6a' }}>가게를 등록하고 판매를 시작해보세요</Text>
             <TouchableOpacity

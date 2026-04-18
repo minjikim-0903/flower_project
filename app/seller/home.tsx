@@ -7,6 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { router } from 'expo-router';
+import { Sprout } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/store/useAuthStore';
 import { storeService } from '@/services/stores';
@@ -44,7 +45,7 @@ export default function SellerHomeScreen() {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <View className="flex-1 justify-center items-center p-8 gap-3">
-          <Text style={{ fontSize: 50 }}>🌱</Text>
+          <Sprout size={50} color="#2ECC71" strokeWidth={1.5} />
           <Text className="font-bold" style={{ fontSize: 22, marginTop: 8 }}>가게를 등록해주세요</Text>
           <Text style={{ color: '#888', textAlign: 'center', lineHeight: 22 }}>
             꽃시장에 가게를 등록하고{'\n'}구매자들에게 꽃을 판매해보세요.
@@ -68,7 +69,7 @@ export default function SellerHomeScreen() {
       <ScrollView>
         <View className="p-5 bg-white">
           <Text className="text-2xl font-bold">{store.name}</Text>
-          <Text style={{ color: '#888', marginTop: 4 }}>{profile?.name}님, 안녕하세요 👋</Text>
+          <Text style={{ color: '#888', marginTop: 4 }}>{profile?.name}님, 안녕하세요</Text>
         </View>
 
         <View className="flex-row gap-3 p-4">

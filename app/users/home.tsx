@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   useWindowDimensions,
 } from 'react-native';
-import { Heart, Plus, Star, Store as StoreIcon } from 'lucide-react-native';
+import { Heart, Plus, Star, Store as StoreIcon, Flower2, Leaf, Search, Gift, Sun } from 'lucide-react-native';
 import { Input, InputField } from '@gluestack-ui/themed';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -45,19 +45,19 @@ const RECOMMENDED_PRODUCTS = [
 const COL_GAP = 8;
 
 const CLASSIFICATION_CATEGORIES = [
-  { emoji: '🌹', label: '장미류' },
-  { emoji: '🌸', label: '국화류' },
-  { emoji: '🌺', label: '백합류' },
-  { emoji: '💐', label: '혼합 초화류' },
-  { emoji: '🌿', label: '그린류' },
-  { emoji: '🌻', label: '계절화' },
+  { icon: Flower2, label: '장미류' },
+  { icon: Flower2, label: '국화류' },
+  { icon: Flower2, label: '백합류' },
+  { icon: Flower2, label: '혼합 초화류' },
+  { icon: Leaf, label: '그린류' },
+  { icon: Flower2, label: '계절화' },
 ];
 
 const USE_CATEGORIES = [
-  { emoji: '💍', label: '웨딩' },
-  { emoji: '🕯️', label: '근조' },
-  { emoji: '🎉', label: '행사' },
-  { emoji: '🏠', label: '일상' },
+  { icon: Heart, label: '웨딩' },
+  { icon: Star, label: '근조' },
+  { icon: Gift, label: '행사' },
+  { icon: Sun, label: '일상' },
 ];
 
 function CategoryCard({
@@ -66,11 +66,12 @@ function CategoryCard({
   selected,
   onPress,
 }: {
-  item: { emoji: string; label: string };
+  item: { icon: React.ComponentType<any>; label: string };
   width: number;
   selected: boolean;
   onPress: () => void;
 }) {
+  const IconComponent = item.icon;
   return (
     <View style={{ width, alignItems: 'center' }}>
       <TouchableOpacity
@@ -92,7 +93,7 @@ function CategoryCard({
         }}
         onPress={onPress}
       >
-        <Text style={{ fontSize: 24 }}>{item.emoji}</Text>
+        <IconComponent size={24} color={selected ? '#FF6B9D' : '#6a6a6a'} strokeWidth={1.8} />
       </TouchableOpacity>
       <Text
         style={{
@@ -150,7 +151,7 @@ export default function BuyerHomeScreen() {
           <>
             {/* 헤더 */}
             <View style={{ paddingVertical: 20 }}>
-              <Text style={{ fontSize: 22, fontWeight: 'bold' }}>안녕하세요, {profile?.name}님 👋</Text>
+              <Text style={{ fontSize: 22, fontWeight: 'bold' }}>안녕하세요, {profile?.name}님</Text>
               <Text style={{ color: '#6a6a6a', marginTop: 4 }}>오늘도 좋은 꽃을 만나보세요</Text>
             </View>
 
@@ -202,7 +203,7 @@ export default function BuyerHomeScreen() {
               ))}
               {/* 전체보기 */}
               <CategoryCard
-                item={{ emoji: '🔍', label: '전체보기' }}
+                item={{ icon: Search, label: '전체보기' }}
                 width={col4Width}
                 selected={selectedCategory === null}
                 onPress={() => setSelectedCategory(null)}
@@ -224,7 +225,10 @@ export default function BuyerHomeScreen() {
                             justifyContent: 'center',
                           }}
                         >
-                          <Text style={{ fontSize: 15 }}>{USE_CATEGORIES[idx].emoji}</Text>
+                          {(() => {
+                            const UseIcon = USE_CATEGORIES[idx].icon;
+                            return <UseIcon size={15} color={selectedCategory === USE_CATEGORIES[idx].label ? '#FF6B9D' : '#6a6a6a'} strokeWidth={1.8} />;
+                          })()}
                         </TouchableOpacity>
                       ))}
                     </View>
@@ -314,7 +318,7 @@ export default function BuyerHomeScreen() {
                 className="w-full justify-center items-center"
                 style={{ height: 160, backgroundColor: '#FFF0F5' }}
               >
-                <Text style={{ fontSize: 32 }}>🌸</Text>
+                <Flower2 size={32} color="#FF6B9D" strokeWidth={1.8} />
               </View>
             )}
             <View style={{ padding: 14 }}>

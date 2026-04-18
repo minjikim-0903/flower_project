@@ -1,4 +1,5 @@
 import { View, Text } from 'react-native';
+import { User } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -19,7 +20,7 @@ export default function BuyerProfileScreen() {
           className="justify-center items-center mb-3"
           style={{ width: 80, height: 80, borderRadius: 40, backgroundColor: '#FFF0F5' }}
         >
-          <Text style={{ fontSize: 36 }}>👤</Text>
+          <User size={36} color="#6a6a6a" strokeWidth={1.8} />
         </View>
         <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{profile?.name}</Text>
         <Text style={{ color: '#888', marginTop: 4 }}>구매자</Text>

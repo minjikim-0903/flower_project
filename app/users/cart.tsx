@@ -8,6 +8,7 @@ import {
   Switch,
 } from 'react-native';
 import { Button, ButtonText } from '@gluestack-ui/themed';
+import { ShoppingCart } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCartStore } from '@/store/useCartStore';
@@ -34,7 +35,7 @@ export default function CartScreen() {
       <SafeAreaView className="flex-1 bg-background">
         <Text className="text-2xl font-bold" style={{ padding: 20, backgroundColor: '#fff' }}>장바구니</Text>
         <View className="flex-1 justify-center items-center gap-3">
-          <Text style={{ fontSize: 50 }}>🛒</Text>
+          <ShoppingCart size={50} color="#FF6B9D" strokeWidth={1.5} />
           <Text className="text-base" style={{ color: '#6a6a6a' }}>장바구니가 비어있어요</Text>
         </View>
       </SafeAreaView>

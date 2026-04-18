@@ -6,10 +6,12 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import { Flower2, ShoppingBag, Leaf } from 'lucide-react-native';
 import { Input, InputField } from '@gluestack-ui/themed';
 import { Button, ButtonText, ButtonSpinner } from '@gluestack-ui/themed';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
+import { supabase } from '@/services/supabase';
 import { UserRole } from '@/types';
 
 export default function SignupScreen() {
@@ -33,6 +35,7 @@ export default function SignupScreen() {
     setLoading(true);
     try {
       await authService.signUp(email, password, name, role, phone);
+      await supabase.auth.signOut();
       setCompleted(true);
     } catch (error: any) {
       Alert.alert('가입 실패', error.message || '다시 시도해주세요.');
@@ -44,7 +47,9 @@ export default function SignupScreen() {
   if (completed) {
     return (
       <View className="flex-1 justify-center items-center p-6">
-        <Text style={{ fontSize: 28, marginBottom: 12 }}>🌸</Text>
+        <View style={{ marginBottom: 12 }}>
+          <Flower2 size={40} color="#FF6B9D" strokeWidth={1.8} />
+        </View>
         <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 8 }}>회원가입 완료!</Text>
         <Text style={{ color: '#6a6a6a', marginBottom: 40 }}>로그인 후 꽃시장을 이용하세요.</Text>
         <Button
@@ -74,9 +79,17 @@ export default function SignupScreen() {
             ]}
             onPress={() => setRole(r)}
           >
-            <Text style={[{ fontSize: 15, color: role === r ? '#FF6B9D' : '#6a6a6a' }, role === r && { fontWeight: '600' }]}>
-              {r === 'buyer' ? '🛒 구매자' : '🌺 판매자'}
-            </Text>
+            {r === 'buyer' ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <ShoppingBag size={16} color={role === r ? '#FF6B9D' : '#6a6a6a'} strokeWidth={1.8} />
+                  <Text style={[{ fontSize: 15, color: role === r ? '#FF6B9D' : '#6a6a6a' }, role === r && { fontWeight: '600' }]}>구매자</Text>
+                </View>
+              ) : (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <Leaf size={16} color={role === r ? '#FF6B9D' : '#6a6a6a'} strokeWidth={1.8} />
+                  <Text style={[{ fontSize: 15, color: role === r ? '#FF6B9D' : '#6a6a6a' }, role === r && { fontWeight: '600' }]}>판매자</Text>
+                </View>
+              )}
           </TouchableOpacity>
         ))}
       </View>

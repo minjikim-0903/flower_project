@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { format, isToday, isTomorrow, addDays, startOfDay } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { CheckCircle2, Circle, ChevronRight } from 'lucide-react-native';
+import { CheckCircle2, Circle, ChevronRight, Package } from 'lucide-react-native';
 import { useAuthStore } from '@/store/useAuthStore';
 import { storeService } from '@/services/stores';
 import { orderService } from '@/services/orders';
@@ -240,7 +240,7 @@ export default function SellerOrdersScreen() {
                   </View>
                 </View>
                 <Text style={{ fontSize: 13, color: '#6a6a6a', marginBottom: 2 }}>
-                  {item.order_type === 'wholesale' ? '🏭 도매' : '🛒 소매'} · {item.total_price.toLocaleString()}원
+                  {item.order_type === 'wholesale' ? '도매' : '소매'} · {item.total_price.toLocaleString()}원
                 </Text>
                 <Text style={{ fontSize: 12, color: '#6a6a6a' }} numberOfLines={1}>
                   {item.delivery_address}
@@ -257,7 +257,7 @@ export default function SellerOrdersScreen() {
         contentContainerStyle={{ paddingBottom: 32 }}
         ListEmptyComponent={
           <View style={{ alignItems: 'center', paddingTop: 60, gap: 12 }}>
-            <Text style={{ fontSize: 40 }}>📦</Text>
+            <Package size={40} color="#6a6a6a" strokeWidth={1.5} />
             <Text style={{ color: '#6a6a6a', fontSize: 16 }}>이 날 주문이 없습니다.</Text>
           </View>
         }

@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { router } from 'expo-router';
+import { ClipboardList } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { format } from 'date-fns';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -103,7 +104,7 @@ export default function OrdersScreen() {
         contentContainerStyle={{ padding: 16, gap: 12 }}
         ListEmptyComponent={
           <View className="flex-1 items-center gap-3" style={{ paddingTop: 60 }}>
-            <Text style={{ fontSize: 40 }}>📋</Text>
+            <ClipboardList size={40} color="#6a6a6a" strokeWidth={1.5} />
             <Text style={{ color: '#6a6a6a', fontSize: 16 }}>주문 내역이 없습니다.</Text>
           </View>
         }
