@@ -189,7 +189,7 @@ export default function ProductsScreen() {
               style={[
                 { width: 10, height: 10, borderRadius: 5 },
                 item.product_type === 'fresh_flower'
-                  ? { backgroundColor: '#FF6B9D' }
+                  ? { backgroundColor: '#FF3D6C' }
                   : { backgroundColor: '#2ECC71' },
               ]}
             />

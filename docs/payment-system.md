@@ -2,46 +2,40 @@
 
 ## 기술 스택
 
-- **PG 연동**: 포트원 V1 (아임포트)
+- **PG 연동**: 포트원 V2 + 토스페이먼츠
 - **프레임워크**: React Native (Expo) — 웹/네이티브 동시 지원
 - **DB**: Supabase (결제 후 주문 저장)
-- **SDK**: `iamport.payment-1.2.0.js` (CDN)
+- **SDK**: `browser-sdk.umd.js` (CDN, V2)
 
 ## 환경변수 설정 (`.env`)
 
 ```env
-# 포트원 가맹점 식별코드 — 클라이언트에서 사용 가능
-EXPO_PUBLIC_PORTONE_IMP_KEY=imp00000000
+# 포트원 V2 - 상점 ID (클라이언트에서 사용 가능)
+EXPO_PUBLIC_PORTONE_STORE_ID=your-store-id
 
-# 포트원 REST API — 서버(Edge Function)에서만 사용, 클라이언트 절대 노출 금지
-PORTONE_API_KEY=your-portone-api-key
-PORTONE_API_SECRET=your-portone-api-secret
-
-# Supabase
-EXPO_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+# 포트원 V2 - 토스페이먼츠 채널 키 (클라이언트에서 사용 가능)
+EXPO_PUBLIC_PORTONE_CHANNEL_KEY=channel-key-xxxxxxxx
 ```
-<!--.env.example 예시 실제 값은 .env파일에 존재-->
 
 ## 포트원 설정
 
-- **버전**: V1 (아임포트)
-- **환경**: 테스트 (INIpayTest)
-- **PG사**: KG이니시스 (`html5_inicis.INIpayTest`)
-- **결제 수단**: 카드 (`pay_method: 'card'`)
-- **가맹점 식별코드**: `EXPO_PUBLIC_PORTONE_IMP_KEY`
+- **버전**: V2
+- **PG사**: 토스페이먼츠
+- **결제 수단**: 카드 (`payMethod: 'CARD'`)
+- **통화**: 원화 (`currency: 'CURRENCY_KRW'`)
+- **채널 키**: 포트원 대시보드 > 결제 연동 > 채널에서 발급
 
 ## 결제 플로우
 
 ```
 사용자 → PaymentScreen 진입
          ↓
-merchant_uid 생성: flower_${Date.now()}
+paymentId 생성: payment-{timestamp}-{random}
          ↓
-[웹] IMP.request_pay() 직접 호출 (팝업)
-[네이티브] WebView 내 HTML에서 IMP.request_pay() 호출
+[웹] PortOne.requestPayment() 직접 호출 (버튼 클릭)
+[네이티브] WebView 내 HTML에서 PortOne.requestPayment() 호출
          ↓
-결제 완료 → imp_uid, merchant_uid 수신
+결제 완료 → paymentId 수신
          ↓
 orderService.createOrder() — Supabase에 주문 저장
          ↓
@@ -52,30 +46,30 @@ orderService.createOrder() — Supabase에 주문 저장
 
 ### 웹 (`Platform.OS === 'web'`)
 
-- 아임포트 스크립트를 `document.head`에 동적 삽입
-- `IMP.init(IMP_KEY)` → `IMP.request_pay()` 호출
-- 결제창은 팝업으로 뜨며, 콜백(`rsp`)으로 결제 결과 수신
+- V2 SDK를 `document.head`에 동적 삽입
+- `window.PortOne.requestPayment()` 호출
+- 결제창은 팝업으로 뜨며, Promise로 결제 결과 수신
 
 ```ts
-IMP.request_pay(
-  {
-    pg: 'html5_inicis.INIpayTest',
-    pay_method: 'card',
-    merchant_uid: 'flower_1234567890',
-    name: '꽃시장 주문',
-    amount: 50000,
-    buyer_name: '홍길동',
-    buyer_tel: '010-0000-0000',
-    buyer_addr: '서울시 강남구 ...',
+const response = await PortOne.requestPayment({
+  storeId: STORE_ID,
+  channelKey: CHANNEL_KEY,
+  paymentId: 'payment-1234567890-abc123',
+  orderName: '꽃시장 주문',
+  totalAmount: 50000,
+  currency: 'CURRENCY_KRW',
+  payMethod: 'CARD',
+  customer: {
+    fullName: '홍길동',
+    phoneNumber: '010-0000-0000',
   },
-  (rsp) => { /* 결과 처리 */ }
-);
+});
 ```
 
 ### 네이티브 (iOS / Android)
 
 - `react-native-webview`의 `WebView` 컴포넌트 사용
-- HTML 문자열을 직접 생성해 `source={{ html }}` 으로 주입
+- HTML 문자열을 직접 생성해 `source={{ html }}`로 주입
 - 결제 결과는 `window.ReactNativeWebView.postMessage(JSON.stringify(result))`로 전달
 - `onMessage` 핸들러에서 수신 후 처리
 
@@ -83,26 +77,30 @@ IMP.request_pay(
 
 | 필드 | 값 | 설명 |
 |------|----|------|
-| `pg` | `html5_inicis.INIpayTest` | PG사 (테스트) |
-| `pay_method` | `card` | 결제 수단 |
-| `merchant_uid` | `flower_${Date.now()}` | 주문 고유 ID |
-| `name` | `꽃시장 주문` | 주문명 |
-| `amount` | 결제 금액 (정수) | totalPrice 파라미터에서 수신 |
-| `buyer_name` | `profile.name` | 구매자 이름 |
-| `buyer_tel` | `profile.phone` | 구매자 전화번호 |
-| `buyer_addr` | `deliveryAddress` | 배송 주소 |
+| `storeId` | `EXPO_PUBLIC_PORTONE_STORE_ID` | 포트원 상점 ID |
+| `channelKey` | `EXPO_PUBLIC_PORTONE_CHANNEL_KEY` | 토스페이먼츠 채널 키 |
+| `paymentId` | `payment-{timestamp}-{random}` | 주문 고유 ID |
+| `orderName` | `꽃시장 주문` | 주문명 |
+| `totalAmount` | 결제 금액 (정수) | totalPrice 파라미터에서 수신 |
+| `currency` | `CURRENCY_KRW` | 통화 (원화) |
+| `payMethod` | `CARD` | 결제 수단 |
+| `customer.fullName` | `profile.name` | 구매자 이름 |
+| `customer.phoneNumber` | `profile.phone` | 구매자 전화번호 |
 
 ## 결제 결과 타입
 
 ```ts
 type PaymentResult =
-  | { success: true; imp_uid: string; merchant_uid: string }
+  | { success: true; paymentId: string }
   | { success: false; error_msg: string };
 ```
 
+- **성공**: `response.paymentId` 수신
+- **실패/취소**: `response.code` + `response.message` 수신
+
 ## 결제 후 주문 저장 (`orderService.createOrder`)
 
-결제 성공 시 Supabase에 주문을 저장한다. 별도 서버 검증 없이 클라이언트에서 직접 호출한다.
+결제 성공 시 Supabase에 주문을 저장한다.
 
 **저장되는 데이터:**
 
@@ -110,10 +108,6 @@ type PaymentResult =
 |--------|------|
 | `orders` | `buyer_id`, `store_id`, `order_type`, `status: 'pending'`, `total_price`, `delivery_date`, `delivery_address`, `delivery_memo` |
 | `order_items` | `order_id`, `product_id`, `quantity`, `unit_price` |
-
-**주문 유형별 단가:**
-- `retail` (소매): `product.retail_price`
-- `wholesale` (도매): `product.wholesale_price`
 
 ## 주문 상태값 (`OrderStatus`)
 
@@ -126,11 +120,7 @@ type PaymentResult =
 | `delivered` | 배송 완료 |
 | `cancelled` | 취소/환불 |
 
-> 초기 저장 시 항상 `pending` 상태로 생성된다.
-
 ## 화면 진입 파라미터 (`useLocalSearchParams`)
-
-`/users/payment` 화면은 아래 쿼리 파라미터를 받는다:
 
 | 파라미터 | 타입 | 설명 |
 |----------|------|------|
@@ -152,21 +142,20 @@ type PaymentResult =
 
 ## 주의사항
 
-- `PORTONE_API_KEY`, `PORTONE_API_SECRET`은 서버(Edge Function)에서만 사용. 클라이언트 코드에 절대 포함 금지.
-- `merchant_uid`는 현재 `flower_${Date.now()}`로 생성하며, 동시 요청 시 중복 가능성이 있다. 프로덕션 전환 시 UUID 방식으로 변경 권장.
-- 현재 구현은 서버 측 결제 금액 검증이 없다. 프로덕션 환경에서는 `imp_uid`로 포트원 REST API를 호출해 실제 결제 금액을 검증한 후 DB에 저장해야 한다.
-- 테스트 키(`INIpayTest`)와 라이브 키 혼용 주의. 배포 시 PG 설정 및 환경변수를 반드시 변경.
+- `EXPO_PUBLIC_PORTONE_CHANNEL_KEY`는 테스트/실서비스 채널 키가 다름. 배포 시 반드시 실서비스 채널 키로 교체.
+- `paymentId`는 `payment-{timestamp}-{random}` 방식으로 생성. 중복 가능성 낮지만 프로덕션에서는 UUID 방식 권장.
+- 현재 구현은 서버 측 결제 금액 검증 없음. 출시 전 Supabase Edge Function으로 검증 추가 권장.
 
 ## 서버 검증 추가 시 참고 (미구현)
 
 ```
-결제 완료 (imp_uid 수신)
+결제 완료 (paymentId 수신)
   ↓
-서버: GET https://api.iamport.kr/payments/{imp_uid}
+서버(Edge Function): GET https://api.portone.io/payments/{paymentId}
   ↓
-응답의 amount == 클라이언트가 전달한 amount 비교
+응답의 amount.total == 클라이언트가 전달한 amount 비교
   ↓
 일치 → DB 저장 / 불일치 → 결제 취소 처리
 ```
 
-포트원 REST API 문서: https://developers.portone.io
+포트원 V2 REST API 문서: https://developers.portone.io/api/rest-v2

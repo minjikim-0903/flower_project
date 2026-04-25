@@ -49,7 +49,7 @@ export default function OrdersScreen() {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <Text className="font-bold p-5 bg-white" style={{ fontSize: 22 }}>주문 내역</Text>
-        <ActivityIndicator style={{ marginTop: 40 }} color="#FF6B9D" />
+        <ActivityIndicator style={{ marginTop: 40 }} color="#FF3D6C" />
       </SafeAreaView>
     );
   }

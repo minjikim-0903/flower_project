@@ -35,7 +35,7 @@ export default function CartScreen() {
       <SafeAreaView className="flex-1 bg-background">
         <Text className="text-2xl font-bold" style={{ padding: 20, backgroundColor: '#fff' }}>장바구니</Text>
         <View className="flex-1 justify-center items-center gap-3">
-          <ShoppingCart size={50} color="#FF6B9D" strokeWidth={1.5} />
+          <ShoppingCart size={50} color="#FF3D6C" strokeWidth={1.5} />
           <Text className="text-base" style={{ color: '#6a6a6a' }}>장바구니가 비어있어요</Text>
         </View>
       </SafeAreaView>
@@ -62,7 +62,7 @@ export default function CartScreen() {
         <Switch
           value={isWholesale}
           onValueChange={setIsWholesale}
-          trackColor={{ true: '#FF6B9D' }}
+          trackColor={{ true: '#FF3D6C' }}
         />
         <Text style={{ color: '#6a6a6a', fontSize: 13 }}>
           {isWholesale ? '도매가 적용' : '소매가 적용'}
@@ -121,7 +121,7 @@ export default function CartScreen() {
         </View>
         <Button
           onPress={handleCheckout}
-          style={{ backgroundColor: '#FF6B9D', borderRadius: 12, minHeight: 52 }}
+          style={{ backgroundColor: '#FF3D6C', borderRadius: 12, minHeight: 52 }}
         >
           <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>주문하기</ButtonText>
         </Button>

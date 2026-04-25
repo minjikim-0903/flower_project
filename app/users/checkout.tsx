@@ -89,10 +89,10 @@ export default function CheckoutScreen() {
             style={{
               paddingHorizontal: 12,
               paddingVertical: 6,
-              backgroundColor: orderType === 'wholesale' ? '#FF6B9D20' : '#6B9DFF20',
+              backgroundColor: orderType === 'wholesale' ? '#FF3D6C20' : '#6B9DFF20',
             }}
           >
-            <Text style={{ color: orderType === 'wholesale' ? '#FF6B9D' : '#6B9DFF', fontWeight: '600' }}>
+            <Text style={{ color: orderType === 'wholesale' ? '#FF3D6C' : '#6B9DFF', fontWeight: '600' }}>
               {orderType === 'wholesale' ? '도매 주문' : '소매 주문'}
             </Text>
           </View>
@@ -109,7 +109,7 @@ export default function CheckoutScreen() {
                   style={[
                     { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20 },
                     selectedDate === d.value
-                      ? { borderColor: '#FF6B9D', backgroundColor: '#FF6B9D' }
+                      ? { borderColor: '#FF3D6C', backgroundColor: '#FF3D6C' }
                       : { borderColor: '#f0f0f0', backgroundColor: '#fff' },
                   ]}
                   onPress={() => setSelectedDate(d.value)}
@@ -192,7 +192,7 @@ export default function CheckoutScreen() {
         </View>
         <Button
           onPress={handleOrder}
-          style={{ backgroundColor: '#FF6B9D', borderRadius: 12, height: 52 }}
+          style={{ backgroundColor: '#FF3D6C', borderRadius: 12, height: 52 }}
         >
           <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>
             {totalPrice.toLocaleString()}원 결제하기

@@ -48,13 +48,13 @@ export default function SignupScreen() {
     return (
       <View className="flex-1 justify-center items-center p-6">
         <View style={{ marginBottom: 12 }}>
-          <Flower2 size={40} color="#FF6B9D" strokeWidth={1.8} />
+          <Flower2 size={40} color="#FF3D6C" strokeWidth={1.8} />
         </View>
         <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 8 }}>회원가입 완료!</Text>
         <Text style={{ color: '#6a6a6a', marginBottom: 40 }}>로그인 후 꽃시장을 이용하세요.</Text>
         <Button
           onPress={() => router.replace('/(auth)/login')}
-          style={{ backgroundColor: '#FF6B9D', borderRadius: 12, height: 52, width: '100%' }}
+          style={{ backgroundColor: '#FF3D6C', borderRadius: 12, height: 52, width: '100%' }}
         >
           <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>
             로그인하기
@@ -75,19 +75,19 @@ export default function SignupScreen() {
             key={r}
             className="flex-1 items-center rounded-xl border"
             style={[
-              { padding: 14, borderColor: role === r ? '#FF6B9D' : '#f0f0f0', backgroundColor: role === r ? '#FFF0F5' : '#fff' },
+              { padding: 14, borderColor: role === r ? '#FF3D6C' : '#f0f0f0', backgroundColor: role === r ? '#FFF0F5' : '#fff' },
             ]}
             onPress={() => setRole(r)}
           >
             {r === 'buyer' ? (
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <ShoppingBag size={16} color={role === r ? '#FF6B9D' : '#6a6a6a'} strokeWidth={1.8} />
-                  <Text style={[{ fontSize: 15, color: role === r ? '#FF6B9D' : '#6a6a6a' }, role === r && { fontWeight: '600' }]}>구매자</Text>
+                  <ShoppingBag size={16} color={role === r ? '#FF3D6C' : '#6a6a6a'} strokeWidth={1.8} />
+                  <Text style={[{ fontSize: 15, color: role === r ? '#FF3D6C' : '#6a6a6a' }, role === r && { fontWeight: '600' }]}>구매자</Text>
                 </View>
               ) : (
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Leaf size={16} color={role === r ? '#FF6B9D' : '#6a6a6a'} strokeWidth={1.8} />
-                  <Text style={[{ fontSize: 15, color: role === r ? '#FF6B9D' : '#6a6a6a' }, role === r && { fontWeight: '600' }]}>판매자</Text>
+                  <Leaf size={16} color={role === r ? '#FF3D6C' : '#6a6a6a'} strokeWidth={1.8} />
+                  <Text style={[{ fontSize: 15, color: role === r ? '#FF3D6C' : '#6a6a6a' }, role === r && { fontWeight: '600' }]}>판매자</Text>
                 </View>
               )}
           </TouchableOpacity>
@@ -153,7 +153,7 @@ export default function SignupScreen() {
       <Button
         onPress={handleSignup}
         isDisabled={loading}
-        style={{ backgroundColor: '#FF6B9D', borderRadius: 12, height: 52, opacity: loading ? 0.6 : 1, marginTop: 32 }}
+        style={{ backgroundColor: '#FF3D6C', borderRadius: 12, height: 52, opacity: loading ? 0.6 : 1, marginTop: 32 }}
       >
         {loading && <ButtonSpinner color="white" mr="$2" />}
         <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>

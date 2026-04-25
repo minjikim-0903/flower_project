@@ -97,7 +97,7 @@ export default function StoreDetailScreen() {
   const freshCount = products.filter((p) => p.product_type === 'fresh_flower').length;
   const treeCount = products.filter((p) => p.product_type === 'tree').length;
 
-  if (loading) return <ActivityIndicator style={{ flex: 1 }} color="#FF6B9D" />;
+  if (loading) return <ActivityIndicator style={{ flex: 1 }} color="#FF3D6C" />;
   if (!store) return null;
 
   return (
@@ -132,7 +132,7 @@ export default function StoreDetailScreen() {
                 className="w-full justify-center items-center"
                 style={{ height: 220, backgroundColor: '#FFF0F5' }}
               >
-                <Flower2 size={48} color="#FF6B9D" strokeWidth={1.5} />
+                <Flower2 size={48} color="#FF3D6C" strokeWidth={1.5} />
               </View>
             )}
 
@@ -180,7 +180,7 @@ export default function StoreDetailScreen() {
                 style={[
                   { paddingVertical: 8, borderRadius: 20 },
                   selectedType === 'fresh_flower'
-                    ? { borderColor: '#FF6B9D', backgroundColor: '#FF6B9D' }
+                    ? { borderColor: '#FF3D6C', backgroundColor: '#FF3D6C' }
                     : { borderColor: '#f0f0f0' },
                 ]}
                 onPress={() => setSelectedType('fresh_flower')}
@@ -235,7 +235,7 @@ export default function StoreDetailScreen() {
                 style={{ width: 100, height: 110, backgroundColor: '#f5f5f5' }}
               >
                 {item.product_type === 'fresh_flower' ? (
-                  <Flower2 size={28} color="#FF6B9D" strokeWidth={1.5} />
+                  <Flower2 size={28} color="#FF3D6C" strokeWidth={1.5} />
                 ) : (
                   <Flower2 size={28} color="#2ECC71" strokeWidth={1.5} />
                 )}
@@ -297,11 +297,11 @@ export default function StoreDetailScreen() {
             bottom: 20,
             left: 20,
             right: 20,
-            backgroundColor: '#FF6B9D',
+            backgroundColor: '#FF3D6C',
             borderRadius: 14,
             minHeight: 52,
             elevation: 6,
-            shadowColor: '#FF6B9D',
+            shadowColor: '#FF3D6C',
             shadowOpacity: 0.4,
             shadowRadius: 10,
             shadowOffset: { width: 0, height: 4 },

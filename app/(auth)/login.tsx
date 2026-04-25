@@ -72,7 +72,7 @@ export default function LoginScreen() {
     >
       <View className="flex-1 justify-center px-6">
         <View style={{ alignItems: 'center', marginBottom: 8 }}>
-          <Flower2 size={44} color="#FF6B9D" strokeWidth={1.8} />
+          <Flower2 size={44} color="#FF3D6C" strokeWidth={1.8} />
           <Text style={{ fontSize: 22, fontWeight: '700', color: '#222222', marginTop: 6 }}>꽃시장</Text>
         </View>
         <Text className="text-base text-center mb-10" style={{ color: '#6a6a6a' }}>꽃 도소매 플랫폼</Text>
@@ -121,7 +121,7 @@ export default function LoginScreen() {
         <Button
           onPress={handleLogin}
           isDisabled={loading}
-          style={{ backgroundColor: '#FF6B9D', borderRadius: 12, height: 52, opacity: loading ? 0.6 : 1, marginTop: 8 }}
+          style={{ backgroundColor: '#FF3D6C', borderRadius: 12, height: 52, opacity: loading ? 0.6 : 1, marginTop: 8 }}
         >
           {loading && <ButtonSpinner color="white" mr="$2" />}
           <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>

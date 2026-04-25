@@ -317,7 +317,7 @@ export default function ProductFormScreen() {
           style={[
             { padding: 14 },
             form.product_type === 'fresh_flower'
-              ? { borderColor: '#FF6B9D', backgroundColor: '#FFF0F5' }
+              ? { borderColor: '#FF3D6C', backgroundColor: '#FFF0F5' }
               : { borderColor: '#f0f0f0' },
           ]}
           onPress={() => handleTypeChange('fresh_flower')}

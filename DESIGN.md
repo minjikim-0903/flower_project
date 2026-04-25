@@ -57,12 +57,13 @@ npm install lucide-react
 
 ## 2. Color Palette & Roles
 
-### 구매자 (Buyer) — 핑크 테마
+### 구매자 (Buyer) — 핑크 테마 (Bloom Design 2026-04)
 | Token | Hex | 용도 |
 |-------|-----|------|
-| Primary | `#FF6B9D` | CTA 버튼, 액센트, 활성 상태 |
-| Primary Dark | `#e0507f` | 눌림/호버 상태 |
-| Primary Light | `#FFF0F5` | 선택된 카드 배경, 배지 배경 |
+| Primary | `#FF3D6C` | CTA 버튼, 액센트, 활성 상태 |
+| Primary Dark | `#E81E54` | 눌림/호버 상태 |
+| Primary Light | `#FFE0E8` | 선택된 카드 배경, 배지 배경 |
+| Primary 50 | `#FFF1F4` | 아주 연한 핑크 배경 |
 
 ### 판매자 (Seller) — 그린 테마
 | Token | Hex | 용도 |
@@ -74,12 +75,13 @@ npm install lucide-react
 ### 공통 텍스트/서피스
 | Token | Hex | 용도 |
 |-------|-----|------|
-| Text Primary | `#222222` | 기본 텍스트 (순흑 아닌 warm near-black) |
-| Text Secondary | `#6a6a6a` | 설명, 부제목 |
+| Ink (Text Primary) | `#0F0F12` | 기본 텍스트 (따뜻한 잉크 블랙) |
+| Muted (Text Secondary) | `#7A7077` | 설명, 부제목 |
 | Text Disabled | `rgba(0,0,0,0.24)` | 비활성 텍스트 |
-| Background | `#ffffff` | 페이지 배경, 카드 |
-| Surface | `#f8f8f8` | 전체 앱 배경 |
-| Border | `#f0f0f0` | 카드 구분선, 인풋 테두리 |
+| Surface | `#FFFFFF` | 카드 배경 |
+| Background | `#FAF7F5` | 전체 앱 배경 (따뜻한 오프화이트) |
+| Border | `#ECE7E2` | 카드 구분선, 인풋 테두리 |
+| Border 2 | `#E2DCD6` | 강조 구분선 |
 
 ### 상태 컬러
 | Token | Hex | 용도 |

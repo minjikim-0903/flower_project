@@ -31,15 +31,15 @@ export default function BuyerProfileScreen() {
       </View>
       <Button
         onPress={() => router.replace('/users/home')}
-        style={{ backgroundColor: '#FF6B9D', borderRadius: 12, minHeight: 52, marginHorizontal: 16, marginTop: 16 }}
+        style={{ backgroundColor: '#FF3D6C', borderRadius: 12, minHeight: 52, marginHorizontal: 16, marginTop: 16 }}
       >
         <ButtonText style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>홈으로</ButtonText>
       </Button>
       <Button
         onPress={handleSignOut}
-        style={{ backgroundColor: '#fff', borderRadius: 12, minHeight: 52, margin: 16, borderWidth: 1, borderColor: '#FF6B9D' }}
+        style={{ backgroundColor: '#fff', borderRadius: 12, minHeight: 52, margin: 16, borderWidth: 1, borderColor: '#FF3D6C' }}
       >
-        <ButtonText style={{ color: '#FF6B9D', fontSize: 16, fontWeight: '600' }}>로그아웃</ButtonText>
+        <ButtonText style={{ color: '#FF3D6C', fontSize: 16, fontWeight: '600' }}>로그아웃</ButtonText>
       </Button>
     </SafeAreaView>
   );

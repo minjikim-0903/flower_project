@@ -1,14 +1,18 @@
 import { Tabs } from 'expo-router';
-import { Home, BookOpen, Settings } from 'lucide-react-native';
+import { Home, BookOpen, ShoppingCart, User } from 'lucide-react-native';
 
 export default function UsersLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#FF6B9D',
-        tabBarInactiveTintColor: '#999',
-        tabBarStyle: { borderTopWidth: 1, borderTopColor: '#f0f0f0' },
+        tabBarActiveTintColor: '#FF3D6C',
+        tabBarInactiveTintColor: '#A8A0A6',
+        tabBarStyle: {
+          borderTopWidth: 1,
+          borderTopColor: '#ECE7E2',
+          backgroundColor: 'rgba(255,255,255,0.92)',
+        },
       }}
     >
       {/* 탭에 표시하지 않는 화면 */}
@@ -16,10 +20,10 @@ export default function UsersLayout() {
       <Tabs.Screen name="checkout" options={{ href: null }} />
       <Tabs.Screen name="store/[id]" options={{ href: null }} />
       <Tabs.Screen name="order/[id]" options={{ href: null }} />
-      <Tabs.Screen name="cart" options={{ href: null }} />
       <Tabs.Screen name="orders" options={{ href: null }} />
+      <Tabs.Screen name="payment" options={{ href: null }} />
 
-      {/* 탭 메뉴: 홈 | 꽃사전 | 설정 */}
+      {/* 탭 메뉴: 홈 | 꽃사전 | 장바구니 | 내 정보 */}
       <Tabs.Screen
         name="home"
         options={{
@@ -39,11 +43,20 @@ export default function UsersLayout() {
         }}
       />
       <Tabs.Screen
+        name="cart"
+        options={{
+          title: '장바구니',
+          tabBarIcon: ({ color, size }) => (
+            <ShoppingCart size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
-          title: '설정',
+          title: '내 정보',
           tabBarIcon: ({ color, size }) => (
-            <Settings size={size} color={color} />
+            <User size={size} color={color} />
           ),
         }}
       />

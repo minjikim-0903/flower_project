@@ -67,7 +67,7 @@ export default function OrderDetailScreen() {
     ]);
   };
 
-  if (loading) return <ActivityIndicator style={{ flex: 1 }} color="#FF6B9D" />;
+  if (loading) return <ActivityIndicator style={{ flex: 1 }} color="#FF3D6C" />;
   if (!order) return null;
 
   const currentStepIdx = STATUS_STEPS.indexOf(order.status);
@@ -110,7 +110,7 @@ export default function OrderDetailScreen() {
                     ]}
                   >
                     {idx <= currentStepIdx ? (
-                      <StatusIcon size={18} color="#FF6B9D" strokeWidth={1.8} />
+                      <StatusIcon size={18} color="#FF3D6C" strokeWidth={1.8} />
                     ) : (
                       <Text style={{ fontSize: 16, color: '#c0c0c0' }}>○</Text>
                     )}
@@ -127,7 +127,7 @@ export default function OrderDetailScreen() {
                           zIndex: -1,
                         },
                         idx < currentStepIdx
-                          ? { backgroundColor: '#FF6B9D' }
+                          ? { backgroundColor: '#FF3D6C' }
                           : { backgroundColor: '#f0f0f0' },
                       ]}
                     />
@@ -136,7 +136,7 @@ export default function OrderDetailScreen() {
                     style={[
                       { fontSize: 10, textAlign: 'center' },
                       idx === currentStepIdx
-                        ? { color: '#FF6B9D', fontWeight: '700' }
+                        ? { color: '#FF3D6C', fontWeight: '700' }
                         : { color: '#6a6a6a' },
                     ]}
                     numberOfLines={2}
