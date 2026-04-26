@@ -66,9 +66,10 @@ export default function PaymentScreen() {
         deliveryMemo: deliveryMemo || '',
       });
       clearCart();
-      Alert.alert('결제 완료', '주문이 성공적으로 접수되었습니다.', [
-        { text: '확인', onPress: () => router.replace('/users/orders') },
-      ]);
+      router.replace({
+        pathname: '/users/order-complete',
+        params: { totalPrice: String(amount) },
+      });
     } catch {
       Alert.alert('오류', '주문 저장 중 오류가 발생했습니다. 고객센터에 문의해주세요.');
     } finally {

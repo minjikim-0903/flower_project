@@ -5,7 +5,6 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import { Button, ButtonText } from '@gluestack-ui/themed';
@@ -52,7 +51,7 @@ export default function StoreDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [selectedType, setSelectedType] = useState<ProductType | 'all'>('all');
 
-  const { addItem, items, storeId: cartStoreId } = useCartStore();
+  const { items } = useCartStore();
 
   useEffect(() => {
     if (!id) return;
@@ -66,22 +65,6 @@ export default function StoreDetailScreen() {
       setLoading(false);
     })();
   }, [id]);
-
-  const handleAddToCart = (product: Product) => {
-    if (cartStoreId && cartStoreId !== product.store_id) {
-      Alert.alert(
-        '장바구니 초기화',
-        '다른 가게의 상품이 담겨있습니다.\n초기화하고 이 상품을 담을까요?',
-        [
-          { text: '취소', style: 'cancel' },
-          { text: '초기화 후 담기', onPress: () => addItem(product, 1) },
-        ]
-      );
-      return;
-    }
-    addItem(product, 1);
-    Alert.alert('완료', '장바구니에 추가되었습니다.');
-  };
 
   const getCategoryLabel = (product: Product): string => {
     if (product.product_type === 'fresh_flower') {
@@ -223,16 +206,28 @@ export default function StoreDetailScreen() {
           </>
         }
         renderItem={({ item }) => (
-          <View
-            className="bg-white flex-row overflow-hidden mx-3 mb-2"
-            style={{ borderRadius: 16 }}
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => router.push(`/users/product/${item.id}`)}
+            style={{
+              backgroundColor: '#FFFFFF',
+              flexDirection: 'row',
+              overflow: 'hidden',
+              marginHorizontal: 12,
+              marginBottom: 8,
+              borderRadius: 16,
+              shadowColor: '#000',
+              shadowOpacity: 0.05,
+              shadowRadius: 6,
+              shadowOffset: { width: 0, height: 2 },
+              elevation: 2,
+            }}
           >
             {item.image_url ? (
-              <Image source={{ uri: item.image_url }} style={{ width: 100, height: 110 }} />
+              <Image source={{ uri: item.image_url }} style={{ width: 100, height: 110 }} resizeMode="cover" />
             ) : (
               <View
-                className="justify-center items-center"
-                style={{ width: 100, height: 110, backgroundColor: '#f5f5f5' }}
+                style={{ width: 100, height: 110, backgroundColor: '#FAF7F5', alignItems: 'center', justifyContent: 'center' }}
               >
                 {item.product_type === 'fresh_flower' ? (
                   <Flower2 size={28} color="#FF3D6C" strokeWidth={1.5} />
@@ -241,46 +236,36 @@ export default function StoreDetailScreen() {
                 )}
               </View>
             )}
-            <View className="flex-1 p-3">
-              <View className="flex-row items-center gap-1">
-                <Text className="font-semibold flex-1" style={{ fontSize: 15 }}>{item.name}</Text>
-                <View
-                  className="rounded"
-                  style={[
-                    { paddingHorizontal: 7, paddingVertical: 2 },
-                    item.product_type === 'fresh_flower'
-                      ? { backgroundColor: '#FFF0F5' }
-                      : { backgroundColor: '#F0FFF4' },
-                  ]}
-                >
-                  <Text style={{ fontSize: 11 }}>
+            <View style={{ flex: 1, padding: 12 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Text style={{ fontSize: 15, fontWeight: '600', color: '#0F0F12', flex: 1 }} numberOfLines={1}>
+                  {item.name}
+                </Text>
+                <View style={{
+                  paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6,
+                  backgroundColor: item.product_type === 'fresh_flower' ? '#FFF1F4' : '#F0FFF4',
+                }}>
+                  <Text style={{ fontSize: 11, color: item.product_type === 'fresh_flower' ? '#FF3D6C' : '#2ECC71', fontWeight: '600' }}>
                     {PRODUCT_TYPE_LABELS[item.product_type]}
                   </Text>
                 </View>
               </View>
-              <Text style={{ color: '#6a6a6a', fontSize: 12, marginTop: 2 }}>{getCategoryLabel(item)}</Text>
-              <View className="flex-row justify-between items-end" style={{ marginTop: 6 }}>
-                <View>
-                  <Text className="text-sm font-semibold">
-                    소매 {item.retail_price.toLocaleString()}원/{item.unit}
-                  </Text>
-                  <Text className="text-primary" style={{ fontSize: 12, marginTop: 2 }}>
-                    도매 {item.wholesale_price.toLocaleString()}원 (최소 {item.min_wholesale_quantity}{item.unit})
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  className="bg-primary rounded-lg"
-                  style={{ paddingHorizontal: 14, paddingVertical: 7 }}
-                  onPress={() => handleAddToCart(item)}
-                >
-                  <Text className="text-white font-bold" style={{ fontSize: 13 }}>담기</Text>
-                </TouchableOpacity>
+              <Text style={{ color: '#7A7077', fontSize: 12, marginTop: 2 }}>{getCategoryLabel(item)}</Text>
+              <View style={{ marginTop: 8, gap: 2 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: '#0F0F12' }}>
+                  소매 {item.retail_price.toLocaleString()}원/{item.unit}
+                </Text>
+                <Text style={{ fontSize: 12, color: '#FF3D6C', fontWeight: '500' }}>
+                  도매 {item.wholesale_price.toLocaleString()}원 (최소 {item.min_wholesale_quantity}{item.unit})
+                </Text>
               </View>
               {item.description ? (
-                <Text className="text-text-secondary text-xs" style={{ marginTop: 4 }} numberOfLines={2}>{item.description}</Text>
+                <Text style={{ color: '#7A7077', fontSize: 12, marginTop: 6 }} numberOfLines={1}>
+                  {item.description}
+                </Text>
               ) : null}
             </View>
-          </View>
+          </TouchableOpacity>
         )}
         contentContainerStyle={{ paddingBottom: 100 }}
         ListEmptyComponent={

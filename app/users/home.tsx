@@ -203,7 +203,7 @@ export default function BuyerHomeScreen() {
   const banner = BANNERS[bannerIdx];
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: C.bg }}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: C.bg }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}

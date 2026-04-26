@@ -22,6 +22,8 @@ export default function UsersLayout() {
       <Tabs.Screen name="order/[id]" options={{ href: null }} />
       <Tabs.Screen name="orders" options={{ href: null }} />
       <Tabs.Screen name="payment" options={{ href: null }} />
+      <Tabs.Screen name="order-complete" options={{ href: null }} />
+      <Tabs.Screen name="product/[id]" options={{ href: null }} />
 
       {/* 탭 메뉴: 홈 | 꽃사전 | 장바구니 | 내 정보 */}
       <Tabs.Screen
